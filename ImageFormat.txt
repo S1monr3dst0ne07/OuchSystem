@@ -1,0 +1,7 @@
+0x00 -> terminator
+
+0x01 -> directory : recursiv
+0x02 -> file      : recursiv
+
+0x10 -> name : str
+0x11 -> type : int (0 -> .txt, 1 -> .s1)
