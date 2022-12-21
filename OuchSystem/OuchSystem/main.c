@@ -11,6 +11,5 @@ int main()
 	printImage(root, 0);
 
 
-
-
+	return 0;
 }

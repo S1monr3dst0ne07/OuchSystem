@@ -60,6 +60,7 @@ struct fileNode* mountRootImage(char* path)
 	log(cTemp);
 
 	char* content = (char*)malloc(sizeof(char) * size);
+	printf("ContentPtr: %p\n", content);
 	fread(content, size, sizeof(char), fp);
 
 	int i = 0;
@@ -69,7 +70,8 @@ struct fileNode* mountRootImage(char* path)
 		return NULL;
 	}
 
-	return parseNode(content, &i);
+	struct fileNode* root = parseNode(content, &i);
+	return root;
 }
 
 
@@ -137,6 +139,8 @@ void printImage(struct fileNode* ptr, int l)
 {
 	for (int i = 0; i < l; i++) printf("\t");
 	printf("%s %d\n", ptr->name, ptr->prior);
+
+	//if (ptr->type == 2) printf("%p\n", ptr->content);
 
 	struct nodeList* temp = ptr->subNodes;
 	while (temp && !temp->isEnd)

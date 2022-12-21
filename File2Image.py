@@ -9,8 +9,12 @@ def flat(l):
 
 class cFile:
     def __init__(self, xHostPath):
-        with open(xHostPath, "r") as xFilePtr:
-            self.xContent = xFilePtr.read()
+        try:
+            with open(xHostPath, "r") as xFilePtr:
+                self.xContent = xFilePtr.read()
+
+        except UnicodeDecodeError:
+            self.xContent = ""
         
         self.xName  = os.path.basename(xHostPath)
         self.xPrior = 0x10
@@ -53,7 +57,8 @@ class cNode:
 
 xRoot = cNode(sys.argv[1])
 xRoot.Print()
+xBin = [x for x in xRoot.GetBin() if x < 0x100]
 
 with open("image.bin", "wb") as xFilePtr:
-    xFilePtr.write(bytearray(xRoot.GetBin()))
+    xFilePtr.write(bytearray(xBin))
 
