@@ -130,10 +130,12 @@
     <ClCompile Include="files.c" />
     <ClCompile Include="kernal.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="utils.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="files.h" />
     <ClInclude Include="kernal.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

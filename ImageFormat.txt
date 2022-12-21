@@ -14,5 +14,5 @@ node example for directory:
 node example for file:
 0x10 "some name" 0x01 0x1f 0x01 0x12 "hello, this is a files" 0x01
 
-
+    
 

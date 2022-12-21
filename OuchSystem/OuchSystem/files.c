@@ -42,24 +42,49 @@ struct nodeList* allocNodeList()
 //mounts file system from host system image file
 struct fileNode* mountRootImage(char* path)
 {
-	FILE* fp = fopen(path, "r");
+	sprintf(cTemp, "Parsing root image from %s\n", path);
+	log(cTemp);
 
+	FILE* fp = fopen(path, "rb");
+	if (!fp)
+	{
+		log("Root image file not found\n");
+		return NULL;
+	}
 
+	fseek(fp, 0, SEEK_END);
+	int size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+
+	sprintf(cTemp, "Root image found: %d bytes\n", size);
+	log(cTemp);
+
+	char* content = (char*)malloc(sizeof(char) * size);
+	fread(content, size, sizeof(char), fp);
+
+	int i = 0;
+	if (!content[i++])
+	{
+		log("Root image empty");
+		return NULL;
+	}
+
+	return parseNode(content, &i);
 }
 
 
 //parses node, without 0x10 header
-struct fileNode* parseNode(char* ptr)
+struct fileNode* parseNode(char* ptr, int* i)
 {
-	char* name  = readTermed(ptr);
-	char* prior = readTermed(ptr);
-
+	char* name  = readTermed(ptr, i);
+	char* prior = readTermed(ptr, i);
+	
 	struct fileNode* newNode = allocFileNode();
 	newNode->name = name;
 	newNode->prior = (int)(*prior);
 	newNode->subNodes = NULL;
 
-	int type = (int)(*(ptr++));
+	int type = (int)ptr[(*i)++];
 	switch (type)
 	{
 	case 0x11:
@@ -69,10 +94,10 @@ struct fileNode* parseNode(char* ptr)
 		struct nodeList* listHead = allocNodeList();
 		newNode->subNodes = listHead;
 
-		while (*(ptr++) != imageTermi)
+		while (ptr[(*i)++] != imageTermi)
 		{
 			struct nodeList* listNew = allocNodeList();
-			listHead->content = parseNode(ptr);
+			listHead->content = parseNode(ptr, i);
 			listHead->next = listNew;
 			listHead = listNew;
 		}
@@ -83,7 +108,7 @@ struct fileNode* parseNode(char* ptr)
 
 	case 0x12:
 		newNode->type = 2;
-		newNode->content = readTermed(ptr);
+		newNode->content = readTermed(ptr, i);
 		break;
 	}
 
@@ -91,15 +116,32 @@ struct fileNode* parseNode(char* ptr)
 }
 
 //reads 0x01 terminated string
-char* readTermed(char* ptr)
+char* readTermed(char* ptr, int* i)
 {
-	char* temp = ptr;
 	int len = 0;
-	while (*(temp++) != imageTermi) len++;
+	while (ptr[*i + (len++)] != imageTermi);
+	len--;
 
-	char* output = (char*)malloc(len * sizeof(char*));
-	int i = 0;
-	while (*(ptr++) != imageTermi) output[i++] = *(ptr-1);
-	
+	char* output = (char*)malloc((len+1) * sizeof(char*));
+	int x = 0;
+	char c;
+	while ((c = ptr[(*i)++]) != imageTermi) output[x++] = c;
+	output[x] = 0;
+
 	return output;
+}
+
+
+
+void printImage(struct fileNode* ptr, int l)
+{
+	for (int i = 0; i < l; i++) printf("\t");
+	printf("%s %d\n", ptr->name, ptr->prior);
+
+	struct nodeList* temp = ptr->subNodes;
+	while (temp && !temp->isEnd)
+	{
+		printImage(temp->content, l+1);
+		temp = temp->next;
+	}
 }
