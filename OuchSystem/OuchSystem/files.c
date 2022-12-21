@@ -3,14 +3,14 @@
 struct fileNode
 {
 	char* name;	
-	int type; //(0 -> dir, 1 -> file)
+	int type; //(1 -> dir, 2 -> file)
+	int prior;
 
 	//only used if type == 0
-	struct fileNodeList* dirs;  
+	struct fileNodeList* dirs;
 
 	//only used if type == 1
-	char* content;				
-	int ext;
+	char* content;
 
 	//temporary id for files
 	int tID;
@@ -25,16 +25,8 @@ struct fileNodeList
 
 
 
-/*
-mounts file system from host system image file
-0x00 -> terminator
 
-0x01 -> directory : recursiv
-0x02 -> file      : recursiv
-
-0x10 -> name : str
-0x11 -> type : int (0 -> .txt, 1 -> .s1)
-*/
+//mounts file system from host system image file
 struct dir* mountRootImage(char* path)
 {
 	FILE* fp = fopen(path, "r");
@@ -42,18 +34,25 @@ struct dir* mountRootImage(char* path)
 
 }
 
-struct 
-
-struct dir* parseDir(FILE* fp)
+struct dir* parseNode(FILE* fp)
 {
 	
+
 }
 
-struct file* parseFile(FILE* fp)
+//reads 0x00 terminated string from file ptr
+char* readContent(FILE* fp)
 {
+	//get length of string
+	FILE* temp = fp;
+	int strLen = 0;
+	while (fgetc(temp)) strLen++;
 
+	char* output = (char*)malloc(sizeof(char) * strLen);
 
+	//read string
+	int i = 0;
+	while (output[i++] = fgetc(temp));
+
+	return output;
 }
-
-
-

@@ -1,7 +1,18 @@
-0x00 -> terminator
+0x00 -> [empty]
 
-0x01 -> directory : recursiv
-0x02 -> file      : recursiv
+0x01 -> terminator, universal
 
-0x10 -> name : str
-0x11 -> type : int (0 -> .txt, 1 -> .s1)
+
+0x10 -> node, start of node name, precedes priority of node
+0x11 -> isDir , start of recursive
+0x12 -> isFile, start of content
+
+
+node example for directory:
+0x10 "some name" 0x01 0xff 0x01 0x11 ... some more nodes ... 0x01
+
+node example for file:
+0x10 "some name" 0x01 0x1f 0x01 0x12 "hello, this is a files" 0x01
+
+
+
