@@ -23,16 +23,30 @@ struct fileNode
 
 };
 
+//keeps content of image and pointer to currently parsing point
+struct rawImage
+{
+	char* rawContent;
+	int parseIndex;
+
+};
+
 struct fileNode* allocFileNode()
 {
 	return (struct fileNode*)malloc(sizeof(struct fileNode));
 }
-
-char consu(char* ptr, int* i)
+struct rawImage* allocRawImage(char* rawContent)
 {
-	char c = ptr[*i];
-	(*i)++;
-	return c;
+	struct rawImage* image = (struct rawImage*)malloc(sizeof(struct rawImage));
+	image->parseIndex = 0;
+	image->rawContent = rawContent;
+	return image;
+}
+
+//consumes charactor from rawImage
+char consu(struct rawImage* image)
+{
+	return image->rawContent[image->parseIndex++];
 }
 
 
@@ -56,27 +70,32 @@ struct fileNode* mountRootImage(char* path)
 	sprintf(cTemp, "Root image found: %d bytes\n", size);
 	log(cTemp);
 
-	char* content = (char*)malloc(sizeof(char) * size);
-	if (!content) return NULL;
-	fread(content, size, sizeof(char), fp);
+	char* rawContent = (char*)malloc(sizeof(char) * size);
+	if (!rawContent) return NULL;
+	fread(rawContent, size, sizeof(char), fp);
+	struct rawImage* image = allocRawImage(rawContent);
 
-	int i = 0;
-	if (!content[i++])
+
+	//consume header and check image contains nodes
+	//parseNode doesn't want the header
+	if (!consu(image))
 	{
 		log("Root image empty");
 		return NULL;
 	}
 
-	struct fileNode* root = parseNode(content, &i);
+
+	struct fileNode* root = parseNode(image);
+	log("Root image parsed successfully\n");
 	return root;
 }
 
 
 //parses node, without 0x10 header
-struct fileNode* parseNode(char* ptr, int* i)
+struct fileNode* parseNode(struct rawImage* image)
 {
-	char* name  = readTermed(ptr, i);
-	char* prior = readTermed(ptr, i);
+	char* name  = readTermed(image); //<name> 0x01
+	char* prior = readTermed(image); //<prior> 0x01
 
 	struct fileNode* newNode = allocFileNode();
 	newNode->name = name;
@@ -84,24 +103,29 @@ struct fileNode* parseNode(char* ptr, int* i)
 	newNode->content = NULL;
 	newNode->count = 0;
 
-	int type = (int)consu(ptr, i);
+	//type of node
+	int type = (int)consu(image);
 	switch (type)
 	{
+	//directory
 	case 0x11:
 		newNode->type = 1;
 
-		for (int offset = 0; consu(ptr, i) != imageTermi; offset++)
+		//iterate subnodes, parse recursively
+		//calling a function with a side effect of beheading the subnodes if fine
+		//because parseNode doesn't want the head of a node
+		for (int offset = 0; consu(image) != imageTermi; offset++)
 		{
-			newNode->subNodes[offset] = parseNode(ptr, i);
+			newNode->subNodes[offset] = parseNode(image);
 			newNode->count++;
 		}
 
 		break;
 
+	//file
 	case 0x12:
 		newNode->type = 2;
-		newNode->content = readTermed(ptr, i);
-		printf("file content: %s\n", newNode->content);
+		newNode->content = readTermed(image);
 		break;
 	}
 
@@ -109,17 +133,21 @@ struct fileNode* parseNode(char* ptr, int* i)
 }
 
 //reads 0x01 terminated string
-char* readTermed(char* ptr, int* i)
+char* readTermed(struct rawImage* image)
 {
-	int len = 0;
-	while (ptr[*i + (len++)] != imageTermi);
-	len--;
+	//save string start
+	int stringOrigin = image->parseIndex;
 
-	char* output = (char*)malloc((len+1) * sizeof(char*));
-	int x = 0;
-	char c;
-	while ((c = consu(ptr, i)) != imageTermi) output[x++] = c;
-	output[x] = 0;
+	//read length of string
+	int len = 1; //start at one for terminator
+	while (consu(image) != imageTermi) len++;
+
+	char* output = (char*)malloc(len * sizeof(char*));
+	for (int i = 0; i < len; i++)
+		output[i] = image->rawContent[stringOrigin + i];
+
+	//set terminator at end of string
+	output[len - 1] = 0;
 
 	return output;
 }

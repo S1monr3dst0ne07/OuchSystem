@@ -9,10 +9,11 @@
 char cTemp[2048];
 
 struct fileNode;
+struct rawImage;
 
 struct fileNode* mountRootImage(char* path);
-struct fileNode* parseNode(char* ptr, int* i);
-char* readTermed(char* ptr, int* i);
-//void printImage(struct fileNode* ptr, int l);
+struct fileNode* parseNode(struct rawImage* image);
+char* readTermed(struct rawImage* image);
+void printImage(struct fileNode* ptr, int l);
 
 #endif
