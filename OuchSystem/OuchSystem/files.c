@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "files.h"
+#include "utils.h"
 
 struct fileNode
 {
@@ -10,7 +11,8 @@ struct fileNode
 	int prior;
 
 	//only used if type == 0
-	struct nodeList* subNodes;
+	struct fileNode* subNodes[subNodeCount];
+	int count; //number of subnodes
 
 	//only used if type == 1
 	char* content;
@@ -20,23 +22,18 @@ struct fileNode
 
 
 };
-struct nodeList
-{
-	struct fileNode* content;
-	struct nodeList* next;
-	bool isEnd;
-};
 
 struct fileNode* allocFileNode()
 {
-	return (struct fileNode*)malloc(sizeof(struct fileNode*));
+	return (struct fileNode*)malloc(sizeof(struct fileNode));
 }
-struct nodeList* allocNodeList()
+
+char consu(char* ptr, int* i)
 {
-	return (struct nodeList*)malloc(sizeof(struct nodeList*));
+	char c = ptr[*i];
+	(*i)++;
+	return c;
 }
-
-
 
 
 //mounts file system from host system image file
@@ -60,7 +57,7 @@ struct fileNode* mountRootImage(char* path)
 	log(cTemp);
 
 	char* content = (char*)malloc(sizeof(char) * size);
-	printf("ContentPtr: %p\n", content);
+	if (!content) return NULL;
 	fread(content, size, sizeof(char), fp);
 
 	int i = 0;
@@ -80,37 +77,31 @@ struct fileNode* parseNode(char* ptr, int* i)
 {
 	char* name  = readTermed(ptr, i);
 	char* prior = readTermed(ptr, i);
-	
+
 	struct fileNode* newNode = allocFileNode();
 	newNode->name = name;
 	newNode->prior = (int)(*prior);
-	newNode->subNodes = NULL;
+	newNode->content = NULL;
+	newNode->count = 0;
 
-	int type = (int)ptr[(*i)++];
+	int type = (int)consu(ptr, i);
 	switch (type)
 	{
 	case 0x11:
 		newNode->type = 1;
 
-		//init linked list
-		struct nodeList* listHead = allocNodeList();
-		newNode->subNodes = listHead;
-
-		while (ptr[(*i)++] != imageTermi)
+		for (int offset = 0; consu(ptr, i) != imageTermi; offset++)
 		{
-			struct nodeList* listNew = allocNodeList();
-			listHead->content = parseNode(ptr, i);
-			listHead->next = listNew;
-			listHead = listNew;
+			newNode->subNodes[offset] = parseNode(ptr, i);
+			newNode->count++;
 		}
 
-		listHead->isEnd = true;
 		break;
-
 
 	case 0x12:
 		newNode->type = 2;
 		newNode->content = readTermed(ptr, i);
+		printf("file content: %s\n", newNode->content);
 		break;
 	}
 
@@ -127,12 +118,11 @@ char* readTermed(char* ptr, int* i)
 	char* output = (char*)malloc((len+1) * sizeof(char*));
 	int x = 0;
 	char c;
-	while ((c = ptr[(*i)++]) != imageTermi) output[x++] = c;
+	while ((c = consu(ptr, i)) != imageTermi) output[x++] = c;
 	output[x] = 0;
 
 	return output;
 }
-
 
 
 void printImage(struct fileNode* ptr, int l)
@@ -140,12 +130,8 @@ void printImage(struct fileNode* ptr, int l)
 	for (int i = 0; i < l; i++) printf("\t");
 	printf("%s %d\n", ptr->name, ptr->prior);
 
-	//if (ptr->type == 2) printf("%p\n", ptr->content);
+	if (ptr->type == 2) printf("%p\n", ptr->content);
 
-	struct nodeList* temp = ptr->subNodes;
-	while (temp && !temp->isEnd)
-	{
-		printImage(temp->content, l+1);
-		temp = temp->next;
-	}
+	for (int i = 0; i < ptr->count; i++) printImage(ptr->subNodes[i], l + 1);
+	
 }
