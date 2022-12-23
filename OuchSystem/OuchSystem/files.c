@@ -1,27 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include "files.h"
 #include "utils.h"
-
-struct fileNode
-{
-	char* name;	
-	int type; //(1 -> dir, 2 -> file)
-	int prior;
-
-	//only used if type == 0
-	struct fileNode* subNodes[subNodeCount];
-	int count; //number of subnodes
-
-	//only used if type == 1
-	char* content;
-
-	//temporary id for files
-	int tID;
-
-
-};
 
 //keeps content of image and pointer to currently parsing point
 struct rawImage
@@ -35,6 +17,8 @@ struct fileNode* allocFileNode()
 {
 	return (struct fileNode*)malloc(sizeof(struct fileNode));
 }
+
+
 struct rawImage* allocRawImage(char* rawContent)
 {
 	struct rawImage* image = (struct rawImage*)malloc(sizeof(struct rawImage));
@@ -42,6 +26,16 @@ struct rawImage* allocRawImage(char* rawContent)
 	image->rawContent = rawContent;
 	return image;
 }
+void freeRawImage(struct rawImage* image)
+{
+	free(image->rawContent);
+	free(image);
+}
+
+
+//-------------------
+//system stuff
+
 
 //consumes charactor from rawImage
 char consu(struct rawImage* image)
@@ -84,8 +78,9 @@ struct fileNode* mountRootImage(char* path)
 		return NULL;
 	}
 
-
 	struct fileNode* root = parseNode(image);
+	freeRawImage(image);
+
 	log("Root image parsed successfully\n");
 	return root;
 }
@@ -152,13 +147,85 @@ char* readTermed(struct rawImage* image)
 	return output;
 }
 
+//----------------
+//getters
+struct fileNode* getSubNodeByName(struct fileNode* top, char* name)
+{
+	for (int i = 0; i < top->count; i++)
+	{
+		struct fileNode* sub = top->subNodes[i];
+		if (!strcmp(sub->name, name)) return sub;
+	}
+	return NULL;
+}
+
+struct fileNode* getNodeByPath(struct fileNode* root, struct filePath* path)
+{
+	struct fileNode* temp = root;
+	for (int i = 0; i < path->len; i++)
+		temp = getSubNodeByName(temp, path->dirPath[i]);
+	
+	return temp;
+}
+
+
+
+struct filePath* parseFilePath(char* path)
+{
+	char buffer[defBufferSize];
+	memset(buffer, 0, sizeof(buffer));
+
+	struct filePath* output = (struct filePath*)malloc(sizeof(struct filePath));
+
+	int pathIndex = 0;
+	int bufferIndex = 0;
+	for (int i = 0;;i++)
+	{
+		if (path[i] == '/' || path[i] == 0)
+		{
+			//if a subterminator is found, relocate the buffer
+			char* temp = (char*)malloc(bufferIndex);
+
+			strncpy(temp, buffer, bufferIndex);
+			temp[bufferIndex] = 0;
+			bufferIndex = 0;
+
+			output->dirPath[pathIndex] = temp;
+			pathIndex++;
+
+			if (path[i] == 0) break;
+		}
+		else 
+		{ 
+			buffer[bufferIndex++] = path[i];
+		}
+	}
+
+	output->len = pathIndex;
+	return output;
+}
+
+
+
+//-----------------------------
+//io routines
+
+
+char* readFileContent(struct fileNode* root, struct filePath* path)
+{
+	struct fileNode* temp = getNodeByPath(root, path);
+
+	return (temp != 0) ? temp->content : NULL;
+}
+
+
 
 void printImage(struct fileNode* ptr, int l)
 {
 	for (int i = 0; i < l; i++) printf("\t");
 	printf("%s %d\n", ptr->name, ptr->prior);
 
-	if (ptr->type == 2) printf("%p\n", ptr->content);
+	if (ptr->type == 2) printf("%s\n", ptr->content);
 
 	for (int i = 0; i < ptr->count; i++) printImage(ptr->subNodes[i], l + 1);
 	

@@ -1,19 +1,6 @@
-roottest.s1clr
-
-lab loop
-
-sAD 0
-out 0
-
-set 1
-add
-
-set 100
-jmL loop
-
-brk
-
-emptysubtestprint69.s1set 69
+rootauto.ochtest/test.s1
+testtest.s1set 10
 sRD 0
 out 0
-emptyz
+brk
+
