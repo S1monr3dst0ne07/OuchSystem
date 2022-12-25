@@ -37,8 +37,8 @@ void freeRawImage(struct rawImage* image)
 //system stuff
 
 
-//consumes charactor from rawImage
-char consu(struct rawImage* image)
+//consImagemes charactor from rawImage
+char consImage(struct rawImage* image)
 {
 	return image->rawContent[image->parseIndex++];
 }
@@ -70,9 +70,9 @@ struct fileNode* mountRootImage(char* path)
 	struct rawImage* image = allocRawImage(rawContent);
 
 
-	//consume header and check image contains nodes
+	//consImageme header and check image contains nodes
 	//parseNode doesn't want the header
-	if (!consu(image))
+	if (!consImage(image))
 	{
 		log("Root image empty");
 		return NULL;
@@ -99,7 +99,7 @@ struct fileNode* parseNode(struct rawImage* image)
 	newNode->count = 0;
 
 	//type of node
-	int type = (int)consu(image);
+	int type = (int)consImage(image);
 	switch (type)
 	{
 	//directory
@@ -109,7 +109,7 @@ struct fileNode* parseNode(struct rawImage* image)
 		//iterate subnodes, parse recursively
 		//calling a function with a side effect of beheading the subnodes if fine
 		//because parseNode doesn't want the head of a node
-		for (int offset = 0; consu(image) != imageTermi; offset++)
+		for (int offset = 0; consImage(image) != imageTermi; offset++)
 		{
 			newNode->subNodes[offset] = parseNode(image);
 			newNode->count++;
@@ -135,7 +135,7 @@ char* readTermed(struct rawImage* image)
 
 	//read length of string
 	int len = 1; //start at one for terminator
-	while (consu(image) != imageTermi) len++;
+	while (consImage(image) != imageTermi) len++;
 
 	char* output = (char*)malloc(len * sizeof(char*));
 	for (int i = 0; i < len; i++)

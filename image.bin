@@ -1,6 +1,18 @@
 rootauto.ochtest/test.s1
 testtest.s1set 10
+
+
 sRD 0
-out 0
-brk
+
+
+out       0
+
+
+brk 
+
+
+
+
+
+
 

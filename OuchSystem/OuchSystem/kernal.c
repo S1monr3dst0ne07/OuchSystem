@@ -4,6 +4,7 @@
 #include "kernal.h"
 #include "utils.h"
 #include "files.h"
+#include "process.h"
 
 static volatile bool isRunning = true;
 
@@ -19,12 +20,16 @@ struct system boot(char* imagePath)
 	char* autoStartupFile = readFileContent(root, autoStartupPath);
 
 
+	struct system ouch = {
+		.root = root,
+	};
+
 	printf("%s\n", autoStartupFile);
 
 	free(autoStartupFile);
 	free(autoStartupPath);
 
-
+	return ouch;
 }
 
 
@@ -39,7 +44,15 @@ void sigHandler(int sig)
 void ouch(char* imagePath)
 {
 	signal(SIGINT, sigHandler);
-	boot(imagePath);
+	struct system ouch = boot(imagePath);
+
+
+	struct filePath* testPath = parseFilePath("test/test.s1");
+	char* source = readFileContent(ouch.root, testPath);
+	parseProcess(source);
+
+	free(testPath);
+
 
 	while (isRunning);
 
