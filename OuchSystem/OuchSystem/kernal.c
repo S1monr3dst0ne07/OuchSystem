@@ -47,12 +47,12 @@ void ouch(char* imagePath)
 	struct system ouch = boot(imagePath);
 
 
-	struct filePath* testPath = parseFilePath("test/test.s1");
+	struct filePath* testPath = parseFilePath("test/test1.s1");
 	char* source = readFileContent(ouch.root, testPath);
-	parseProcess(source);
+	if (source)
+		parseProcess(source);
 
 	free(testPath);
-
 
 	while (isRunning);
 
