@@ -49,11 +49,16 @@ void ouch(char* imagePath)
 
 	struct filePath* testPath = parseFilePath("test/test1.s1");
 	char* source = readFileContent(ouch.root, testPath);
-	if (source)
-		parseProcess(source);
+	if (!source) return;
 
+
+	while (isRunning)
+	{
+		struct process* test = parseProcess(source);
+		freeProcess(test);
+
+	}
+
+	free(source);
 	free(testPath);
-
-	while (isRunning);
-
 }
