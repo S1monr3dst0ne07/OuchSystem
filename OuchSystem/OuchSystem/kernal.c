@@ -47,18 +47,17 @@ void ouch(char* imagePath)
 {
 	signal(SIGINT, sigHandler);
 	struct system ouch = boot(imagePath);
-
+	struct system* ouchPtr = &ouch;
 
 	struct filePath* testPath = parseFilePath("test/test1.s1");
-	char* source = readFileContent(ouch.root, testPath);
+	char* source = readFileContent(ouchPtr->root, testPath);
 	if (!source) return;
 
 	struct process* test = parseProcess(source);
-	launchProcess(test, &ouch);
-	launchProcess(test, &ouch);
+	launchProcess(test, ouchPtr);
 
 
-	while (isRunning);
+	while (isRunning) RunPool(ouchPtr);
 
 	free(source);
 	free(testPath);
