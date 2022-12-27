@@ -49,16 +49,23 @@ void ouch(char* imagePath)
 	struct system ouch = boot(imagePath);
 	struct system* ouchPtr = &ouch;
 
-	struct filePath* testPath = parseFilePath("test/test1.s1");
-	char* source = readFileContent(ouchPtr->root, testPath);
-	if (!source) return;
+	struct filePath* testPath1 = parseFilePath("test/test1.s1");
+	struct filePath* testPath2 = parseFilePath("test/test2.s1");
+	char* source1 = readFileContent(ouchPtr->root, testPath1);
+	char* source2 = readFileContent(ouchPtr->root, testPath2);
+	if (!source1) return;
+	if (!source2) return;
 
-	struct process* test = parseProcess(source);
-	launchProcess(test, ouchPtr);
+	struct process* test1 = parseProcess(source1);
+	struct process* test2 = parseProcess(source2);
+	launchProcess(test1, ouchPtr);
+	launchProcess(test2, ouchPtr);
 
 
 	while (isRunning) RunPool(ouchPtr);
 
-	free(source);
-	free(testPath);
+	free(source1);
+	free(source2);
+	free(testPath1);
+	free(testPath2);
 }
