@@ -7,6 +7,7 @@
 #include "process.h"
 
 static volatile bool isRunning = true;
+char cTemp[2048];
 
 
 //only one instance of struct system can exist
@@ -22,6 +23,7 @@ struct system boot(char* imagePath)
 
 	struct system ouch = {
 		.root = root,
+		.pool = allocProcPool(),
 	};
 
 	printf("%s\n", autoStartupFile);
@@ -51,13 +53,12 @@ void ouch(char* imagePath)
 	char* source = readFileContent(ouch.root, testPath);
 	if (!source) return;
 
+	struct process* test = parseProcess(source);
+	launchProcess(test, &ouch);
+	launchProcess(test, &ouch);
 
-	while (isRunning)
-	{
-		struct process* test = parseProcess(source);
-		freeProcess(test);
 
-	}
+	while (isRunning);
 
 	free(source);
 	free(testPath);

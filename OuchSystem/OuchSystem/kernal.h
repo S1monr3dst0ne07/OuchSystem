@@ -1,12 +1,14 @@
-
-char cTemp[2048];
+#ifndef HKERNAL
+#define HKERNAL
 
 
 struct system
 {
 	struct fileNode* root;
-
+	struct procPool* pool;
 
 };
 
-void sigHandler(int sig);
+void ouch(char* imagePath);
+
+#endif
