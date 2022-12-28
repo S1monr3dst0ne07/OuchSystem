@@ -1,0 +1,4 @@
+﻿  kernal.c
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(27,3): warning C4013: 'sprintf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(49,2): warning C4013: 'free' undefined; assuming extern returning int
+  OuchSystem.vcxproj -> D:\ProjekteC\OuchSystem\OuchSystem\x64\Debug\OuchSystem.exe
