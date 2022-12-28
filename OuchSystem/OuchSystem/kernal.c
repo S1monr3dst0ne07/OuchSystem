@@ -1,5 +1,5 @@
 #include <signal.h>
-#include <stdbool.h>
+#include <string.h>
 
 #include "kernal.h"
 #include "utils.h"
@@ -9,32 +9,72 @@
 static volatile bool isRunning = true;
 char cTemp[2048];
 
+void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
+{
+	log("Launching auto startup processes\n\n");
+	char* autoStartupFile = readFileContent(ouch->root, autoPath);
+	
+	if (autoStartupFile == NULL)
+	{
+		log("Unable to read auto.och file\n");
+		return;
+	}
+
+	char* splitPtr = strtok(autoStartupFile, "\n");
+
+	while (splitPtr != NULL)
+	{
+		sprintf(cTemp, "Launching '%s' ... \n", splitPtr);
+		log(cTemp);
+
+		bool success = launchProcessFromPath(splitPtr, ouch);
+		if (success) log("OK\n");
+		else         log("Failed\n");
+		
+		splitPtr = strtok(NULL, "\n");
+	}
+
+	log("\nOK\n");
+}
+
+bool launchProcessFromPath(char* pathStr, struct system* ouch)
+{
+	struct filePath* path = parseFilePath(pathStr);
+	char* source = readFileContent(ouch->root, path);
+	if (source == NULL) return false;
+
+	struct process* proc = parseProcess(source);
+	launchProcess(proc, ouch);
+
+	free(path);
+
+	return true;
+}
 
 //only one instance of struct system can exist
 struct system boot(char* imagePath)
 {
 	log("Booting Ouch 1.0 ...\n");
 
+	log("\n");
+
 	struct fileNode* root = mountRootImage(imagePath);
-
-	struct filePath* autoStartupPath = parseFilePath("auto.och");
-	char* autoStartupFile = readFileContent(root, autoStartupPath);
-
-
 	struct system ouch = {
 		.root = root,
 		.pool = allocProcPool(),
 	};
 
-	printf("%s\n", autoStartupFile);
+	log("\n");
 
-	free(autoStartupFile);
-	free(autoStartupPath);
+	struct filePath* autoPath = parseFilePath("auto.och");
+	launchAutoProcesses(autoPath, &ouch);
+	free(autoPath);
 
+	log("\n");
+
+	log("Booting complete\n");
 	return ouch;
 }
-
-
 
 void sigHandler(int sig)
 {
@@ -49,23 +89,8 @@ void ouch(char* imagePath)
 	struct system ouch = boot(imagePath);
 	struct system* ouchPtr = &ouch;
 
-	struct filePath* testPath1 = parseFilePath("test/test1.s1");
-	struct filePath* testPath2 = parseFilePath("test/test2.s1");
-	char* source1 = readFileContent(ouchPtr->root, testPath1);
-	char* source2 = readFileContent(ouchPtr->root, testPath2);
-	if (!source1) return;
-	if (!source2) return;
-
-	struct process* test1 = parseProcess(source1);
-	struct process* test2 = parseProcess(source2);
-	launchProcess(test1, ouchPtr);
-	launchProcess(test2, ouchPtr);
 
 
 	while (isRunning) RunPool(ouchPtr);
 
-	free(source1);
-	free(source2);
-	free(testPath1);
-	free(testPath2);
 }

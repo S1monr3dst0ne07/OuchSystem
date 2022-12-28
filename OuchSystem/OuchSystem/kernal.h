@@ -1,6 +1,7 @@
 #ifndef HKERNAL
 #define HKERNAL
 
+#include <stdbool.h>
 
 struct system
 {
@@ -9,6 +10,7 @@ struct system
 
 };
 
+bool launchProcessFromPath(char* pathStr, struct system* ouch);
 void ouch(char* imagePath);
 
 #endif
