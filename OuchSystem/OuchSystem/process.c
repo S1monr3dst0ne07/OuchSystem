@@ -1,9 +1,8 @@
 
-#include "utils.h"
 #include "process.h"
 #include "kernal.h"
+#include "utils.h"
 
-#include <stdbool.h>
 #include <stdlib.h>
 
 
@@ -30,7 +29,14 @@ struct rawInst
 
 };
 
-
+struct S1HeapChunk* allocS1HeapChunk()
+{
+    struct S1HeapChunk* temp = (struct S1HeapChunk*)malloc(sizeof(struct S1HeapChunk));
+    temp->next = NULL;
+    temp->ptr = NULL;
+    temp->size = 0;
+    return temp;
+}
 
 #define ENTRY(x) {x, #x}
 enum s1Insts str2s1(char* str)
@@ -259,7 +265,7 @@ struct process* parseProcess(char* source)
     struct process* proc = (struct process*)malloc(sizeof(struct process));
     proc->ip = 0;
     proc->prog = prog;
-
+   
 
     //zero the rest of the process
     memset(proc->mem,   0, S1IntBufferSize);
@@ -269,6 +275,7 @@ struct process* parseProcess(char* source)
     proc->acc = 0;
     proc->reg = 0;
 
+    proc->heap = allocS1HeapChunk();
 
     free(rawInstBuffer);
     free(labelMapper);
@@ -311,8 +318,18 @@ void launchProcess(struct process* proc, struct system* ouch)
 
 void freeProcess(struct process* proc)
 {
+    //free heap
+    struct S1HeapChunk* temp = proc->heap;
+    while (temp != NULL)
+    {
+        struct S1HeapChunk* next = temp->next;
+        free(temp);
+        temp = next;
+    }
+
     free(proc->prog);
     free(proc);
+
 }
 
 //removes element of the process list
@@ -393,6 +410,47 @@ void RunPool(struct system* ouch)
 
 }
 
+
+
+
+
+struct S1HeapChunk* findSpace(unsigned short int neededSpace, struct S1HeapChunk* startChunk)
+{
+    struct S1HeapChunk* iter = startChunk;
+
+    while (true)
+    {
+        //check for end of list
+        if (iter->next == NULL) break;
+
+        //check for space in between two chunks
+        S1Int iterEndPtr = iter->ptr + iter->size;
+        S1Int nextStartPtr = iter->next->ptr;
+
+        if ((nextStartPtr - iterEndPtr) > neededSpace) break;
+
+        iter = iter->next;
+    }
+
+    return iter;
+}
+
+//finds the chunk that fits ptr and size, and returns the previouse in the list
+struct S1HeapChunk* findPrevChunkByPtrAndSize(S1Int ptr, S1Int size, struct S1HeapChunk* startChunk)
+{
+    struct S1HeapChunk* iter = startChunk;
+    struct S1HeapChunk* last = NULL;
+
+    while (iter)
+    {
+        if (iter->ptr == ptr && iter->size == size) return last;
+        last = iter;
+        iter = iter->next;
+    }
+
+    return NULL;
+}
+
 //runs process, advancing by one instruction
 enum returnCodes RunProcess(struct process* proc)
 {
@@ -403,7 +461,7 @@ enum returnCodes RunProcess(struct process* proc)
     int arg = curInst.arg;
 
     S1Int* mem = proc->mem;
-    S1Int* stack = proc->mem;
+    S1Int* stack = proc->stack;
     int* stackPtr = &proc->stackPtr;
 
     S1Int* acc = &proc->acc;
@@ -466,27 +524,27 @@ enum returnCodes RunProcess(struct process* proc)
 
 
     case lPA:
-        *acc = mem[mem[arg]];
+        *acc = mem[(int)mem[arg]];
         break;
 
     case lPR:
-        *reg = mem[mem[arg]];
+        *reg = mem[(int)mem[arg]];
         break;
 
     case sAP:
-        mem[mem[arg]] = *acc;
+        mem[(int)mem[arg]] = *acc;
         break;
 
     case sRP:
-        mem[mem[arg]] = *reg;
+        mem[(int)mem[arg]] = *reg;
         break;
 
     case out:
-        printf("%d\n", mem[arg]);
+        log("%d\n", mem[arg]);
         break;
 
     case got:
-        *ip = arg;
+        *ip = (int)arg;
         break;
 
     case jm0:
@@ -520,7 +578,7 @@ enum returnCodes RunProcess(struct process* proc)
         break;
 
     case pla:
-        *acc = *stackPtr > 0 ? stack[--(*stackPtr)] : 0;
+        *acc = (*stackPtr > 0 ? stack[--(*stackPtr)] : 0);
         break;
 
     case brk:
@@ -532,13 +590,53 @@ enum returnCodes RunProcess(struct process* proc)
         break;
 
     case putstr:        
-        printf("%c", (char)acc);
+        printf("%c", (char)*acc);
         break;
 
     case ahm:;
+        S1Int allocSize = *reg;
+
+        struct S1HeapChunk* insertBase = findSpace(allocSize, proc->heap);
+        struct S1HeapChunk* newChunk = allocS1HeapChunk();
+
+        //insert the new chunk into the link list
+        S1Int newChunkBasePtr = insertBase->ptr + insertBase->size;
+        newChunk->ptr = newChunkBasePtr;
+        newChunk->size = allocSize;
+        newChunk->next = insertBase->next;
+
+        //link the new chunk as the next for the insertBase, to fully insert the new chunk and override the last next (which now is the next->next)
+        insertBase->next = newChunk;
+
+        *acc = newChunkBasePtr | (1 << 15);
+
         break;
 
     case fhm:;
+        S1Int freeSize = *reg;
+        S1Int freeBaseRaw = *acc;
+        S1Int freeBase = freeBaseRaw & ~(1 << 15);
+
+        //the previouse is needed to delete the next chunk from the list, because the next pointer of the previouse need to be overritten to exclude the chunk for the list
+        struct S1HeapChunk* foundPreviouseChunk = findPrevChunkByPtrAndSize(freeBase, freeSize, proc->heap);
+        struct S1HeapChunk* foundChunk = NULL;
+
+        if (foundPreviouseChunk != NULL)
+        {
+            foundChunk = foundPreviouseChunk->next;
+
+            //unlink the foundChunk for the list, so it can be freed
+            foundPreviouseChunk->next = foundChunk->next;
+            free(foundChunk);
+
+            //clear memory
+            for (int i = 0; i < freeSize; i++) mem[freeBaseRaw + i] = 0;
+        }
+        else
+        {
+            log("Chunk (ptr: %d, size: %d) could not be found", freeBase, freeSize);
+        }
+
         break;
 
     default:

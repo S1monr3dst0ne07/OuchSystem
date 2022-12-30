@@ -1,32 +1,4 @@
-rootauto.ochtest/tree.s1testtest1.s1set 5
-sRD 1
-lab loop
-set 10
-sRD 0
-out 0
-lDA 1
-set 1
-sub
-sAD 1
-jm0 exit
-got loop
-lab exit
-brk
-test2.s1set 5
-sRD 1
-lab loop
-set 20
-sRD 0
-out 0
-lDA 1
-set 1
-sub
-sAD 1
-jm0 exit
-got loop
-lab exit
-brk
-tree.s1got Stack::Skip
+got Stack::Skip
 lab Stack::Swap
 pla 
 sAD 1
@@ -1589,4 +1561,4 @@ ret
 
 
 
- "Compiled from source: ProgrammsV5.x\TreeParseEvalMathExpr.baabnq
+ "Compiled from source: ProgrammsV5.x\TreeParseEvalMathExpr.baabnq

@@ -1,4 +1,12 @@
-﻿  kernal.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(27,3): warning C4013: 'sprintf' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(49,2): warning C4013: 'free' undefined; assuming extern returning int
+﻿  process.c
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(36,21): warning C4047: '=': 'int' differs in levels of indirection from 'void *'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(81,23): warning C4018: '<': signed/unsigned mismatch
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(83,13): warning C4013: 'strcmp' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(159,13): warning C4013: 'sprintf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(271,5): warning C4013: 'memset' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(388,31): warning C4013: 'RunProcess' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(403,13): warning C4013: 'printf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(387,1): warning C4133: 'initializing': incompatible types - from 'process *' to 'proc *'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(543,24): warning C4020: 'log': too many actual parameters
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(637,65): warning C4020: 'log': too many actual parameters
   OuchSystem.vcxproj -> D:\ProjekteC\OuchSystem\OuchSystem\x64\Debug\OuchSystem.exe

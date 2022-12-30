@@ -1,6 +1,8 @@
 #ifndef HPROCESS
 #define HPROCESS
 
+#include <stdbool.h>
+
 #define rawInstBufferLimit 128
 #define c16bitIntLimit (1 << 16)
 
@@ -71,6 +73,13 @@ struct procList
 
 };
 
+struct S1HeapChunk
+{
+    int ptr;
+    int size;
+    struct S1HeapChunk* next;
+};
+
 
 struct process
 {
@@ -80,6 +89,8 @@ struct process
     S1Int mem[c16bitIntLimit];
     S1Int stack[c16bitIntLimit];
     int stackPtr;
+
+    struct S1HeapChunk* heap;
 
     S1Int acc;
     S1Int reg;
