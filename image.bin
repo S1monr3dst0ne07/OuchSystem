@@ -1,5 +1,5 @@
 rootauto.ochtest/test1.s1
-test/test2.s1testtest1.s1set 100
+test/test2.s1testtest1.s1set 5
 sRD 1
 lab loop
 set 10
@@ -13,7 +13,7 @@ jm0 exit
 got loop
 lab exit
 brk
-test2.s1set 100
+test2.s1set 5
 sRD 1
 lab loop
 set 20
