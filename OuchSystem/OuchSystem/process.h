@@ -46,14 +46,24 @@ enum s1Insts
     putstr,
     ahm,
     fhm,
+    syscall,
 };
+
+enum S1Syscall
+{
+    scNoop = 0,
+
+
+};
+
+
 
 
 enum returnCodes
 {
     rtNormal = 0,
     rtExit,
-
+    rtSyscall,
 };
 
 
@@ -85,6 +95,7 @@ struct process
 {
 	int ip;
 	struct inst* prog;
+    int progSize;
 
     S1Int mem[c16bitIntLimit];
     S1Int stack[c16bitIntLimit];
@@ -94,6 +105,8 @@ struct process
 
     S1Int acc;
     S1Int reg;
+
+    enum S1Syscall lastSyscall;
 };
 
 
@@ -110,6 +123,6 @@ struct procPool* allocProcPool();
 void launchProcess(struct process* proc, struct system* ouch);
 
 bool removeProcess(struct process* proc, struct system* ouch);
-void RunPool(struct system* ouch);
+void runPool(struct system* ouch);
 
 #endif

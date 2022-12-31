@@ -75,6 +75,7 @@ enum s1Insts str2s1(char* str)
         ENTRY(putstr),
         ENTRY(ahm),
         ENTRY(fhm),
+        ENTRY(syscall),
     };
 
     static const unsigned size = sizeof(map) / sizeof(map[0]);
@@ -192,7 +193,6 @@ int label2address(char* label, struct labelMap* labelMapper, int labelCount)
 
 struct process* parseProcess(char* source)
 {
-
     //get instruction count
     int rawInstCount = getInstCount(source);
     sprintf(cTemp, "Parsing process, found %d insts found\n", rawInstCount);
@@ -265,6 +265,7 @@ struct process* parseProcess(char* source)
     struct process* proc = (struct process*)malloc(sizeof(struct process));
     proc->ip = 0;
     proc->prog = prog;
+    proc->progSize = instCount;
    
 
     //zero the rest of the process
@@ -378,14 +379,29 @@ bool removeProcess(struct process* proc, struct system* ouch)
     return false;
 }
 
-void RunPool(struct system* ouch)
+
+void runSyscall(enum S1Syscall callType, struct system* ouch)
+{
+    sprintf(cTemp, "Syscall %x\n", callType);
+    log(cTemp);
+
+    switch (callType)
+    {
+    case scNoop:
+        break;
+
+    }
+
+}
+
+void runPool(struct system* ouch)
 {
     struct procPool* pool = ouch->pool;
     struct procList* curList = pool->execPtr;
     if (curList)
     {
-        struct proc* curProc = curList->proc;
-        enum returnCodes rt = RunProcess(curProc);
+        struct process* curProc = curList->proc;
+        enum returnCodes rt = runProcess(curProc);
 
         //advance execPtr
         pool->execPtr = curList->next;
@@ -402,6 +418,11 @@ void RunPool(struct system* ouch)
 
             printf("");
             break;
+
+        case rtSyscall:;
+            enum S1Syscall callType = curProc->lastSyscall;
+            runSyscall(callType, ouch);
+
         }
     }
     else
@@ -458,9 +479,13 @@ struct S1HeapChunk* findPrevChunkByPtrAndSize(S1Int ptr, S1Int size, struct S1He
 }
 
 //runs process, advancing by one instruction
-enum returnCodes RunProcess(struct process* proc)
+enum returnCodes runProcess(struct process* proc)
 {
     int* ip = &proc->ip;
+
+    //check if ip is out bound
+    if (*ip > proc->progSize) return rtExit;
+
     struct inst curInst = proc->prog[(*ip)++];
 
     int op  = curInst.op;
@@ -644,6 +669,11 @@ enum returnCodes RunProcess(struct process* proc)
         }
 
         break;
+
+
+    case syscall:
+        proc->lastSyscall = (enum S1Syscall)arg;
+        return rtSyscall;
 
     default:
         break;

@@ -1,13 +1,12 @@
 ﻿  process.c
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(36,21): warning C4047: '=': 'int' differs in levels of indirection from 'void *'
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(81,23): warning C4018: '<': signed/unsigned mismatch
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(83,13): warning C4013: 'strcmp' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(159,13): warning C4013: 'sprintf' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(271,5): warning C4013: 'memset' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(388,31): warning C4013: 'RunProcess' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(403,13): warning C4013: 'printf' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(414,13): warning C4013: 'Sleep' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(387,1): warning C4133: 'initializing': incompatible types - from 'process *' to 'proc *'
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(549,24): warning C4020: 'log': too many actual parameters
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(643,65): warning C4020: 'log': too many actual parameters
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(82,23): warning C4018: '<': signed/unsigned mismatch
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(84,13): warning C4013: 'strcmp' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(160,13): warning C4013: 'sprintf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(272,5): warning C4013: 'memset' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(404,31): warning C4013: 'runProcess' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(419,13): warning C4013: 'printf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(435,13): warning C4013: 'Sleep' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(574,24): warning C4020: 'log': too many actual parameters
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(668,65): warning C4020: 'log': too many actual parameters
   OuchSystem.vcxproj -> D:\ProjekteC\OuchSystem\OuchSystem\x64\Debug\OuchSystem.exe

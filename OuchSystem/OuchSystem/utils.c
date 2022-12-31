@@ -34,7 +34,7 @@ bool charInString(char* str, char c)
 void readStringCustomDelim(char* dst, char* src, int* index, char* delim)
 {
     int i = 0;
-    while (!charInString(delim, src[*index])) dst[i++] = consu(src, index);
+    while (!charInString(delim, src[*index]) && src[*index] != 0) dst[i++] = consu(src, index);
 	dst[i] = 0; //terminator
 }
 
