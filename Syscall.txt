@@ -1,11 +1,21 @@
 Syscall (contraction for system call) are a way for a process to interact with the operating system.
 Arguments of a syscall are provided on the stack and the type of syscall is specified like so:
     
-    push <args>;
+    push <arg1>;
+    push <arg2>;
     ...
     syscall <type>;
-    pull <rets>;
+    pull <ret1>;
+    pull <ret2>;
     ...
+    
+And here how such a call is defined:
+
+<type> -> <name>
+    <function>
+    arguments: <arg1>, <arg2>, ...
+    returns  : <ret1>, <ret2>, ...
+
 (this is psudo code, in baabnq you'd have to do this: "asm 'syscall <type>';")
 
 --- system  ---
@@ -58,4 +68,31 @@ file stuff
     deletes file given it's path
     arguments: path pointer
     returns  : sucess (0 -> error (insufficient permission), 1 -> success)
+    
+--- time ---
+0x0020 -> sleepMs
+    pulls the process out of the execution pool for n ms
+    arguments: time (time to sleep in ms)
+    returns  :
+
+0x0021 -> unix epoch
+    returns unix epoch (64-bit) in 4 segments
+    arguments: 
+    returns  :  segment 1 (containing lsb)
+                segment 2
+                segment 3
+                segment 4 (containing msb)
+    
+0x0022 -> formatted local time
+    returns local time in (years, months, days, hours, mins, secs)
+    arguments:
+    returns  :  secs
+                mins
+                hours
+                days
+                months
+                years
+
+    
+    
 
