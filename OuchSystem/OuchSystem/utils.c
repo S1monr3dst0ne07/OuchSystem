@@ -1,6 +1,15 @@
 #include "utils.h"
 #include <stdio.h>
 
+#ifdef _WINDOWS
+#include <windows.h>
+#endif 
+#ifdef _LINUX
+#include <unistd.h>
+#define Sleep(x) usleep((x)*1000)
+#endif
+
+
 void log(char* msg)
 {
 	printf(msg);

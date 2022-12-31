@@ -405,9 +405,13 @@ void RunPool(struct system* ouch)
         }
     }
     else
+    {
         //if execPtr is NULL reset it back to the begining
         pool->execPtr = pool->procs;
 
+        //sleep to not rev up the cpu usage
+        Sleep(1000);
+    }
 }
 
 

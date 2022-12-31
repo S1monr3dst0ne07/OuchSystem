@@ -91,6 +91,6 @@ void ouch(char* imagePath)
 
 
 
-	while (isRunning) RunPool(ouchPtr);
-
+	while (isRunning)
+		RunPool(ouchPtr);
 }
