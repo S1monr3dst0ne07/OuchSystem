@@ -93,27 +93,23 @@ enum s1Insts str2s1(char* str)
 
 int getInstCount(char* source)
 {
-    int instCount = 0;
-    bool isEmptyLine = true;
+    printf("Source: %s\n", source);
 
-    for (int i = 0; source[i]; i++)
+    int instCount = 0;
+
+    char last = '\n';
+
+    for (int i = 0; last; i++)
     {
+        printf("Char: %x\n", source[i]);
         switch (source[i])
         {
+        case 0:
+        case '\n':
+            if (last != '\n') instCount++;
 
-        case '\n':;
-            if (!isEmptyLine) instCount++;
-            isEmptyLine = true;
-
-        case ' ':;
-            break;
-
-        case 0:;
-            instCount++;
-
-        default:;
-            isEmptyLine = false;
-            break;
+        default:
+            last = source[i];
 
         }
     }
@@ -195,7 +191,7 @@ struct process* parseProcess(char* source)
 {
     //get instruction count
     int rawInstCount = getInstCount(source);
-    sprintf(cTemp, "Parsing process, found %d insts found\n", rawInstCount);
+    sprintf(cTemp, "Parsing process, %d insts found\n", rawInstCount);
     log(cTemp);
 
 
@@ -249,7 +245,7 @@ struct process* parseProcess(char* source)
             int address = label2address(argStr, labelMapper, labelCount);
             if (address < 0)
             {
-                sprintf(cTemp, "Undefined label '%s' found whule parsing\n", argStr);
+                sprintf(cTemp, "Undefined label '%s' found while parsing\n", argStr);
                 log(cTemp);
                 return NULL;
             }
@@ -415,13 +411,12 @@ void runPool(struct system* ouch)
             //remove 
             log("Process finished, removing\n");
             removeProcessList(curList, ouch);
-
-            printf("");
             break;
 
         case rtSyscall:;
             enum S1Syscall callType = curProc->lastSyscall;
             runSyscall(callType, ouch);
+            break;
 
         }
     }

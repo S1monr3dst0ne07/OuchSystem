@@ -41,9 +41,11 @@ bool launchProcessFromPath(char* pathStr, struct system* ouch)
 {
 	struct filePath* path = parseFilePath(pathStr);
 	char* source = readFileContent(ouch->root, path);
-	if (source == NULL) return false;
+	if (!source) return false;
 
 	struct process* proc = parseProcess(source);
+	if (!proc) return false;
+
 	launchProcess(proc, ouch);
 
 	free(path);
