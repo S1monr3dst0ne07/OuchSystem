@@ -31,11 +31,15 @@ bool charInString(char* str, char c)
 
 //no, no, my function names aren't too long
 //index perfers to index into the source
-void readStringCustomDelim(char* dst, char* src, int* index, char* delim)
+//returns delim that was hit
+char readStringCustomDelim(char* dst, char* src, int* index, char* delim)
 {
     int i = 0;
-    while (!charInString(delim, src[*index]) && src[*index] != 0) dst[i++] = consu(src, index);
+    char c;
+    while ((c = src[*index]) != 0 && !charInString(delim, c)) dst[i++] = consu(src, index);
 	dst[i] = 0; //terminator
+
+    return c;
 }
 
 

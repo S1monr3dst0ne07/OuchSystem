@@ -93,23 +93,26 @@ enum s1Insts str2s1(char* str)
 
 int getInstCount(char* source)
 {
-    printf("Source: %s\n", source);
-
     int instCount = 0;
-
     char last = '\n';
+    bool isComment = false;
 
     for (int i = 0; last; i++)
     {
-        printf("Char: %x\n", source[i]);
         switch (source[i])
         {
         case 0:
         case '\n':
-            if (last != '\n') instCount++;
+            if (last != '\n' && !isComment) instCount++;
+            isComment = false;
 
         default:
             last = source[i];
+            break;
+
+        case '"':
+            isComment = true;
+            break;
 
         }
     }
@@ -136,27 +139,32 @@ bool tokenize(char* source, int instCount, struct rawInst* dst)
 
         //remove empty lines
         do
+        {
             //strip
             while (source[sourceIndex] == ' ') sourceIndex++;
 
+            //comments
+            if (source[sourceIndex] == '"')
+            {
+                while (source[sourceIndex++] == '\n');
+                continue;
+            }
+
+        }
         while (source[sourceIndex++] == '\n');
         sourceIndex--; //step back the sourceIndex, because it get's moved by the empty line remover
 
         //operator
-        readStringCustomDelim(target->op, source, &sourceIndex, " \n");
+        char delimChar = readStringCustomDelim(target->op, source, &sourceIndex, " \n");
         while (source[sourceIndex] == ' ') sourceIndex++;
+
+        //the delim of operator should really not be eof
+        if (!delimChar) return false;
 
         //argument
         readStringCustomDelim(target->arg, source, &sourceIndex, " \n");
         while (source[sourceIndex] == ' ') sourceIndex++;
 
-        //now the next character should be a newline
-        if (consu(source, &sourceIndex) != '\n')
-        {
-            sprintf(cTemp, "Error while parsing process\n\tLast process found (%s, %s)", target->op, target->arg);
-            log(cTemp);
-            return false;
-        }
     }
     return true;
 }
