@@ -16,8 +16,16 @@ class cFile:
         except UnicodeDecodeError:
             self.xContent = ""
         
-        self.xName  = os.path.basename(xHostPath)
-        self.xPrior = 0x10
+        xNameRaw = os.path.basename(xHostPath)
+
+        if xNameRaw.count('.') > 1:
+            (xBaseName, xPrior, xExt) = xNameRaw.split('.')
+            self.xName  = f'{xBaseName}.{xExt}'
+            self.xPrior = int(xPrior)
+                        
+        else:
+            self.xName = xNameRaw
+            self.xPrior = 0xff        
 
     def GetBin(self):        
         xName = [ord(x) for x in self.xName]
@@ -36,7 +44,7 @@ class cNode:
         self.xSubDirs = [cNode(os.path.join(xHostPath, x)) for x in xSubdirs]
 
         self.xName    = os.path.basename(xHostPath)
-        self.xPrior = 0x10
+        self.xPrior = 0xff
         
     def GetBin(self):       
         
