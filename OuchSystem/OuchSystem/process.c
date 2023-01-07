@@ -574,7 +574,8 @@ enum returnCodes runProcess(struct process* proc)
         break;
 
     case out:
-        log("%d\n", mem[arg]);
+        sprintf(cTemp, "%d\n", mem[arg]);
+        log(cTemp);
         break;
 
     case got:
@@ -668,7 +669,8 @@ enum returnCodes runProcess(struct process* proc)
         }
         else
         {
-            log("Chunk (ptr: %d, size: %d) could not be found", freeBase, freeSize);
+            sprintf(cTemp, "Chunk (ptr: %d, size: %d) could not be found", freeBase, freeSize);
+            log(cTemp);
         }
 
         break;

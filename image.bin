@@ -1,4 +1,5 @@
-rootauto.ochtest/syscall.s1testsyscall.s1syscall 0test1.s1set 5
+rootauto.ochtest/test1.s1
+test/test2.s1testsyscall.s1syscall 0test1.s1set 5
 sRD 1
 lab loop
 set 10

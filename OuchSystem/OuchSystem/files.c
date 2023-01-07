@@ -1,9 +1,9 @@
+#include "files.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-
-#include "files.h"
 #include "utils.h"
 
 //keeps content of image and pointer to currently parsing point

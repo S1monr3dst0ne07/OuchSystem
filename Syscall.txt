@@ -93,6 +93,18 @@ file stuff
                 months
                 years
                 
-                   
+--- network ---
+0x0030 -> bind to port
+    binds process to port for networking (ik crazy right)
+    arguments: port
+    returns  : sucess (0 -> error, 1 -> success)
+    
+0x0031 -> accept pending connection
+    arguments: 
+    returns  : id (stream for sending data over the socket)
+    
+0x0032 -> close connection
+    arguments: id
+    returns  : success (0 -> error, 1 -> success)
     
 
