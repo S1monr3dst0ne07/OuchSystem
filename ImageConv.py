@@ -48,6 +48,8 @@ class cNode:
         self.xName    = os.path.basename(xHostPath)
         self.xPrior = 0xff
         
+        return self
+        
     def SaveImg(self):       
         
         xName = [ord(x) for x in self.xName]
@@ -70,9 +72,15 @@ xRoot = cNode()
 while True:
     try:
         xInj = input(f"'{xRoot}' >>> ").strip().lower()
-        (xCom, xArgs*) = xInj.split(" ")
+        xCom, *xArgs = xInj.split(" ")
         
         if xCom == "clear":
+            os.system('clear') #ik this is nasty code, idc
+        
+        elif xCom == "exit":
+            break
+        
+        elif xCom == "empty":
             xRoot = cNode()
         
         elif xCom == "print":
@@ -83,7 +91,9 @@ while True:
             
         elif xCom == "help":
             print("""
-clear    - reset buffer
+clear    - clear screen
+exit     - ex ire
+empty    - reset buffer
 print    - print buffer
 loadhost - load image from host filesystem
 

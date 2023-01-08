@@ -1,0 +1,14 @@
+set 5
+sRD 1
+lab loop
+set 10
+sRD 0
+out 0
+lDA 1
+set 1
+sub
+sAD 1
+jm0 exit
+got loop
+lab exit
+brk
