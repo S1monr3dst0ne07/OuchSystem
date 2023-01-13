@@ -1,114 +1,91 @@
+from dataclasses import dataclass
+import typing
 import sys, os
 import functools
 
 TERMI = 0x01
 
-def flat(l):
-    if len(l) == 0: return []
-    return functools.reduce(lambda x, y: x+y, l)
-
-class cFile:   
-    def LoadHost(self, xHostPath):
-        try:
-            with open(xHostPath, "r") as xFilePtr:
-                self.xContent = xFilePtr.read()
-
-        except UnicodeDecodeError:
-            self.xContent = ""
-        
-        xNameRaw = os.path.basename(xHostPath)
-
-        if xNameRaw.count('.') > 1:
-            (xBaseName, xPrior, xExt) = xNameRaw.split('.')
-            self.xName  = f'{xBaseName}.{xExt}'
-            self.xPrior = int(xPrior)
-                        
-        else:
-            self.xName = xNameRaw
-            self.xPrior = 0xff        
-
-        return self
-
-    def SaveImg(self):        
-        xName = [ord(x) for x in self.xName]
-        return [0x10, *xName, TERMI, self.xPrior, TERMI, 0x12, *[ord(x) for x in self.xContent], TERMI]
-
-    def Print(self, i):
-        print(f'{"    "*i}{self.xName} {self.xPrior}')
-        
 
 class cNode:
-    def LoadHost(self, xHostPath):
-        (xRoot, xSubdirs, xFiles) = next(os.walk(xHostPath))
-        assert(xRoot == xHostPath)
+    "don't even say anything"
+    def __init__(self, 
+                xName     = "", 
+                xPrior    = 0, 
+                xIsFile   = False, 
+                xContent  = "", 
+                xSubNodes = []):
+        self.xName      = xName
+        self.xPrior     = xPrior
+        self.xIsFile    = xIsFile
+        self.xContent   = xContent
+        self.xSubNodes  = xSubNodes
         
-        self.xFiles   = [cFile().LoadHost(os.path.join(xHostPath, x)) for x in xFiles]
-        self.xSubDirs = [cNode().LoadHost(os.path.join(xHostPath, x)) for x in xSubdirs]
+       
+    @staticmethod 
+    def LoadHost(xPath):
+        #check if object to parse is file
+        xIsFile = os.path.isfile(xPath)
 
-        self.xName    = os.path.basename(xHostPath)
-        self.xPrior = 0xff
+        xNew = cNode(
+            xName = os.path.basename(xPath),
+            xPrior = 0xff,
+            xIsFile = xIsFile,
+        )
         
-        return self
-        
-    def SaveImg(self):       
-        
-        xName = [ord(x) for x in self.xName]
-        xSubFiles = flat([x.SaveImg() for x in self.xFiles])
-        xSubDirs  = flat([x.SaveImg() for x in self.xSubDirs])
-        
-        xSubNodes = xSubFiles + xSubDirs
-        return [0x10, *xName, TERMI, self.xPrior, TERMI, 0x11, *xSubNodes, TERMI]
-
-    def Print(self, i=0):
-        print(f'{"    "*i}{self.xName} {self.xPrior}')
-
-        for xIter in self.xFiles+self.xSubDirs:
-            xIter.Print(i+1)
-        
-
-
-xRoot = cNode()
-
-while True:
-    try:
-        xInj = input(f"'{xRoot}' >>> ").strip().lower()
-        xCom, *xArgs = xInj.split(" ")
-        
-        if xCom == "clear":
-            os.system('clear') #ik this is nasty code, idc
-        
-        elif xCom == "exit":
-            break
-        
-        elif xCom == "empty":
-            xRoot = cNode()
-        
-        elif xCom == "print":
-            xRoot.Print()
+        if xIsFile:
+            try:
+                with open(xPath, "r") as xFilePtr:
+                    xNew.xContent = xFilePtr.read()    
+            except UnicodeDecodeError:
+                xNew.xContent = ""
             
-        elif xCom == "loadhost":
-            xRoot.LoadHost(xArgs[0])
-            
-        elif xCom == "help":
-            print("""
-clear    - clear screen
-exit     - ex ire
-empty    - reset buffer
-print    - print buffer
-loadhost - load image from host filesystem
+            xNameRaw = os.path.basename(xPath)                
+            if xNameRaw.count('.') > 1:
+                (xBaseName, xPrior, xExt) = xNameRaw.split('.')
+                xRes = f'{xBaseName}.{xExt}', int(xPrior)
 
-            """)
-        
+            else: xRes = (xNameRaw, 0xff)                
+            xNew.xName, xNew.xPrior = xRes
+                                   
         else:
-            print("Unknown injection")
+            (xRoot, xSubdirs, xFiles) = next(os.walk(xPath))
+            xSubObjs = xSubdirs + xFiles
+            assert xRoot == xPath  
+
+            xNew.xSubNodes = [cNode.LoadHost(os.path.join(xPath, x)) for x in xSubObjs]
         
+        return xNew
+    
+    def List(self, xLvl=0):
+        print(f'{"    " * xLvl}{self.xName} {self.xPrior}')
+        for xSub in self.xSubNodes:
+            xSub.List(xLvl=xLvl+1)
+    
+    
+def repl():
+    xBuffer = None
+    
+    while True:
+        try:
+            
+            xInj = input(f'{xBuffer} ').lower().strip()
+            xInjs = xInj.split(" ")
+            if len(xInjs) < 1: continue
+            
+            xOp, *xArgs = xInjs
+            if xOp == 'drop':
+                xBuffer = None
+    
+            elif xOp == 'list':
+                xBuffer.List()
+    
+            elif xOp == 'loadhost':
+                xBuffer = cNode.LoadHost(xArgs[0])
 
-    except Exception as E:
-        print(E)
+        except KeyboardInterrupt:
+            break        
+        except Exception as E:
+            print(E)
 
-"""
-xBin = [x for x in xRoot.GetBin() if x < 0x100]
-
-with open("image.bin", "wb") as xFilePtr:
-    xFilePtr.write(bytearray(xBin))
-"""
+if __name__ == '__main__':
+    repl()
