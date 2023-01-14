@@ -2,6 +2,8 @@ from dataclasses import dataclass
 import typing
 import sys, os
 import functools
+from functools import reduce
+import operator
 
 TERMI = 0x01
 
@@ -56,6 +58,21 @@ class cNode:
         
         return xNew
     
+    def SaveRoot(self, xPath):
+        xBin = self.GetBin()
+        print(xBin)
+        
+        with open(xPath, "wb") as xFile:
+            xFile.write(bytes(xBin))
+    
+    def GetBin(self):
+        xName    = [ord(x) for x in self.xName]
+        xSubCont = [0x12] + [ord(x)     for x in self.xContent ] if self.xIsFile else \
+                   [0x11] + reduce(operator.add, [x.GetBin() for x in self.xSubNodes])
+        
+        return [0x10, *xName, TERMI, self.xPrior, TERMI, *xSubCont, TERMI]
+        
+    
     def List(self, xLvl=0):
         print(f'{"    " * xLvl}{self.xName} {self.xPrior}')
         for xSub in self.xSubNodes:
@@ -80,7 +97,16 @@ def repl():
                 xBuffer.List()
     
             elif xOp == 'loadhost':
-                xBuffer = cNode.LoadHost(xArgs[0])
+                xPath = xArgs[0]
+                xBuffer = cNode.LoadHost(xPath)
+
+            elif xOp == 'saveroot':
+                xPath = xArgs[0]
+                if input(f"You are about to override {xPath}, do you confirm [y/n]? ") != 'y': 
+                    continue
+                
+                xBuffer.SaveRoot(xPath)
+                
 
         except KeyboardInterrupt:
             break        
