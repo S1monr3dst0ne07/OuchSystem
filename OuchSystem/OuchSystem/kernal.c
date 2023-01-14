@@ -1,10 +1,11 @@
-#include <signal.h>
-#include <string.h>
 
 #include "kernal.h"
 #include "utils.h"
 #include "files.h"
 #include "process.h"
+
+#include <signal.h>
+#include <string.h>
 
 static volatile bool isRunning = true;
 char cTemp[2048];

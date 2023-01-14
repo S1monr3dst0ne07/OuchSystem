@@ -2,6 +2,7 @@
 #include "process.h"
 #include "kernal.h"
 #include "utils.h"
+#include "syscall.h"
 
 #include <stdlib.h>
 
@@ -381,21 +382,6 @@ bool removeProcess(struct process* proc, struct system* ouch)
     }
 
     return false;
-}
-
-
-void runSyscall(enum S1Syscall callType, struct system* ouch)
-{
-    sprintf(cTemp, "Syscall %x\n", callType);
-    log(cTemp);
-
-    switch (callType)
-    {
-    case scNoop:
-        break;
-
-    }
-
 }
 
 void runPool(struct system* ouch)

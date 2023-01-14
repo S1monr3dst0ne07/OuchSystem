@@ -1,16 +1,16 @@
-﻿  files.c
-  kernal.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(27,3): warning C4013: 'sprintf' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(51,2): warning C4013: 'free' undefined; assuming extern returning int
-  main.c
-  process.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(36,21): warning C4047: '=': 'int' differs in levels of indirection from 'void *'
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(82,23): warning C4018: '<': signed/unsigned mismatch
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(84,13): warning C4013: 'strcmp' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(202,5): warning C4013: 'sprintf' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(276,5): warning C4013: 'memset' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(408,31): warning C4013: 'runProcess' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(438,13): warning C4013: 'Sleep' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(628,9): warning C4013: 'printf' undefined; assuming extern returning int
+﻿  process.c
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(37,21): warning C4047: '=': 'int' differs in levels of indirection from 'void *'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(83,23): warning C4018: '<': signed/unsigned mismatch
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(85,13): warning C4013: 'strcmp' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(203,5): warning C4013: 'sprintf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(277,5): warning C4013: 'memset' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(394,31): warning C4013: 'runProcess' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(424,13): warning C4013: 'Sleep' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(614,9): warning C4013: 'printf' undefined; assuming extern returning int
+  syscall.c
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(6,5): warning C4013: 'sprintf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(7,5): warning C4013: 'log' undefined; assuming extern returning int
+  utils.c
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(52,13): warning C4013: 'isdigit' undefined; assuming extern returning int
   Generating Code...
   OuchSystem.vcxproj -> D:\ProjekteC\OuchSystem\OuchSystem\x64\Debug\OuchSystem.exe

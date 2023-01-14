@@ -131,12 +131,14 @@
     <ClCompile Include="kernal.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="process.c" />
+    <ClCompile Include="syscall.c" />
     <ClCompile Include="utils.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="files.h" />
     <ClInclude Include="kernal.h" />
     <ClInclude Include="process.h" />
+    <ClInclude Include="syscall.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

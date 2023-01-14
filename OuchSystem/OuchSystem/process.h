@@ -49,16 +49,6 @@ enum s1Insts
     syscall,
 };
 
-enum S1Syscall
-{
-    scNoop = 0,
-
-
-};
-
-
-
-
 enum returnCodes
 {
     rtNormal = 0,

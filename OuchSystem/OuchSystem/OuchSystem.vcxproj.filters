@@ -30,6 +30,9 @@
     <ClCompile Include="process.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="syscall.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="files.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="process.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="syscall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
