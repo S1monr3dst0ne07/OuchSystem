@@ -409,7 +409,7 @@ void runPool(struct system* ouch)
 
         case rtSyscall:;
             enum S1Syscall callType = curProc->lastSyscall;
-            runSyscall(callType, ouch);
+            runSyscall(callType, curProc, ouch);
             break;
 
         }
@@ -486,7 +486,8 @@ enum returnCodes runProcess(struct process* proc)
 
     S1Int* acc = &proc->acc;
     S1Int* reg = &proc->reg;
-
+    
+    bool success; //temp
 
     switch (op)
     {
@@ -594,12 +595,22 @@ enum returnCodes runProcess(struct process* proc)
         *ip = stack[--(*stackPtr)];
         break;
 
-    case pha:
-        stack[(*stackPtr)++] = *acc;
+    case pha:;
+        success = stackPush(stack, stackPtr, acc);
+        if (!success)
+        {
+            log("Stackoverflow, killing process\n");
+            return rtExit;
+        }
         break;
 
-    case pla:
-        *acc = (*stackPtr > 0 ? stack[--(*stackPtr)] : 0);
+    case pla:;
+        success = stackPull(stack, stackPtr, acc);
+        if (!success)
+        {
+            log("Stackunderflow, killing process\n");
+            return rtExit;
+        }
         break;
 
     case brk:
@@ -671,4 +682,20 @@ enum returnCodes runProcess(struct process* proc)
     }
 
     return rtNormal;
+}
+
+
+
+bool stackPush(S1Int* stack, int* stackPtr, S1Int* value)
+{
+    if (*stackPtr >= c16bitIntLimit) return false;
+    stack[(*stackPtr)++] = *value;
+    return true;
+}
+
+bool stackPull(S1Int* stack, int* stackPtr, S1Int* value)
+{
+    if (*stackPtr <= 0) return false;
+    *value = stack[--(*stackPtr)];
+    return true;
 }

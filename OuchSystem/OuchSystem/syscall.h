@@ -7,6 +7,6 @@ enum S1Syscall
 };
 
 
-void runSyscall(enum S1Syscall callType, struct system* ouch);
+void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ouch);
 
 #endif
