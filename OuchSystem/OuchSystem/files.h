@@ -42,6 +42,7 @@ struct filePath
 	char* dirPath[pathLenLimit];
 };
 struct filePath* parseFilePath(char* path);
+void freeFilePath(struct filePath* path);
 
 char* readFileContent(struct fileNode* root, struct filePath* path);
 

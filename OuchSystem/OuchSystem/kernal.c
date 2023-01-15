@@ -35,6 +35,8 @@ void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 		splitPtr = strtok(NULL, "\n");
 	}
 
+	//freeFilePath(autoStartupFile);
+	free(autoStartupFile);
 	log("\nOK\n");
 }
 
@@ -48,8 +50,9 @@ bool launchProcessFromPath(char* pathStr, struct system* ouch)
 	if (!proc) return false;
 
 	launchProcess(proc, ouch);
-
-	free(path);
+	
+	freeFilePath(path);
+	free(source);
 	return true;
 }
 
@@ -70,7 +73,7 @@ struct system boot(char* imagePath)
 
 	struct filePath* autoPath = parseFilePath("auto.och");
 	launchAutoProcesses(autoPath, &ouch);
-	free(autoPath);
+	freeFilePath(autoPath);
 
 	log("\n");
 
@@ -122,8 +125,7 @@ void test(char* imagePath)
 	{
 		printf("ITER: %d\n", i);
 
-
-
+		ouch(imagePath);
 	}
 	for (;;) Sleep(100);
 }

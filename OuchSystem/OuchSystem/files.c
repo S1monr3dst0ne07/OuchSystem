@@ -205,7 +205,8 @@ struct filePath* parseFilePath(char* path)
 		if (path[i] == '/' || path[i] == 0)
 		{
 			//if a subterminator is found, relocate the buffer
-			char* temp = (char*)malloc(bufferIndex);
+			char* temp = (char*)malloc(sizeof(char) * (bufferIndex + 1));
+			printf("temp: %p\n", temp);
 
 			strncpy(temp, buffer, bufferIndex);
 			temp[bufferIndex] = 0;
@@ -227,18 +228,29 @@ struct filePath* parseFilePath(char* path)
 }
 
 
+void freeFilePath(struct filePath* path)
+{
+	for (int i = 0; i < path->len; i++)
+	{ 
+		char* temp = path->dirPath[i];
+		printf("ptr: %p\n", temp);
+		free(temp);
+	}
+	free(path);
+}
 
 //-----------------------------
 //io routines
 
 
+//THIS WILL ALLOCATE MEMORY
 char* readFileContent(struct fileNode* root, struct filePath* path)
 {
 	//check for root
 	if (!root) return NULL;
 
 	struct fileNode* temp = getNodeByPath(root, path);
-	return (temp != 0) ? temp->content : NULL;
+	return (temp != 0) ? _strdup(temp->content) : NULL;
 }
 
 
