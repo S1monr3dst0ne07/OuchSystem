@@ -87,6 +87,23 @@ struct fileNode* mountRootImage(char* path)
 	return root;
 }
 
+void freeFileSystem(struct fileNode* root)
+{
+	free(root->name);
+
+	switch (root->type)
+	{	
+	case 1:
+		for (int i = 0; i < root->count; i++)
+			freeFileSystem(root->subNodes[i]);
+		break;
+	case 2:
+		free(root->content);
+		break;
+	}
+
+	free(root);
+}
 
 //parses node, without 0x10 header
 struct fileNode* parseNode(struct rawImage* image)
@@ -99,6 +116,8 @@ struct fileNode* parseNode(struct rawImage* image)
 	newNode->prior = (int)(*prior);
 	newNode->content = NULL;
 	newNode->count = 0;
+
+	free(prior);
 
 	//type of node
 	int type = (int)consImage(image);
@@ -215,8 +234,10 @@ struct filePath* parseFilePath(char* path)
 
 char* readFileContent(struct fileNode* root, struct filePath* path)
 {
-	struct fileNode* temp = getNodeByPath(root, path);
+	//check for root
+	if (!root) return NULL;
 
+	struct fileNode* temp = getNodeByPath(root, path);
 	return (temp != 0) ? temp->content : NULL;
 }
 

@@ -384,7 +384,18 @@ bool removeProcess(struct process* proc, struct system* ouch)
     return false;
 }
 
-void runPool(struct system* ouch)
+void removeProcPool(struct system* ouch)
+{
+    struct procPool* pool = ouch->pool;
+    struct procList* cur;
+    while (cur = pool->procs)
+        removeProcessList(cur, ouch);
+
+
+    free(pool);
+}
+
+bool runPool(struct system* ouch)
 {
     struct procPool* pool = ouch->pool;
     struct procList* curList = pool->execPtr;
@@ -419,11 +430,13 @@ void runPool(struct system* ouch)
         //if execPtr is NULL reset it back to the begining
         pool->execPtr = pool->procs;
 
-        //sleep to not rev up the cpu usage
-        if (pool->procs == NULL)         
-            Sleep(100);
+        //if the process pool is empty, shutdown the system
+        if (pool->procs == NULL)
+            return false;
 
     }
+
+    return true;
 }
 
 

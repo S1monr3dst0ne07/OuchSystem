@@ -29,6 +29,7 @@ struct fileNode
 struct rawImage;
 
 struct fileNode* mountRootImage(char* path);
+void freeFileSystem(struct fileNode* root);
 struct fileNode* parseNode(struct rawImage* image);
 char* readTermed(struct rawImage* image);
 

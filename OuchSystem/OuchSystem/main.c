@@ -7,7 +7,9 @@
 
 int main()
 {
-	ouch("D:\\ProjekteC\\OuchSystem\\image.bin");
+
+	//ouch("D:\\ProjekteC\\OuchSystem\\image.bin");
+	test("D:\\ProjekteC\\OuchSystem\\image.bin");
 
 	return 0;
 }

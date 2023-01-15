@@ -50,7 +50,6 @@ bool launchProcessFromPath(char* pathStr, struct system* ouch)
 	launchProcess(proc, ouch);
 
 	free(path);
-
 	return true;
 }
 
@@ -79,6 +78,19 @@ struct system boot(char* imagePath)
 	return ouch;
 }
 
+void shutdown(struct system* ouch)
+{
+	//todo: write back!!!
+
+	struct fileNode* root = ouch->root;
+	if (root) freeFileSystem(root);
+	printf("root: %p\n", ouch->root);
+	removeProcPool(ouch);
+	printf("pool: %p\n", ouch->pool);
+
+}
+
+
 void sigHandler(int sig)
 {
 	sprintf(cTemp, "Signal detected: %d", sig);
@@ -92,8 +104,24 @@ void ouch(char* imagePath)
 	struct system ouch = boot(imagePath);
 	struct system* ouchPtr = &ouch;
 
+	//check for root
+	if (!ouchPtr->root)
+		log("Booting failed, shuting down\n");
+	
+	else
+		while (isRunning && runPool(ouchPtr));
+
+	shutdown(ouchPtr);
+}
 
 
-	while (isRunning)
-		runPool(ouchPtr);
+void test(char* imagePath)
+{
+	for (int i = 0; i < 1000; i++)
+	{
+		printf("ITER: %d\n", i);
+		ouch(imagePath);
+		Sleep(10);
+	}
+	for (;;) Sleep(100);
 }
