@@ -87,9 +87,7 @@ void shutdown(struct system* ouch)
 
 	struct fileNode* root = ouch->root;
 	if (root) freeFileSystem(root);
-	printf("root: %p\n", ouch->root);
 	removeProcPool(ouch);
-	printf("pool: %p\n", ouch->pool);
 
 }
 
@@ -109,11 +107,9 @@ void ouch(char* imagePath)
 
 	//check for root
 	if (!ouchPtr->root)
-		log("Booting failed, shuting down\n");
-	
-	/*else
+		log("Booting failed, shuting down\n");	
+	else
 		while (isRunning && runPool(ouchPtr));
-	*/
 
 	shutdown(ouchPtr);
 }
@@ -121,7 +117,7 @@ void ouch(char* imagePath)
 
 void test(char* imagePath)
 {
-	for (int i = 0; i < 1000; i++)
+	for (int i = 0; i < 10000; i++)
 	{
 		printf("ITER: %d\n", i);
 

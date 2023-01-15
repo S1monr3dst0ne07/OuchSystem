@@ -206,7 +206,6 @@ struct filePath* parseFilePath(char* path)
 		{
 			//if a subterminator is found, relocate the buffer
 			char* temp = (char*)malloc(sizeof(char) * (bufferIndex + 1));
-			printf("temp: %p\n", temp);
 
 			strncpy(temp, buffer, bufferIndex);
 			temp[bufferIndex] = 0;
@@ -231,11 +230,8 @@ struct filePath* parseFilePath(char* path)
 void freeFilePath(struct filePath* path)
 {
 	for (int i = 0; i < path->len; i++)
-	{ 
-		char* temp = path->dirPath[i];
-		printf("ptr: %p\n", temp);
-		free(temp);
-	}
+		free(path->dirPath[i]);
+
 	free(path);
 }
 
