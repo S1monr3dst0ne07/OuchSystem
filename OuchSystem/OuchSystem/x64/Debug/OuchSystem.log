@@ -2,5 +2,5 @@
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(28,3): warning C4013: 'sprintf' undefined; assuming extern returning int
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(52,2): warning C4013: 'free' undefined; assuming extern returning int
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(87,2): warning C4013: 'printf' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(124,3): warning C4013: 'Sleep' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(129,11): warning C4013: 'Sleep' undefined; assuming extern returning int
   OuchSystem.vcxproj -> D:\ProjekteC\OuchSystem\OuchSystem\x64\Debug\OuchSystem.exe

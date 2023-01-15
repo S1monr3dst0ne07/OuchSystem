@@ -108,8 +108,9 @@ void ouch(char* imagePath)
 	if (!ouchPtr->root)
 		log("Booting failed, shuting down\n");
 	
-	else
+	/*else
 		while (isRunning && runPool(ouchPtr));
+	*/
 
 	shutdown(ouchPtr);
 }
@@ -120,8 +121,9 @@ void test(char* imagePath)
 	for (int i = 0; i < 1000; i++)
 	{
 		printf("ITER: %d\n", i);
-		ouch(imagePath);
-		Sleep(10);
+
+
+
 	}
 	for (;;) Sleep(100);
 }

@@ -84,13 +84,12 @@ struct fileNode* mountRootImage(char* path)
 	freeRawImage(image);
 
 	log("Root image parsed successfully\n");
+	fclose(fp);
 	return root;
 }
 
 void freeFileSystem(struct fileNode* root)
 {
-	free(root->name);
-
 	switch (root->type)
 	{	
 	case 1:
@@ -102,6 +101,7 @@ void freeFileSystem(struct fileNode* root)
 		break;
 	}
 
+	free(root->name);
 	free(root);
 }
 
