@@ -5,9 +5,9 @@
 
 struct system
 {
-	struct fileNode* root;
-	struct procPool* pool;
-
+	struct fileNode*   root;
+	struct procPool*   pool;
+	struct streamPool* river; //get it, cuz' multible streams make a river
 };
 
 bool launchProcessFromPath(char* pathStr, struct system* ouch);

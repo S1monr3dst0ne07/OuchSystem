@@ -1,2 +1,13 @@
-﻿  files.c
+﻿  kernal.c
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(28,3): warning C4013: 'sprintf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(38,2): warning C4013: 'free' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(68,12): warning C4013: 'allocStreamPool' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(65,1): warning C4047: 'initializing': 'streamPool *' differs in levels of indirection from 'int'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(89,2): warning C4013: 'freeStreamPool' undefined; assuming extern returning int
+  syscall.c
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(14,5): warning C4013: 'printf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(22,21): warning C4013: 'strlen' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(53,5): warning C4013: 'sprintf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(54,5): warning C4013: 'log' undefined; assuming extern returning int
+  Generating Code...
   OuchSystem.vcxproj -> D:\ProjekteC\OuchSystem\OuchSystem\x64\Debug\OuchSystem.exe

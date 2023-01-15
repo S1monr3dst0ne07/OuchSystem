@@ -35,7 +35,6 @@ void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 		splitPtr = strtok(NULL, "\n");
 	}
 
-	//freeFilePath(autoStartupFile);
 	free(autoStartupFile);
 	log("\nOK\n");
 }
@@ -63,10 +62,10 @@ struct system boot(char* imagePath)
 
 	log("\n");
 
-	struct fileNode* root = mountRootImage(imagePath);
 	struct system ouch = {
-		.root = root,
-		.pool = allocProcPool(),
+		.root  = mountRootImage(imagePath),
+		.pool  = allocProcPool(),
+		.river = allocStreamPool(),
 	};
 
 	log("\n");
@@ -87,8 +86,8 @@ void shutdown(struct system* ouch)
 
 	struct fileNode* root = ouch->root;
 	if (root) freeFileSystem(root);
-	removeProcPool(ouch);
-
+	freeStreamPool(ouch);
+	freeProcPool(ouch);
 }
 
 
@@ -115,13 +114,3 @@ void ouch(char* imagePath)
 }
 
 
-void test(char* imagePath)
-{
-	for (int i = 0; i < 10000; i++)
-	{
-		printf("ITER: %d\n", i);
-
-		ouch(imagePath);
-	}
-	for (;;) Sleep(100);
-}

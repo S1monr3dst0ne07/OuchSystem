@@ -1,22 +1,26 @@
 #ifndef HSYSCALL
 #define HSYSCALL
 
+#include <stdlib.h>
+
 #include "process.h"
 #define streamOutputSize 1 << 20
 
 struct stream
 {
+    int id;
+
     S1Int* readContent;
     int readSize;
     int readIndex;
 
-    S1Int* writeContent[streamOutputSize];
+    S1Int writeContent[streamOutputSize];
     int writeIndex;
 };
 
 struct streamList
 {
-    struct stream stm;
+    struct stream* stm;
     struct streamList* prev;
     struct streamList* next;
 
@@ -25,8 +29,7 @@ struct streamList
 struct streamPool
 {
     struct streamList* head;
-    int streamCount;
-    int idGen;
+    int idIndex;
 };
 
 

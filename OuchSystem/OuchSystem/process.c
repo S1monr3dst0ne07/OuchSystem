@@ -384,7 +384,7 @@ bool removeProcess(struct process* proc, struct system* ouch)
     return false;
 }
 
-void removeProcPool(struct system* ouch)
+void freeProcPool(struct system* ouch)
 {
     struct procPool* pool = ouch->pool;
     struct procList* cur;

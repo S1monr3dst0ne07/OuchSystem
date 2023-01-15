@@ -113,7 +113,7 @@ struct procPool* allocProcPool();
 void launchProcess(struct process* proc, struct system* ouch);
 
 bool removeProcess(struct process* proc, struct system* ouch);
-void removeProcPool(struct system* ouch);
+void freeProcPool(struct system* ouch);
 bool runPool(struct system* ouch);
 
 bool stackPush(S1Int* stack, int* stackPtr, S1Int* value);
