@@ -240,8 +240,10 @@ void freeFilePath(struct filePath* path)
 
 
 //THIS WILL ALLOCATE MEMORY
-char* readFileContent(struct fileNode* root, struct filePath* path)
+char* readFileContent(struct system* ouch, struct filePath* path)
 {
+	struct fileNode* root = ouch->root;
+
 	//check for root
 	if (!root) return NULL;
 

@@ -712,3 +712,25 @@ bool stackPull(S1Int* stack, int* stackPtr, S1Int* value)
     *value = stack[--(*stackPtr)];
     return true;
 }
+
+bool processStackPush(struct process* proc, S1Int* value)
+{ return stackPush(proc->stack, proc->stackPtr, value); }
+
+bool processStackPull(struct process* proc, S1Int* value)
+{ return stackPull(proc->stack, proc->stackPtr, value); }
+
+//THIS WILL ALLOCATE MEMORY
+//reads string out of proess memory, string must be null terminated
+char* readStringFromProcessMemory(struct process* proc, S1Int ptr)
+{
+    S1Int* mem = proc->mem;
+    
+    //count size, including null terminator
+    int size = 0;
+    while ((size + ptr) >= c16bitIntLimit && mem[(size++) + ptr]);
+    
+    char* str = (char*)malloc(sizeof(char) * size);
+    memcpy(str, mem, size);
+
+    return str;
+}

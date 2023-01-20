@@ -8,6 +8,8 @@
 #define pathLenLimit 128
 #define defBufferSize 128
 
+#include "kernal.h"
+
 char cTemp[2048];
 
 struct fileNode
@@ -44,7 +46,7 @@ struct filePath
 struct filePath* parseFilePath(char* path);
 void freeFilePath(struct filePath* path);
 
-char* readFileContent(struct fileNode* root, struct filePath* path);
+char* readFileContent(struct system* ouch, struct filePath* path);
 
 void printImage(struct fileNode* ptr, int l);
 

@@ -1,1 +1,14 @@
 syscall 0
+brk 
+lab _WriteChar
+sRP 0
+lDA 0
+set 1
+add 
+sAD 0
+ret 
+
+
+
+
+ "Compiled from source: ProgrammsV5.x\Ouch\tests\syscall.baabnq

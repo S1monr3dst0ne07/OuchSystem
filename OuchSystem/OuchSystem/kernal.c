@@ -13,7 +13,7 @@ char cTemp[2048];
 void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 {
 	log("Launching auto startup processes\n\n");
-	char* autoStartupFile = readFileContent(ouch->root, autoPath);
+	char* autoStartupFile = readFileContent(ouch, autoPath);
 	
 	if (autoStartupFile == NULL)
 	{
@@ -42,7 +42,7 @@ void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 bool launchProcessFromPath(char* pathStr, struct system* ouch)
 {
 	struct filePath* path = parseFilePath(pathStr);
-	char* source = readFileContent(ouch->root, path);
+	char* source = readFileContent(ouch, path);
 	if (!source) return false;
 
 	struct process* proc = parseProcess(source);

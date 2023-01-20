@@ -9,7 +9,6 @@ int main()
 {
 
 	ouch("D:\\ProjekteC\\OuchSystem\\image.bin");
-	for (;;) Sleep(1);
 
 	return 0;
 }

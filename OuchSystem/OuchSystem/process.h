@@ -2,6 +2,7 @@
 #define HPROCESS
 
 #include <stdbool.h>
+#include <stdlib.h>
 
 #define rawInstBufferLimit 128
 #define c16bitIntLimit (1 << 16)
@@ -118,5 +119,9 @@ bool runPool(struct system* ouch);
 
 bool stackPush(S1Int* stack, int* stackPtr, S1Int* value);
 bool stackPull(S1Int* stack, int* stackPtr, S1Int* value);
+bool processStackPush(struct process* proc, S1Int* value);
+bool processStackPull(struct process* proc, S1Int* value);
+
+char* readStringFromProcessMemory(struct process* proc, S1Int ptr);
 
 #endif

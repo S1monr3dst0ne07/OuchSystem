@@ -33,7 +33,7 @@ Then calling a syscall with stream id 0x0, the syscall will just do nothing and 
 0x0001 -> close stream
     closes stream, provided the id
     arguments: id
-    returns  :
+    returns  : success (0 -> error, 1 -> success)
     
 0x0002 -> read stream
     reads from input buffer of stream
@@ -59,13 +59,13 @@ file stuff
     arguments: path pointer (pointer to char array)
     returns  : id
 
-0x0011 -> create file (file always has priority n-1 where n is the priority of the process calling the syscall)
-    create file given it's path
-    arguments: path pointer
-    returns  : success (0 -> error, 1 -> success, 2 -> file already exists)
+0x0011 -> create object (object always has priority n-1 where n is the priority of the process calling the syscall)
+    create file object given it's path and type
+    arguments: path pointer, type (0 -> invaild, 1 -> file, 2 -> dir)
+    returns  : success (0 -> error, 1 -> success, 2 -> object already exists)
     
-0x0012 -> delete file
-    deletes file given it's path
+0x0012 -> delete object
+    deletes file object given it's path
     arguments: path pointer
     returns  : sucess (0 -> error (insufficient permission), 1 -> success)
         

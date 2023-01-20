@@ -1,4 +1,17 @@
-rootÿtestÿsyscall.s1syscall 0test1.s1set 5
+rootÿtestÿsyscall.s1syscall 0
+brk 
+lab _WriteChar
+sRP 0
+lDA 0
+set 1
+add 
+sAD 0
+ret 
+
+
+
+
+ "Compiled from source: ProgrammsV5.x\Ouch\tests\syscall.baabnqtest1.s1set 5
 sRD 1
 lab loop
 set 10

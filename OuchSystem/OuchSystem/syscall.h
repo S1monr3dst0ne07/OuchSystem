@@ -8,7 +8,7 @@
 
 struct stream
 {
-    int id;
+    S1Int id;
 
     S1Int* readContent;
     int readSize;
@@ -35,7 +35,21 @@ struct streamPool
 
 enum S1Syscall
 {
-    scNoop = 0,
+    scNoop      = 0x0000,
+    scCloseStm  = 0x0001,
+    scReadStm,
+    scWriteStm,
+    scStmInfo,
+    scOpenFileObj = 0x0010,
+    scCreateObj,
+    scDelObj,
+    scSleepMs = 0x0020,
+    scUnixEpoch,
+    scFLocTime,
+    scBindPort = 0x0030,
+    scAcctSock,
+    scCloseSock,
+
 };
 
 
