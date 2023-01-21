@@ -52,7 +52,7 @@ enum S1Syscall
 
 };
 
-
+struct streamPool* allocStreamPool();
 void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ouch);
 
 #endif

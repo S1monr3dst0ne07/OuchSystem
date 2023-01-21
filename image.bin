@@ -1,4 +1,73 @@
-rootÿtestÿsyscall.s1syscall 0
+rootÿtestÿsyscall.s1got Stack::Skip
+lab Stack::Swap
+pla 
+sAD 1
+pla 
+sAD 2
+pla 
+sAD 3
+lDA 2
+pha 
+lDA 3
+pha 
+lDA 1
+pha 
+ret 
+lab Stack::Dup
+pla 
+sAD 1
+pla 
+sAD 4
+pha 
+lDA 4
+pha 
+lDA 1
+pha 
+ret 
+lab Stack::Skip
+clr 
+set 6
+add 
+sAD 0
+set 1
+add 
+sAD 5
+set 13
+jmS _WriteChar
+set 101
+jmS _WriteChar
+set 120
+jmS _WriteChar
+set 97
+jmS _WriteChar
+set 109
+jmS _WriteChar
+set 112
+jmS _WriteChar
+set 108
+jmS _WriteChar
+set 101
+jmS _WriteChar
+set 46
+jmS _WriteChar
+set 116
+jmS _WriteChar
+set 120
+jmS _WriteChar
+set 116
+jmS _WriteChar
+set 0
+jmS _WriteChar
+lDA 5
+pha 
+syscall 16
+jmS Stack::Dup
+pla 
+sAD 19
+syscall 1
+lDA 19
+sAD 20
+out 20
 brk 
 lab _WriteChar
 sRP 0
@@ -1602,6 +1671,4 @@ ret
 
 
 
- "Compiled from source: ProgrammsV5.x\TreeParseEvalMathExpr.baabnqauto.ochÿtest/test1.s1
-test/test2.s1
-test/tree.s1
+ "Compiled from source: ProgrammsV5.x\TreeParseEvalMathExpr.baabnqauto.ochÿtest/syscall.s1example.txtÿthis is an example file, it contains text

@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "files.h"
 #include "process.h"
+#include "syscall.h"
 
 #include <signal.h>
 #include <string.h>
@@ -67,6 +68,7 @@ struct system boot(char* imagePath)
 		.pool  = allocProcPool(),
 		.river = allocStreamPool(),
 	};
+
 
 	log("\n");
 
