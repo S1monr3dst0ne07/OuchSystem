@@ -20,8 +20,8 @@ void freeStreamPool(struct system* ouch)
 
 void freeStream(struct stream* stm)
 {
-    printf("todo: free stream\n");
-    //todo: dealloc memory
+    free(stm->readContent);
+    free(stm);
 }
 
 //allocates new stream, content must be zero terminated
@@ -102,7 +102,7 @@ struct stream* findStream(S1Int id, struct system* ouch)
 void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ouch)
 {
 
-    sprintf(cTemp, "Syscall %x\n", callType);
+    sprintf(cTemp, "Syscall 0x%x\n", callType);
     log(cTemp);
 
     S1Int id = 0;
@@ -137,10 +137,6 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         char* pathStr = readStringFromProcessMemory(proc, pathPtr);
         struct filePath* path = parseFilePath(pathStr);
         S1Int* content = (S1Int*)readFileContent(ouch, path);
-
-        printf("ptr: %d\n", pathPtr);
-        printf("path: %s\n", pathStr);
-        printf("content: %s\n", content);
 
         if (content)
         {
