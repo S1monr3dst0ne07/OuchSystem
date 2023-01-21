@@ -68,27 +68,36 @@ jmS Stack::Dup
 pla 
 sAD 20
 syscall 1
-lDA 20
+pla 
 sAD 21
-out 21
+pha 
+clr 
+sAD 22
+pla 
+lDR 22
+jmA done
+lDA 20
+sAD 22
+out 22
 lDA 19
 pha 
 clr 
 set 1
 add 
-sAD 21
+sAD 22
 pla 
-lDR 21
+lDR 22
 add 
 sAD 19
 pha 
 clr 
 set 60000
 add 
-sAD 21
+sAD 22
 pla 
-lDR 21
+lDR 22
 jmL loop
+lab done
 brk 
 lab _WriteChar
 sRP 0

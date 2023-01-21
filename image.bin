@@ -1,4 +1,18 @@
-rootÿtestÿsyscall.s1got Stack::Skip
+rootÿtestÿerror.s1syscall 1
+syscall 16
+brk 
+lab _WriteChar
+sRP 0
+lDA 0
+set 1
+add 
+sAD 0
+ret 
+
+
+
+
+ "Compiled from source: ProgrammsV5.x\Ouch\tests\error.baabnqsyscall.s1got Stack::Skip
 lab Stack::Swap
 pla 
 sAD 1
@@ -68,27 +82,36 @@ jmS Stack::Dup
 pla 
 sAD 20
 syscall 1
-lDA 20
+pla 
 sAD 21
-out 21
+pha 
+clr 
+sAD 22
+pla 
+lDR 22
+jmA done
+lDA 20
+sAD 22
+out 22
 lDA 19
 pha 
 clr 
 set 1
 add 
-sAD 21
+sAD 22
 pla 
-lDR 21
+lDR 22
 add 
 sAD 19
 pha 
 clr 
 set 60000
 add 
-sAD 21
+sAD 22
 pla 
-lDR 21
+lDR 22
 jmL loop
+lab done
 brk 
 lab _WriteChar
 sRP 0
@@ -1692,4 +1715,4 @@ ret
 
 
 
- "Compiled from source: ProgrammsV5.x\TreeParseEvalMathExpr.baabnqauto.ochÿtest/syscall.s1example.txtÿthis is an example file, it contains text
+ "Compiled from source: ProgrammsV5.x\TreeParseEvalMathExpr.baabnqauto.ochÿtest/error.s1example.txtÿthis is an example file, it contains text

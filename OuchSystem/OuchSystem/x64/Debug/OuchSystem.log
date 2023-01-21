@@ -2,6 +2,7 @@
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(18,5): warning C4013: 'printf' undefined; assuming extern returning int
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(32,21): warning C4013: 'strlen' undefined; assuming extern returning int
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(37,5): warning C4013: 'memset' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(105,5): warning C4013: 'sprintf' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(106,5): warning C4013: 'log' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(107,5): warning C4013: 'sprintf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(108,5): warning C4013: 'log' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(136,45): warning C4133: 'function': incompatible types - from 'bool *' to 'S1Int *'
   OuchSystem.vcxproj -> D:\ProjekteC\OuchSystem\OuchSystem\x64\Debug\OuchSystem.exe

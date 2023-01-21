@@ -85,6 +85,9 @@ void removeStreamList(struct streamList* stmLst, struct system* ouch)
 
 struct streamList* findStreamList(S1Int id, struct system* ouch)
 {
+    //check for stream error id
+    if (id == 0) return NULL;
+
     struct streamList* stmLst = ouch->river->head;
     while (stmLst)
     {
@@ -98,6 +101,12 @@ struct streamList* findStreamList(S1Int id, struct system* ouch)
 struct stream* findStream(S1Int id, struct system* ouch)
 { return findStreamList(id, ouch)->stm; }
 
+
+void logStackCorrSc(enum S1Syscall sc)
+{
+    sprintf(cTemp, "Syscall 0x%x: Stack corrupted\n", sc);
+    log(cTemp);
+}
 
 void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ouch)
 {
@@ -113,26 +122,27 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
     case scCloseStm:;
         if (!processStackPull(proc, &id))
+        { logStackCorrSc(callType); break; }
+
+        struct streamList* stmLst = findStreamList(id, ouch);        
+        bool success = (bool)stmLst;
+
+        if (success)
         {
-            log("Syscall scCloseStm: Stack corrupted");
-            break;
+            removeStreamList(stmLst, ouch);
+            //todo: check for writeback
         }
-
-        struct streamList* stmLst = findStreamList(id, ouch);
-        if (!stmLst) break;
-
-        //todo: check for writeback
         
-        removeStreamList(stmLst, ouch);
+        if (!processStackPush(proc, &success))
+        { logStackCorrSc(callType); break; }
+
+
         break;
 
     case scOpenFileObj:;
         S1Int pathPtr = 0;
         if (!processStackPull(proc, &pathPtr))
-        {
-            log("Syscall scOpenFileObj: Stack corrupted");
-            break;
-        }
+        { logStackCorrSc(callType); break; }
 
         char* pathStr = readStringFromProcessMemory(proc, pathPtr);
         struct filePath* path = parseFilePath(pathStr);
@@ -146,7 +156,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         else
             id = 0x0;
 
-        processStackPush(proc, &id);
+        if (!processStackPush(proc, &id))
+        { logStackCorrSc(callType); break; }
 
         freeFilePath(path);
         free(pathStr);
