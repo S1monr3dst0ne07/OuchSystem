@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include "process.h"
-#define streamOutputSize 1 << 20
+#define streamOutputSize (1 << 18)
 
 struct stream
 {

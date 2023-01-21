@@ -20,7 +20,7 @@ void freeStreamPool(struct system* ouch)
 
 void freeStream(struct stream* stm)
 {
-    printf("todo: free stream");
+    printf("todo: free stream\n");
     //todo: dealloc memory
 }
 
@@ -34,7 +34,7 @@ struct stream* createStream(S1Int* content)
     stm->readIndex  = 0;
     stm->writeIndex = 0;
 
-    memset(stm->writeContent, 0x0, streamOutputSize);
+    memset(stm->writeContent, 0x0, streamOutputSize * sizeof(S1Int));
 
     return stm;
 }
@@ -88,8 +88,7 @@ struct streamList* findStreamList(S1Int id, struct system* ouch)
     struct streamList* stmLst = ouch->river->head;
     while (stmLst)
     {
-        struct stream* stm = stmLst->stm;
-        if (stm->id == id) return stm;
+        if (stmLst->stm->id == id) return stmLst;
         stmLst = stmLst->next;
     }
 
@@ -102,7 +101,6 @@ struct stream* findStream(S1Int id, struct system* ouch)
 
 void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ouch)
 {
-    printf("SID: %d\n", ouch->river->idIndex);
 
     sprintf(cTemp, "Syscall %x\n", callType);
     log(cTemp);

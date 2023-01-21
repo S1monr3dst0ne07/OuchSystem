@@ -729,10 +729,9 @@ char* readStringFromProcessMemory(struct process* proc, S1Int ptr)
     int size = 0;
     while ((size + ptr) <= c16bitIntLimit && mem[(size++) + ptr]);
  
-    printf("size: %d\n", size);
-
     char* str = (char*)malloc(sizeof(char) * size);
-    memcpy(str, mem + ptr, size);
+    for (int i = 0; i < size; i++)
+        str[i] = mem[i + ptr];
 
     return str;
 }
