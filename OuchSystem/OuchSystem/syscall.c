@@ -99,7 +99,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         { logStackCorrSc(callType); break; }
 
         struct stream* stm = getStream(id, ouch);
-        bool success = (bool)stm;
+        S1Int success = (bool)stm;
         if (success)
         {
             //todo: check for writeback
