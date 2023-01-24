@@ -4,7 +4,11 @@
 #include <stdlib.h>
 
 #include "process.h"
-#define streamOutputSize (1 << 18)
+#define streamOutputSize (1 << 17)
+#define riverListSize 65535
+
+#define i2id(x) x + 1
+#define id2i(x) x - 1
 
 struct stream
 {
@@ -18,18 +22,13 @@ struct stream
     int writeIndex;
 };
 
-struct streamList
-{
-    struct stream* stm;
-    struct streamList* prev;
-    struct streamList* next;
 
-};
-
+//contains stream, id given by the position in container
+//id and array index are synonymus (index 0 -> id 1)
 struct streamPool
 {
-    struct streamList* head;
-    int idIndex;
+    struct stream* container[riverListSize];
+    int count;
 };
 
 

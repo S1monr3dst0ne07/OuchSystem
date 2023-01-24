@@ -1,3 +1,4 @@
+
 #include "syscall.h"
 
 #include "files.h"
@@ -7,8 +8,8 @@
 struct streamPool* allocStreamPool()
 {
     struct streamPool* stmPool = (struct streamPool*)malloc(sizeof(struct streamPool));
-    stmPool->idIndex = 1;
-    stmPool->head = NULL;
+    stmPool->count = 0;
+    memset(stmPool->container, 0x0, riverListSize * sizeof(struct stream*));
 
     return stmPool;
 }
@@ -22,6 +23,15 @@ void freeStream(struct stream* stm)
 {
     free(stm->readContent);
     free(stm);
+}
+
+bool isVaildStream(S1Int id, struct system* ouch)
+{
+    //check for empty stream
+    if (!id) return false;
+
+    //check for stream
+    return (bool)ouch->river->container[id2i(id)];
 }
 
 //allocates new stream, content must be zero terminated
@@ -41,65 +51,27 @@ struct stream* createStream(S1Int* content)
 
 S1Int injectStream(struct stream* stm, struct system* ouch)
 {
-    struct streamPool* pool = ouch->river;
-    struct streamList* last = pool->head;
-
-    //new streamList
-    struct streamList* newStreamList = (struct streamList*)malloc(sizeof(struct streamList));
-
-    //retarget
-    pool->head = newStreamList;
-    if (last) last->prev = newStreamList;
-
-    newStreamList->next = last;
-    newStreamList->prev = NULL;
-
-    //inject stream
-    newStreamList->stm = stm;
-
-    //id
-    stm->id = (S1Int)(pool->idIndex++);
-    return stm->id;
-}
-
-//remove stream and dealloc
-void removeStreamList(struct streamList* stmLst, struct system* ouch)
-{
-    struct stream* stm = stmLst->stm;
     struct streamPool* river = ouch->river;
 
-    //link previouse to next
-    if (stmLst->prev)
-        stmLst->prev->next = stmLst->next;
-    else
-        river->head = stmLst->next;
+    //search for free spot
+    for (S1Int i = 0; i < riverListSize; i++)
+        if (!river->container[i])
+        {
+            river->container[i] = stm;
+            return (stm->id = i2id(i));
+        }
 
-
-    //link next to previouse 
-    if (stmLst->next)
-        stmLst->next->prev = stmLst->prev;
-
+    //if no spot was found, deallocate the stream
     freeStream(stm);
-    free(stmLst);
+    return 0x0;
 }
 
-struct streamList* findStreamList(S1Int id, struct system* ouch)
+
+struct stream* getStream(S1Int id, struct system* ouch)
 {
-    //check for stream error id
-    if (id == 0) return NULL;
-
-    struct streamList* stmLst = ouch->river->head;
-    while (stmLst)
-    {
-        if (stmLst->stm->id == id) return stmLst;
-        stmLst = stmLst->next;
-    }
-
-    return NULL;
+    if (!isVaildStream(id, ouch)) return NULL;
+    return ouch->river->container[id2i(id)];
 }
-
-struct stream* findStream(S1Int id, struct system* ouch)
-{ return findStreamList(id, ouch)->stm; }
 
 
 void logStackCorrSc(enum S1Syscall sc)
@@ -110,6 +82,8 @@ void logStackCorrSc(enum S1Syscall sc)
 
 void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ouch)
 {
+    struct streamPool* river = ouch->river;
+
 
     sprintf(cTemp, "Syscall 0x%x\n", callType);
     log(cTemp);
@@ -124,18 +98,19 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         if (!processStackPull(proc, &id))
         { logStackCorrSc(callType); break; }
 
-        struct streamList* stmLst = findStreamList(id, ouch);        
-        bool success = (bool)stmLst;
-
+        struct stream* stm = getStream(id, ouch);
+        bool success = (bool)stm;
         if (success)
         {
-            removeStreamList(stmLst, ouch);
             //todo: check for writeback
+
+            //free and reset container
+            free(stm);
+            river->container[id2i(id)] = NULL;
         }
         
         if (!processStackPush(proc, &success))
         { logStackCorrSc(callType); break; }
-
 
         break;
 
