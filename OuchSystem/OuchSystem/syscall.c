@@ -105,7 +105,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             //todo: check for writeback
 
             //free and reset container
-            free(stm);
+            freeStream(stm);
             river->container[id2i(id)] = NULL;
         }
         
