@@ -58,39 +58,20 @@ set 116
 jmS _WriteChar
 set 0
 jmS _WriteChar
-clr 
-sAD 19
-lab loop
 lDA 5
 pha 
-jmS Stack::Dup
 syscall 16
 pla 
+sAD 19
+lab loop
+lDA 19
+pha 
+syscall 2
+pla 
 sAD 20
-syscall 16
 pla 
 sAD 21
 lDA 20
-sAD 22
-out 22
-lDA 21
-sAD 22
-out 22
-lDA 20
-pha 
-syscall 1
-pla 
-sAD 23
-sAD 22
-out 22
-lDA 21
-pha 
-syscall 1
-pla 
-sAD 23
-sAD 22
-out 22
-lDA 19
 pha 
 clr 
 set 1
@@ -98,16 +79,25 @@ add
 sAD 22
 pla 
 lDR 22
-add 
-sAD 19
-pha 
+jmA Temp0
+got done
+lab Temp0
+lDA 21
+putstr 
+got loop
+lab done
 clr 
-set 60000
+set 10
 add 
+putstr 
+lDA 20
 sAD 22
+out 22
+lDA 19
+pha 
+syscall 1
 pla 
-lDR 22
-jmL loop
+sAD 23
 brk 
 lab _WriteChar
 sRP 0

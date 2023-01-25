@@ -14,11 +14,11 @@ struct stream
 {
     S1Int id;
 
-    S1Int* readContent;
+    char* readContent;
     int readSize;
     int readIndex;
 
-    S1Int writeContent[streamOutputSize];
+    char writeContent[streamOutputSize];
     int writeIndex;
 };
 

@@ -44,7 +44,7 @@ struct stream* createStream(S1Int* content)
     stm->readIndex  = 0;
     stm->writeIndex = 0;
 
-    memset(stm->writeContent, 0x0, streamOutputSize * sizeof(S1Int));
+    memset(stm->writeContent, 0x0, streamOutputSize * sizeof(char));
 
     return stm;
 }
@@ -73,6 +73,14 @@ struct stream* getStream(S1Int id, struct system* ouch)
     return ouch->river->container[id2i(id)];
 }
 
+bool readStream(struct stream* stm, S1Int* data)
+{
+    bool isEmpty = (stm->readIndex == stm->readSize);
+    *data = isEmpty ? 0 : (S1Int)stm->readContent[stm->readIndex++];
+    return !isEmpty;
+}
+
+
 
 void logStackCorrSc(enum S1Syscall sc)
 {
@@ -85,10 +93,13 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     struct streamPool* river = ouch->river;
 
 
-    sprintf(cTemp, "Syscall 0x%x\n", callType);
-    log(cTemp);
+    //sprintf(cTemp, "Syscall 0x%x\n", callType);
+    //log(cTemp);
 
     S1Int id = 0;
+    struct stream* stm;
+    S1Int success;
+    S1Int data;
     switch (callType)
     {
     case scNoop:
@@ -98,8 +109,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         if (!processStackPull(proc, &id))
         { logStackCorrSc(callType); break; }
 
-        struct stream* stm = getStream(id, ouch);
-        S1Int success = (bool)stm;
+        stm = getStream(id, ouch);
+        success = (bool)stm;
         if (success)
         {
             //todo: check for writeback
@@ -114,6 +125,23 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         break;
 
+    case scReadStm:;
+        if (!processStackPull(proc, &id))
+        { logStackCorrSc(callType); break; }
+
+        stm = getStream(id, ouch);
+        if (stm)
+            success = readStream(stm, &data) ? 1 : 2;
+        else
+            success = 0;
+
+        if (!processStackPush(proc, &data))
+        { logStackCorrSc(callType); break; }
+        if (!processStackPush(proc, &success))
+        { logStackCorrSc(callType); break; }
+
+        break;
+
     case scOpenFileObj:;
         S1Int pathPtr = 0;
         if (!processStackPull(proc, &pathPtr))
@@ -121,7 +149,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         char* pathStr = readStringFromProcessMemory(proc, pathPtr);
         struct filePath* path = parseFilePath(pathStr);
-        S1Int* content = (S1Int*)readFileContent(ouch, path);
+        char* content = readFileContent(ouch, path);
 
         if (content)
         {

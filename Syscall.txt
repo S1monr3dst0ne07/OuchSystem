@@ -38,7 +38,7 @@ Then calling a syscall with stream id 0x0, the syscall will just do nothing and 
 0x0002 -> read stream
     reads from input buffer of stream
     arguments: id
-    returns  : data (or 0xffff for error)
+    returns  : success (0 -> error, 1 -> success, 2 -> stream empty), data
     
 0x0003 -> write stream
     writes to output buffer of stream
