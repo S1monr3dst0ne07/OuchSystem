@@ -8,7 +8,7 @@
 struct streamPool* allocStreamPool()
 {
     struct streamPool* stmPool = (struct streamPool*)malloc(sizeof(struct streamPool));
-    stmPool->count = 0;
+    stmPool->count = 0;    
     memset(stmPool->container, 0x0, riverListSize * sizeof(struct stream*));
 
     return stmPool;
@@ -58,7 +58,8 @@ S1Int injectStream(struct stream* stm, struct system* ouch)
         if (!river->container[i])
         {
             river->container[i] = stm;
-            return (stm->id = i2id(i));
+            //return (stm->id = i2id(i)); S1Int id is currently not in use
+            return i2id(i);
         }
 
     //if no spot was found, deallocate the stream
@@ -88,11 +89,23 @@ void logStackCorrSc(enum S1Syscall sc)
     log(cTemp);
 }
 
+bool syscallStackPull(struct process* proc, S1Int* val, enum S1Syscall callType)
+{
+    bool succ = processStackPull(proc, val);
+    if (!succ) logStackCorrSc(callType);
+    return succ;
+}
+bool syscallStackPush(struct process* proc, S1Int* val, enum S1Syscall callType)
+{
+    bool succ = processStackPush(proc, val);
+    if (!succ) logStackCorrSc(callType);
+    return succ;
+}
+
+
 void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ouch)
 {
     struct streamPool* river = ouch->river;
-
-
     //sprintf(cTemp, "Syscall 0x%x\n", callType);
     //log(cTemp);
 
@@ -100,14 +113,16 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     struct stream* stm;
     S1Int success;
     S1Int data;
+
     switch (callType)
     {
     case scNoop:
         break;
 
     case scCloseStm:;
-        if (!processStackPull(proc, &id))
-        { logStackCorrSc(callType); break; }
+        S1Int doWriteBack = 0;
+        if (!syscallStackPull(proc, &doWriteBack, callType)) break;
+        if (!syscallStackPull(proc, &id, callType)) break;
 
         stm = getStream(id, ouch);
         success = (bool)stm;
@@ -120,14 +135,12 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             river->container[id2i(id)] = NULL;
         }
         
-        if (!processStackPush(proc, &success))
-        { logStackCorrSc(callType); break; }
 
+        if (!syscallStackPush(proc, &success, callType)) break;
         break;
 
     case scReadStm:;
-        if (!processStackPull(proc, &id))
-        { logStackCorrSc(callType); break; }
+        if (!syscallStackPull(proc, &id, callType)) break;
 
         stm = getStream(id, ouch);
         if (stm)
@@ -135,17 +148,24 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         else
             success = 0;
 
-        if (!processStackPush(proc, &data))
-        { logStackCorrSc(callType); break; }
-        if (!processStackPush(proc, &success))
-        { logStackCorrSc(callType); break; }
+        if (!syscallStackPush(proc, &data, callType)) break;
+        if (!syscallStackPush(proc, &success, callType)) break;
+        break;
+
+    case scWriteStm:;
+        if (!syscallStackPull(proc, &data, callType)) break;
+        if (!syscallStackPull(proc, &id, callType)) break;
+
+        stm = getStream(id, ouch);
+        if (stm)
+        {
+        }
 
         break;
 
     case scOpenFileObj:;
         S1Int pathPtr = 0;
-        if (!processStackPull(proc, &pathPtr))
-        { logStackCorrSc(callType); break; }
+        if (!syscallStackPull(proc, &pathPtr, callType)) break;
 
         char* pathStr = readStringFromProcessMemory(proc, pathPtr);
         struct filePath* path = parseFilePath(pathStr);
@@ -159,8 +179,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         else
             id = 0x0;
 
-        if (!processStackPush(proc, &id))
-        { logStackCorrSc(callType); break; }
+        if (!syscallStackPush(proc, &id, callType)) break;
 
         freeFilePath(path);
         free(pathStr);

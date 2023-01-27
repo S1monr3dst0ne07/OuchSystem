@@ -32,7 +32,7 @@ Then calling a syscall with stream id 0x0, the syscall will just do nothing and 
 --- streams ---
 0x0001 -> close stream
     closes stream, provided the id
-    arguments: id
+    arguments: id, writeback (0 -> no, 1 -> yes)
     returns  : success (0 -> error, 1 -> success)
     
 0x0002 -> read stream

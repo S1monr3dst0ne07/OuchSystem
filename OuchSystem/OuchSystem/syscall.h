@@ -4,15 +4,22 @@
 #include <stdlib.h>
 
 #include "process.h"
-#define streamOutputSize (1 << 17)
+#define streamOutputSize (1 << 16)
 #define riverListSize 65535
 
 #define i2id(x) x + 1
 #define id2i(x) x - 1
 
+enum streamType
+{
+    stmTypFile = 1,
+    stmTypDir,
+    stmTypSocket,
+};
+
 struct stream
 {
-    S1Int id;
+    //S1Int id;
 
     char* readContent;
     int readSize;
@@ -20,6 +27,8 @@ struct stream
 
     char writeContent[streamOutputSize];
     int writeIndex;
+
+    enum streamType type;
 };
 
 

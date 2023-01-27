@@ -3,7 +3,7 @@ D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(12,5): warning C4013: 'm
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(19,5): warning C4013: 'printf' undefined; assuming extern returning int
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(41,31): warning C4133: '=': incompatible types - from 'S1Int *' to 'char *'
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(42,21): warning C4013: 'strlen' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(87,5): warning C4013: 'sprintf' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(88,5): warning C4013: 'log' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(156,54): warning C4133: 'function': incompatible types - from 'char *' to 'S1Int *'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(88,5): warning C4013: 'sprintf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(89,5): warning C4013: 'log' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(176,54): warning C4133: 'function': incompatible types - from 'char *' to 'S1Int *'
   OuchSystem.vcxproj -> D:\ProjekteC\OuchSystem\OuchSystem\x64\Debug\OuchSystem.exe
