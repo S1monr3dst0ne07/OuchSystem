@@ -63,15 +63,36 @@ pha
 syscall 16
 pla 
 sAD 19
-lab loop
-lDA 19
 pha 
-syscall 2
+syscall 4
 pla 
 sAD 20
 pla 
 sAD 21
-lDA 20
+sAD 22
+out 22
+lDA 21
+set 1
+add 
+sAD 22
+lDR 22
+ahm 
+sAD 22
+sRP 22
+set 1
+add 
+sAD 23
+clr 
+sAD 24
+lab readLoop
+lDA 19
+pha 
+syscall 2
+pla 
+sAD 25
+pla 
+sAD 26
+lDA 25
 pha 
 clr 
 set 1
@@ -80,24 +101,87 @@ sAD 22
 pla 
 lDR 22
 jmA Temp0
-got done
+got readDone
 lab Temp0
-lDA 21
-putstr 
-got loop
-lab done
-clr 
-set 10
-add 
-putstr 
-lDA 20
+lDA 26
+pha 
+lDA 23
+pha 
+lDA 24
 sAD 22
-out 22
+pla 
+lDR 22
+add 
+sAD 22
+pla 
+sAP 22
+lDA 24
+pha 
+clr 
+set 1
+add 
+sAD 22
+pla 
+lDR 22
+add 
+sAD 24
+pha 
+lDA 21
+sAD 22
+pla 
+lDR 22
+jmA Temp1
+got readLoop
+lab Temp1
+lab readDone
+lDA 21
+sAD 24
+lab writeLoop
+lDA 24
+pha 
+clr 
+set 1
+add 
+sAD 22
+pla 
+lDR 22
+sub 
+sAD 24
+lDA 23
+pha 
+lDA 24
+sAD 22
+pla 
+lDR 22
+add 
+sAD 22
+lPA 22
+sAD 26
 lDA 19
+pha 
+lDA 26
+pha 
+syscall 3
+pla 
+sAD 25
+lDA 24
+pha 
+clr 
+sAD 22
+pla 
+lDR 22
+jmA Temp2
+got writeLoop
+lab Temp2
+lDA 19
+pha 
+clr 
+set 1
+add 
 pha 
 syscall 1
 pla 
-sAD 23
+sAD 20
 brk 
 lab _WriteChar
 sRP 0
@@ -110,4 +194,4 @@ ret
 
 
 
- "Compiled from source: ProgrammsV5.x\Ouch\tests\syscall.baabnq
+ "Compiled from source: ProgrammsV5.x\Ouch\tests\reverse.baabnq

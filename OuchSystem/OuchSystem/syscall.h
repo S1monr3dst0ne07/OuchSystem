@@ -12,6 +12,7 @@
 
 enum streamType
 {
+    stmInvailed = 0,
     stmTypFile = 1,
     stmTypDir,
     stmTypSocket,

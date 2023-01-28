@@ -44,6 +44,8 @@ struct stream* createStream(S1Int* content)
     stm->readIndex  = 0;
     stm->writeIndex = 0;
 
+    stm->type = stmInvailed;
+
     memset(stm->writeContent, 0x0, streamOutputSize * sizeof(char));
 
     return stm;
@@ -76,11 +78,19 @@ struct stream* getStream(S1Int id, struct system* ouch)
 
 bool readStream(struct stream* stm, S1Int* data)
 {
-    bool isEmpty = (stm->readIndex == stm->readSize);
-    *data = isEmpty ? 0 : (S1Int)stm->readContent[stm->readIndex++];
-    return !isEmpty;
+    //read only succeeds if there's remainder in readContent
+    bool succ = (stm->readIndex < stm->readSize);
+    *data = succ ? (S1Int)stm->readContent[stm->readIndex++] : 0;
+    return succ;
 }
 
+bool writeStream(struct stream* stm, S1Int val)
+{
+    //write only succeeds if there's space in the writeContent
+    bool succ = (stm->writeIndex < streamOutputSize);
+    if (succ) stm->writeContent[stm->writeIndex++] = (char)val;
+    return succ;
+}
 
 
 void logStackCorrSc(enum S1Syscall sc)
@@ -128,7 +138,12 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         success = (bool)stm;
         if (success)
         {
-            //todo: check for writeback
+            //writeback
+            if (doWriteBack)
+            {
+                char* writeContent = stm->writeContent;
+                printf("Writeback: '%s'\n", writeContent);
+            }
 
             //free and reset container
             freeStream(stm);
@@ -157,11 +172,22 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         if (!syscallStackPull(proc, &id, callType)) break;
 
         stm = getStream(id, ouch);
-        if (stm)
-        {
-        }
+        success = (bool)stm && writeStream(stm, data);
 
+        if (!syscallStackPush(proc, &success, callType)) break;
         break;
+    
+    case scStmInfo:;
+        if (!syscallStackPull(proc, &id, callType)) break;
+        stm = getStream(id, ouch);
+
+        S1Int type = (S1Int)(stm ? stm->type : stmInvailed);
+        S1Int size = (S1Int)(stm ? stm->readSize : 0);
+
+        if (!syscallStackPush(proc, &size, callType)) break;
+        if (!syscallStackPush(proc, &type, callType)) break;
+        break;
+
 
     case scOpenFileObj:;
         S1Int pathPtr = 0;
@@ -174,6 +200,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         if (content)
         {
             struct stream* stm = createStream(content);
+            stm->type = stmTypFile;
             id = injectStream(stm, ouch);
         }
         else
