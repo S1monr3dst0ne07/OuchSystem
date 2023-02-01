@@ -14,16 +14,25 @@ struct streamPool* allocStreamPool()
     return stmPool;
 }
 
-void freeStreamPool(struct system* ouch)
-{
-    printf("todo: free stream pool");
-}
-
 void freeStream(struct stream* stm)
 {
     free(stm->readContent);
     free(stm->meta);
     free(stm);
+}
+
+void freeStreamPool(struct system* ouch)
+{
+    struct streamPool* river = ouch->river;
+
+    if (river->count)
+    {        
+        struct stream* temp;
+        for (int i = 0; i < riverListSize; i++)
+            if (temp = river->container[i]) freeStream(temp);
+    }
+
+    free(river);
 }
 
 bool isVaildStream(S1Int id, struct system* ouch)
@@ -60,6 +69,7 @@ S1Int injectStream(struct stream* stm, struct system* ouch)
     for (S1Int i = 0; i < riverListSize; i++)
         if (!river->container[i])
         {
+            river->count++;
             river->container[i] = stm;
             //return (stm->id = i2id(i)); S1Int id is currently not in use
             return i2id(i);
@@ -145,7 +155,6 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             case 0:
                 break;
             case 1:;
-
                 struct filePath* path = parseFilePath(stm->meta);
                 success = writeFileContent(ouch, path, &stm->writeContent);
                 freeFilePath(path);
@@ -157,6 +166,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             }
 
             //free and reset container
+            river->count--;
             freeStream(stm);
             river->container[id2i(id)] = NULL;
         }

@@ -123,4 +123,8 @@ void ouch(char* imagePath)
 	shutdown(ouchPtr);
 }
 
-
+void test(char* imagePath, int l)
+{
+	for (int i = 0; i < l; i++)
+		ouch(imagePath);
+}
