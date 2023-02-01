@@ -1,9 +1,5 @@
-﻿  syscall.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(12,5): warning C4013: 'memset' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(19,5): warning C4013: 'printf' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(41,31): warning C4133: '=': incompatible types - from 'S1Int *' to 'char *'
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(42,21): warning C4013: 'strlen' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(98,5): warning C4013: 'sprintf' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(99,5): warning C4013: 'log' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(202,54): warning C4133: 'function': incompatible types - from 'char *' to 'S1Int *'
+﻿  kernal.c
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(29,3): warning C4013: 'sprintf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(94,2): warning C4013: 'printf' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\kernal.c(99,2): warning C4013: 'freeStreamPool' undefined; assuming extern returning int
   OuchSystem.vcxproj -> D:\ProjekteC\OuchSystem\OuchSystem\x64\Debug\OuchSystem.exe

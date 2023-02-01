@@ -243,14 +243,29 @@ void freeFilePath(struct filePath* path)
 char* readFileContent(struct system* ouch, struct filePath* path)
 {
 	struct fileNode* root = ouch->root;
-
-	//check for root
-	if (!root) return NULL;
+	if (!root) return NULL; 
 
 	struct fileNode* temp = getNodeByPath(root, path);
-	return (temp != 0) ? _strdup(temp->content) : NULL;
+	if (!temp) return NULL;
+	
+	return strdup(temp->content);
 }
 
+bool writeFileContent(struct system* ouch, struct filePath* path, char* content)
+{
+	struct fileNode* root = ouch->root;
+	if (!root) return false; 
+
+	struct fileNode* temp = getNodeByPath(root, path);
+	if (!temp) return false;
+
+	//free old content
+	free(temp->content);
+	//copy new content
+	temp->content = strdup(content);
+
+	return true;
+}
 
 
 void printImage(struct fileNode* ptr, int l)

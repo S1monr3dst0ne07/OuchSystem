@@ -10,6 +10,9 @@
 
 #include "kernal.h"
 
+//i hate microsoft
+#define _CRT_NONSTDC_NO_DEPRECATE
+
 char cTemp[2048];
 
 struct fileNode
@@ -47,6 +50,7 @@ struct filePath* parseFilePath(char* path);
 void freeFilePath(struct filePath* path);
 
 char* readFileContent(struct system* ouch, struct filePath* path);
+bool writeFileContent(struct system* ouch, struct filePath* path, char* content);
 
 void printImage(struct fileNode* ptr, int l);
 

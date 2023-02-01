@@ -22,6 +22,7 @@ void freeStreamPool(struct system* ouch)
 void freeStream(struct stream* stm)
 {
     free(stm->readContent);
+    free(stm->meta);
     free(stm);
 }
 
@@ -135,21 +136,31 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         if (!syscallStackPull(proc, &id, callType)) break;
 
         stm = getStream(id, ouch);
-        success = (bool)stm;
-        if (success)
+        if (stm)
         {
             //writeback
-            if (doWriteBack)
+            
+            if (doWriteBack) switch (stm->type)
             {
-                char* writeContent = stm->writeContent;
-                printf("Writeback: '%s'\n", writeContent);
+            case 0:
+                break;
+            case 1:;
+
+                struct filePath* path = parseFilePath(stm->meta);
+                success = writeFileContent(ouch, path, &stm->writeContent);
+                freeFilePath(path);
+
+                break;
+            default:
+                success = true;
+                break;
             }
 
             //free and reset container
             freeStream(stm);
             river->container[id2i(id)] = NULL;
         }
-        
+        else success = false;        
 
         if (!syscallStackPush(proc, &success, callType)) break;
         break;
@@ -201,6 +212,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         {
             struct stream* stm = createStream(content);
             stm->type = stmTypFile;
+            stm->meta = pathStr;
             id = injectStream(stm, ouch);
         }
         else
@@ -209,7 +221,6 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         if (!syscallStackPush(proc, &id, callType)) break;
 
         freeFilePath(path);
-        free(pathStr);
         break;
     }
 

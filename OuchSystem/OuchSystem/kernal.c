@@ -87,6 +87,14 @@ void shutdown(struct system* ouch)
 	//todo: write back!!!
 
 	struct fileNode* root = ouch->root;
+
+	//DEBUG
+	struct filePath* temp = parseFilePath("example.txt");
+	char* cont = readFileContent(ouch, temp);
+	printf("example: %s\n", cont);
+	free(cont);
+	freeFilePath(temp);
+
 	if (root) freeFileSystem(root);
 	freeStreamPool(ouch);
 	freeProcPool(ouch);

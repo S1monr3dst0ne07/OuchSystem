@@ -30,6 +30,10 @@ struct stream
     int writeIndex;
 
     enum streamType type;
+
+    //general metadata
+    // stmTypFile -> file path
+    char* meta;
 };
 
 
