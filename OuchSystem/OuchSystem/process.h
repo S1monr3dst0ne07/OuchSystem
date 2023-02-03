@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
-#include "syscall.h"
+
 
 #define rawInstBufferLimit 128
 #define c16bitIntLimit (1 << 16)
@@ -49,6 +49,25 @@ enum s1Insts
     ahm,
     fhm,
     syscall,
+};
+
+enum S1Syscall
+{
+    scNoop = 0x0000,
+    scCloseStm = 0x0001,
+    scReadStm,
+    scWriteStm,
+    scStmInfo,
+    scOpenFileObj = 0x0010,
+    scCreateObj,
+    scDelObj,
+    scSleepMs = 0x0020,
+    scUnixEpoch,
+    scFLocTime,
+    scBindPort = 0x0030,
+    scAcctSock,
+    scCloseSock,
+
 };
 
 enum returnCodes
