@@ -1,9 +1,11 @@
 #ifndef HSYSCALL
 #define HSYSCALL
 
+#include "process.h"
+#include "utils.h"
+
 #include <stdlib.h>
 
-#include "process.h"
 #define streamOutputSize (1 << 16)
 #define riverListSize 65535
 
@@ -66,6 +68,7 @@ enum S1Syscall
 };
 
 struct streamPool* allocStreamPool();
+void freeStreamPool(struct system* ouch);
 void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ouch);
 
 #endif

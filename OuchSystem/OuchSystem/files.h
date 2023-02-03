@@ -35,8 +35,7 @@ struct rawImage;
 
 struct fileNode* mountRootImage(char* path);
 void freeFileSystem(struct fileNode* root);
-struct fileNode* parseNode(struct rawImage* image);
-char* readTermed(struct rawImage* image);
+void unmountRootImage(char* path, struct fileNode* root);
 
 struct fileNode* getSubNodeByName(struct fileNode* top, char* name);
 struct fileNode* getNodeByPath(struct fileNode* root, struct filePath* path);

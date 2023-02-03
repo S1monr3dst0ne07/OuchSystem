@@ -80,7 +80,7 @@ enum s1Insts str2s1(char* str)
     };
 
     static const unsigned size = sizeof(map) / sizeof(map[0]);
-    for (int i = 0; i < size; i++)
+    for (unsigned i = 0; i < size; i++)
     {
         if (strcmp(map[i].str, str) == 0)
             return map[i].inst;
@@ -731,7 +731,7 @@ char* readStringFromProcessMemory(struct process* proc, S1Int ptr)
  
     char* str = (char*)malloc(sizeof(char) * size);
     for (int i = 0; i < size; i++)
-        str[i] = mem[i + ptr];
+        str[i] = (int)mem[i + ptr];
 
     return str;
 }

@@ -7,9 +7,7 @@
 
 int main()
 {
-	const char* imagePath = "D:\\ProjekteC\\OuchSystem\\image.bin";
-	//ouch("D:\\ProjekteC\\OuchSystem\\image.bin");
-	test(imagePath, 10000);
+	ouch("D:\\ProjekteC\\OuchSystem\\image.bin");
 
 	return 0;
 }

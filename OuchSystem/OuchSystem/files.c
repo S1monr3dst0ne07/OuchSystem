@@ -7,11 +7,11 @@
 #include <string.h>
 #include "utils.h"
 
-//keeps content of image and pointer to currently parsing point
+//temporary buffer for parsing and generating
 struct rawImage
 {
 	char* rawContent;
-	int parseIndex;
+	int index;
 
 };
 
@@ -24,7 +24,7 @@ struct fileNode* allocFileNode()
 struct rawImage* allocRawImage(char* rawContent)
 {
 	struct rawImage* image = (struct rawImage*)malloc(sizeof(struct rawImage));
-	image->parseIndex = 0;
+	image->index = 0;
 	image->rawContent = rawContent;
 	return image;
 }
@@ -38,13 +38,84 @@ void freeRawImage(struct rawImage* image)
 //-------------------
 //system stuff
 
-
-//consImagemes charactor from rawImage
+//consumes character from rawImage
 char consImage(struct rawImage* image)
+{ return image->rawContent[image->index++]; }
+
+void pushImage(struct rawImage* image, char c)
+{ 
+	printf("pushImg: %x\n", c);
+	image->rawContent[image->index++] = c; }
+
+//reads 0x01 terminated string
+char* readTermed(struct rawImage* image)
 {
-	return image->rawContent[image->parseIndex++];
+	//save string start
+	int stringOrigin = image->index;
+
+	//read length of string
+	int len = 1; //start at one for terminator
+	while (consImage(image) != imageTermi) len++;
+
+	char* output = (char*)malloc(len * sizeof(char*));
+	for (int i = 0; i < len; i++)
+		output[i] = image->rawContent[stringOrigin + i];
+
+	//set terminator at end of string
+	output[len - 1] = 0;
+
+	return output;
 }
 
+//parses node, without 0x10 header
+struct fileNode* parseNode(struct rawImage* image)
+{
+	char* name = readTermed(image); //<name> 0x01
+	char* prior = readTermed(image); //<prior> 0x01
+
+	struct fileNode* newNode = allocFileNode();
+	newNode->name = name;
+	newNode->prior = (int)(*prior);
+	newNode->content = NULL;
+	newNode->count = 0;
+
+	free(prior);
+
+	//type of node
+	int type = (int)consImage(image);
+	switch (type)
+	{
+		//directory
+	case 0x11:
+		newNode->type = 1;
+
+		//iterate subnodes, parse recursively
+		//calling a function with a side effect of beheading the subnodes if fine
+		//because parseNode doesn't want the head of a node
+		for (int offset = 0; consImage(image) != imageTermi; offset++)
+		{
+			newNode->subNodes[offset] = parseNode(image);
+			newNode->count++;
+		}
+
+		break;
+
+		//file
+	case 0x12:
+		newNode->type = 2;
+		newNode->content = readTermed(image);
+		break;
+	}
+
+	return newNode;
+}
+
+void writeTermed(struct rawImage* image, char* str)
+{
+	printf("writeTermed: %s\n", str);
+	for (int i = 0; str[i]; i++) pushImage(image, str[i]);
+	pushImage(image, imageTermi); //termi
+}
 
 //mounts file system from host system image file
 struct fileNode* mountRootImage(char* path)
@@ -76,7 +147,7 @@ struct fileNode* mountRootImage(char* path)
 	//parseNode doesn't want the header
 	if (!consImage(image))
 	{
-		log("Root image empty");
+		log("Root image empty\n");
 		return NULL;
 	}
 
@@ -105,68 +176,92 @@ void freeFileSystem(struct fileNode* root)
 	free(root);
 }
 
-//parses node, without 0x10 header
-struct fileNode* parseNode(struct rawImage* image)
+int calcImageSize(struct fileNode* node)
 {
-	char* name  = readTermed(image); //<name> 0x01
-	char* prior = readTermed(image); //<prior> 0x01
+	//0x10 name 0x01 0xff 0x01 0x11 subdata 0x01
+	// 1    X    2    3    4    5      X     6
 
-	struct fileNode* newNode = allocFileNode();
-	newNode->name = name;
-	newNode->prior = (int)(*prior);
-	newNode->content = NULL;
-	newNode->count = 0;
+	int headerSize = strlen(node->name) + 6;
+	int bodySize = 0;
 
-	free(prior);
-
-	//type of node
-	int type = (int)consImage(image);
-	switch (type)
+	//count subdata
+	switch (node->type)
 	{
-	//directory
-	case 0x11:
-		newNode->type = 1;
-
-		//iterate subnodes, parse recursively
-		//calling a function with a side effect of beheading the subnodes if fine
-		//because parseNode doesn't want the head of a node
-		for (int offset = 0; consImage(image) != imageTermi; offset++)
-		{
-			newNode->subNodes[offset] = parseNode(image);
-			newNode->count++;
-		}
-
+	case 1:
+		for (int i = 0; i < node->count; i++)
+			bodySize += calcImageSize(node->subNodes[i]);
 		break;
-
-	//file
-	case 0x12:
-		newNode->type = 2;
-		newNode->content = readTermed(image);
+	case 2:
+		bodySize = strlen(node->content);
 		break;
 	}
 
-	return newNode;
+	return headerSize + bodySize;
 }
 
-//reads 0x01 terminated string
-char* readTermed(struct rawImage* image)
+void genNode(struct fileNode* node, struct rawImage* image)
 {
-	//save string start
-	int stringOrigin = image->parseIndex;
+	pushImage(image, 0x10);
+	writeTermed(image, node->name);
+	pushImage(image, (char)node->prior);
+	pushImage(image, imageTermi);
 
-	//read length of string
-	int len = 1; //start at one for terminator
-	while (consImage(image) != imageTermi) len++;
+	switch (node->type)
+	{
+	case 1:
+		pushImage(image, 0x11);
+		for (int i = 0; i < node->count; i++)
+			genNode(node->subNodes[i], image);
+		pushImage(image, imageTermi);
+		break;
 
-	char* output = (char*)malloc(len * sizeof(char*));
-	for (int i = 0; i < len; i++)
-		output[i] = image->rawContent[stringOrigin + i];
+	case 2:
+		pushImage(image, 0x12);
+		writeTermed(image, node->content);
+		break;
+	default:
+		pushImage(image, 0x13);
+		pushImage(image, imageTermi);
+		break;
+	}
 
-	//set terminator at end of string
-	output[len - 1] = 0;
-
-	return output;
 }
+
+void unmountRootImage(char* path, struct fileNode* root)
+{
+	sprintf(cTemp, "Unmounting file system to %s\n", path);
+	log(cTemp);
+
+	if (!root)
+	{
+		log("Root node corrupted, unable to generate image\n");
+		return;
+	}
+
+	FILE* fp = fopen(path, "wb");
+	if (!fp)
+	{
+		log("Root image file not found\n");
+		return;
+	}
+
+	//generate image from file system
+	int size = calcImageSize(root);
+	char* rawContent = (char*)malloc(sizeof(char) * size);
+	memset(rawContent, 0x0, size);
+	struct rawImage* image = allocRawImage(rawContent);
+	genNode(root, image);
+
+	//write image to disk
+	fwrite(rawContent, sizeof(char), size, fp);
+
+	//free raw image
+	freeRawImage(image);
+
+	log("File system unmounted successfully\n");
+	fclose(fp);
+}
+
 
 //----------------
 //getters

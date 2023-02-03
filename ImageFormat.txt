@@ -6,6 +6,7 @@
 0x10 -> node, start of node name, precedes priority of node
 0x11 -> isDir , start of recursive
 0x12 -> isFile, start of content
+0x13 -> invaild
 
 
 node example for directory:

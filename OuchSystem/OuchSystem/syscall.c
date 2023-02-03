@@ -45,7 +45,7 @@ bool isVaildStream(S1Int id, struct system* ouch)
 }
 
 //allocates new stream, content must be zero terminated
-struct stream* createStream(S1Int* content)
+struct stream* createStream(char* content)
 {
     struct stream* stm = (struct stream*)malloc(sizeof(struct stream));
     stm->readContent = content;
@@ -156,7 +156,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
                 break;
             case 1:;
                 struct filePath* path = parseFilePath(stm->meta);
-                success = writeFileContent(ouch, path, &stm->writeContent);
+                success = writeFileContent(ouch, path, stm->writeContent);
                 freeFilePath(path);
 
                 break;

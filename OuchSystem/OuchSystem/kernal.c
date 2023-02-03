@@ -82,21 +82,17 @@ struct system boot(char* imagePath)
 	return ouch;
 }
 
-void shutdown(struct system* ouch)
+void shutdown(char* imagePath, struct system* ouch)
 {
-	//todo: write back!!!
+	log("Shutting down\n");
 
+	//file system writeback and dealloc
 	struct fileNode* root = ouch->root;
-
-	//DEBUG
-	struct filePath* temp = parseFilePath("example.txt");
-	char* cont = readFileContent(ouch, temp);
-	printf("example: %s\n", cont);
-	free(cont);
-	freeFilePath(temp);
-
+	unmountRootImage(imagePath, root);
 	if (root) freeFileSystem(root);
-	freeStreamPool(ouch);
+
+	//dealloc rest of system
+	freeStreamPool(ouch);	
 	freeProcPool(ouch);
 }
 
@@ -113,6 +109,7 @@ void ouch(char* imagePath)
 	signal(SIGINT, sigHandler);
 	struct system ouch = boot(imagePath);
 	struct system* ouchPtr = &ouch;
+	log("\n");
 
 	//check for root
 	if (!ouchPtr->root)
@@ -120,7 +117,8 @@ void ouch(char* imagePath)
 	else
 		while (isRunning && runPool(ouchPtr));
 
-	shutdown(ouchPtr);
+	log("\n");
+	shutdown(imagePath, ouchPtr);
 }
 
 void test(char* imagePath, int l)
