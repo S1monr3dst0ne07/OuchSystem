@@ -12,7 +12,7 @@
 #endif
 
 
-void log(char* msg)
+void logg(char* msg)
 {
 	printf(msg);
 

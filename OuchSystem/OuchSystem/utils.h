@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 
-void log(char* msg);
+void logg(char* msg);
 
 char consu(char* s, int* i);
 bool charInString(char* str, char c);

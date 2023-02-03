@@ -107,7 +107,7 @@ bool writeStream(struct stream* stm, S1Int val)
 void logStackCorrSc(enum S1Syscall sc)
 {
     sprintf(cTemp, "Syscall 0x%x: Stack corrupted\n", sc);
-    log(cTemp);
+    logg(cTemp);
 }
 
 bool syscallStackPull(struct process* proc, S1Int* val, enum S1Syscall callType)
@@ -128,7 +128,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 {
     struct streamPool* river = ouch->river;
     //sprintf(cTemp, "Syscall 0x%x\n", callType);
-    //log(cTemp);
+    //logg(cTemp);
 
     S1Int id = 0;
     struct stream* stm;

@@ -1,6 +1,8 @@
 #ifndef HPROCESS
 #define HPROCESS
 
+#include "syscall.h"
+
 #include <stdbool.h>
 #include <stdlib.h>
 

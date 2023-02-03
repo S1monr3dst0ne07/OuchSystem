@@ -37,8 +37,8 @@ struct fileNode* mountRootImage(char* path);
 void freeFileSystem(struct fileNode* root);
 void unmountRootImage(char* path, struct fileNode* root);
 
-struct fileNode* getSubNodeByName(struct fileNode* top, char* name);
-struct fileNode* getNodeByPath(struct fileNode* root, struct filePath* path);
+//struct fileNode* getSubNodeByName(struct fileNode* top, char* name);
+//struct fileNode* getNodeByPath(struct fileNode* root, struct filePath* path);
 
 struct filePath
 {

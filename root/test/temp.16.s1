@@ -851,6 +851,10 @@ lab readDone
 lDA 50
 pha 
 jmS String::PrintString
+clr 
+set 10
+add 
+putstr 
 lDA 49
 sAD 14
 lab writeLoop

@@ -7,18 +7,19 @@
 
 #include <signal.h>
 #include <string.h>
+#include <stdio.h>
 
 static volatile bool isRunning = true;
 char cTemp[2048];
 
 void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 {
-	log("Launching auto startup processes\n\n");
+	logg("Launching auto startup processes\n\n");
 	char* autoStartupFile = readFileContent(ouch, autoPath);
 	
 	if (autoStartupFile == NULL)
 	{
-		log("Unable to read auto.och file\n");
+		logg("Unable to read auto.och file\n");
 		return;
 	}
 
@@ -27,17 +28,17 @@ void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 	while (splitPtr != NULL)
 	{
 		sprintf(cTemp, "Launching '%s' ... \n", splitPtr);
-		log(cTemp);
+		logg(cTemp);
 
 		bool success = launchProcessFromPath(splitPtr, ouch);
-		if (success) log("OK\n");
-		else         log("Failed\n");
+		if (success) logg("OK\n");
+		else         logg("Failed\n");
 		
 		splitPtr = strtok(NULL, "\n");
 	}
 
 	free(autoStartupFile);
-	log("\nOK\n");
+	logg("\nOK\n");
 }
 
 bool launchProcessFromPath(char* pathStr, struct system* ouch)
@@ -59,9 +60,9 @@ bool launchProcessFromPath(char* pathStr, struct system* ouch)
 //only one instance of struct system can exist
 struct system boot(char* imagePath)
 {
-	log("Booting Ouch 1.0 ...\n");
+	logg("Booting Ouch 1.0 ...\n");
 
-	log("\n");
+	logg("\n");
 
 	struct system ouch = {
 		.root  = mountRootImage(imagePath),
@@ -70,21 +71,21 @@ struct system boot(char* imagePath)
 	};
 
 
-	log("\n");
+	logg("\n");
 
 	struct filePath* autoPath = parseFilePath("auto.och");
 	launchAutoProcesses(autoPath, &ouch);
 	freeFilePath(autoPath);
 
-	log("\n");
+	logg("\n");
 
-	log("Booting complete\n");
+	logg("Booting complete\n");
 	return ouch;
 }
 
 void shutdown(char* imagePath, struct system* ouch)
 {
-	log("Shutting down\n");
+	logg("Shutting down\n");
 
 	//file system writeback and dealloc
 	struct fileNode* root = ouch->root;
@@ -100,7 +101,7 @@ void shutdown(char* imagePath, struct system* ouch)
 void sigHandler(int sig)
 {
 	sprintf(cTemp, "Signal detected: %d", sig);
-	log(cTemp);
+	logg(cTemp);
 	isRunning = false;
 }
 
@@ -109,15 +110,15 @@ void ouch(char* imagePath)
 	signal(SIGINT, sigHandler);
 	struct system ouch = boot(imagePath);
 	struct system* ouchPtr = &ouch;
-	log("\n");
+	logg("\n");
 
 	//check for root
 	if (!ouchPtr->root)
-		log("Booting failed, shuting down\n");	
+		logg("Booting failed, shuting down\n");	
 	else
 		while (isRunning && runPool(ouchPtr));
 
-	log("\n");
+	logg("\n");
 	shutdown(imagePath, ouchPtr);
 }
 

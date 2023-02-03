@@ -55,7 +55,6 @@ file stuff
 --- files ---
 0x0010 -> open object in file system
     opens object in file system as stream give it's path
-    write back of file will only occur if output buffer is not empty
     arguments: path pointer (pointer to char array)
     returns  : id
 

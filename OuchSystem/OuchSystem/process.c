@@ -201,7 +201,7 @@ struct process* parseProcess(char* source)
     //get instruction count
     int rawInstCount = getInstCount(source);
     sprintf(cTemp, "Parsing process, %d insts found\n", rawInstCount);
-    log(cTemp);
+    logg(cTemp);
 
 
     //alloc
@@ -238,7 +238,7 @@ struct process* parseProcess(char* source)
         if (!inst)
         {
             sprintf(cTemp, "Invaild operation '%s' found while parsing\n", opStr);
-            log(cTemp);
+            logg(cTemp);
             return NULL;
         }
 
@@ -255,7 +255,7 @@ struct process* parseProcess(char* source)
             if (address < 0)
             {
                 sprintf(cTemp, "Undefined label '%s' found while parsing\n", argStr);
-                log(cTemp);
+                logg(cTemp);
                 return NULL;
             }
 
@@ -414,7 +414,7 @@ bool runPool(struct system* ouch)
 
         case rtExit:
             //remove 
-            log("Process finished, removing\n");
+            logg("Process finished, removing\n");
             removeProcessList(curList, ouch);
             break;
 
@@ -575,7 +575,7 @@ enum returnCodes runProcess(struct process* proc)
 
     case out:
         sprintf(cTemp, "%d\n", mem[arg]);
-        log(cTemp);
+        logg(cTemp);
         break;
 
     case got:
@@ -612,7 +612,7 @@ enum returnCodes runProcess(struct process* proc)
         success = stackPush(stack, stackPtr, acc);
         if (!success)
         {
-            log("Stackoverflow, killing process\n");
+            logg("Stackoverflow, killing process\n");
             return rtExit;
         }
         break;
@@ -621,7 +621,7 @@ enum returnCodes runProcess(struct process* proc)
         success = stackPull(stack, stackPtr, acc);
         if (!success)
         {
-            log("Stackunderflow, killing process\n");
+            logg("Stackunderflow, killing process\n");
             return rtExit;
         }
         break;
@@ -680,7 +680,7 @@ enum returnCodes runProcess(struct process* proc)
         else
         {
             sprintf(cTemp, "Chunk (ptr: %d, size: %d) could not be found", freeBase, freeSize);
-            log(cTemp);
+            logg(cTemp);
         }
 
         break;
