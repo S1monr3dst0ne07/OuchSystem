@@ -1,10 +1,9 @@
 #ifndef HPROCESS
 #define HPROCESS
 
-#include "syscall.h"
-
 #include <stdbool.h>
 #include <stdlib.h>
+#include "syscall.h"
 
 #define rawInstBufferLimit 128
 #define c16bitIntLimit (1 << 16)
@@ -119,8 +118,6 @@ bool removeProcess(struct process* proc, struct system* ouch);
 void freeProcPool(struct system* ouch);
 bool runPool(struct system* ouch);
 
-bool stackPush(S1Int* stack, int* stackPtr, S1Int* value);
-bool stackPull(S1Int* stack, int* stackPtr, S1Int* value);
 bool processStackPush(struct process* proc, S1Int* value);
 bool processStackPull(struct process* proc, S1Int* value);
 

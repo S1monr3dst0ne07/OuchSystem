@@ -1,9 +1,9 @@
 
-#include "kernal.h"
 #include "utils.h"
 #include "files.h"
 #include "process.h"
 #include "syscall.h"
+#include "kernal.h"
 
 #include <signal.h>
 #include <string.h>

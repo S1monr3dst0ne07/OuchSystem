@@ -1,11 +1,11 @@
 
+#include "utils.h"
 #include "files.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "utils.h"
 
 //temporary buffer for parsing and generating
 struct rawImage

@@ -1,9 +1,8 @@
 
-#include "syscall.h"
 
 #include "files.h"
 #include "kernal.h"
-
+#include "syscall.h"
 
 struct streamPool* allocStreamPool()
 {
