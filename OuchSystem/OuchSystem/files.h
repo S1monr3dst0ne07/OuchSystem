@@ -13,8 +13,6 @@
 //i hate microsoft
 #define _CRT_NONSTDC_NO_DEPRECATE
 
-char cTemp[2048];
-
 struct fileNode
 {
 	char* name;

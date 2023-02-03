@@ -4,10 +4,15 @@
 #include "files.h"
 #include "utils.h"
 
+#if _WIN32
+#define imgPath "D:\\ProjekteC\\OuchSystem\\image.bin"
+#else
+#define imgPath "/data/ouch/image.bin"
+#endif
 
 int main()
 {
-	ouch("D:\\ProjekteC\\OuchSystem\\image.bin");
+	ouch(imgPath);
 
 	return 0;
 }

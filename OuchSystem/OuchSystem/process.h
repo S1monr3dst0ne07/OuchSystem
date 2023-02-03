@@ -9,7 +9,6 @@
 #define c16bitIntLimit (1 << 16)
 
 typedef unsigned short int S1Int;
-char cTemp[2048];
 
 #define S1IntBufferSize (c16bitIntLimit * sizeof(S1Int))
 
