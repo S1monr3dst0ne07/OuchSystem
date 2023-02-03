@@ -43,9 +43,7 @@ char consImage(struct rawImage* image)
 { return image->rawContent[image->index++]; }
 
 void pushImage(struct rawImage* image, char c)
-{ 
-	printf("pushImg: %x\n", c);
-	image->rawContent[image->index++] = c; }
+{ image->rawContent[image->index++] = c; }
 
 //reads 0x01 terminated string
 char* readTermed(struct rawImage* image)
@@ -112,7 +110,6 @@ struct fileNode* parseNode(struct rawImage* image)
 
 void writeTermed(struct rawImage* image, char* str)
 {
-	printf("writeTermed: %s\n", str);
 	for (int i = 0; str[i]; i++) pushImage(image, str[i]);
 	pushImage(image, imageTermi); //termi
 }

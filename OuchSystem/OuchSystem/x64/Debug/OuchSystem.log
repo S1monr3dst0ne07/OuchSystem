@@ -1,4 +1,4 @@
 ﻿  files.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(195,14): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(184,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(192,14): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(181,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   OuchSystem.vcxproj -> D:\ProjekteC\OuchSystem\OuchSystem\x64\Debug\OuchSystem.exe
