@@ -399,11 +399,11 @@ enum returnCodes runProcess(struct process* proc)
         *acc |= *reg;
         break;
 
-    caseand :
+    case and:
         *acc &= *reg;
         break;
 
-    casexor :
+    case xor:
         *acc ^= *reg;
         break;
 

@@ -1,19 +1,7 @@
-﻿  files.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(192,14): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(181,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  kernal.c
-  main.c
-  process.c
+﻿  process.c
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(37,21): warning C4047: '=': 'int' differs in levels of indirection from 'void *'
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(85,13): warning C4013: 'strcmp' undefined; assuming extern returning int
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(203,5): warning C4013: 'sprintf' undefined; assuming extern returning int
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(277,5): warning C4013: 'memset' undefined; assuming extern returning int
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(509,9): warning C4013: 'printf' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(402,13): warning C4102: 'caseand': unreferenced label
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(406,13): warning C4102: 'casexor': unreferenced label
-  syscall.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(11,5): warning C4013: 'memset' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(51,21): warning C4013: 'strlen' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(108,5): warning C4013: 'sprintf' undefined; assuming extern returning int
-  Generating Code...
   OuchSystem.vcxproj -> D:\ProjekteC\OuchSystem\OuchSystem\x64\Debug\OuchSystem.exe

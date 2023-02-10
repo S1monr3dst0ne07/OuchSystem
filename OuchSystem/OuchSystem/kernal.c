@@ -12,6 +12,18 @@
 static volatile bool isRunning = true;
 char cTemp[2048];
 
+/*
+This is the ouch operating system, meant to run and server s1asm processes
+Ouch has three major components: The file system, the stream manager and the process manager
+
+The file system contains files, like in conventional system, for data and executables
+The stream manager and subsequently stream in general, are used for
+interaction between a process and the operating system itself (file io, networking, etc.)
+
+
+*/
+
+
 void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 {
 	logg("Launching auto startup processes\n\n");
@@ -108,6 +120,7 @@ void sigHandler(int sig)
 void ouch(char* imagePath)
 {
 	signal(SIGINT, sigHandler);
+	signal(SIGTERM, sigHandler);
 	struct system ouch = boot(imagePath);
 	struct system* ouchPtr = &ouch;
 	logg("\n");
