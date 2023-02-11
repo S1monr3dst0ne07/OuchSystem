@@ -4,6 +4,8 @@ import sys, os
 import functools
 from functools import reduce
 import operator
+import time
+import copy
 
 TERMI = 0x01
 
@@ -28,6 +30,14 @@ class cNode:
             if xSub.xName == xName:
                 return xSub
         return None
+    
+    def GetNodeByPath(self, xPath):
+        if len(xPath) == 0: return self
+        
+        xHead, *xTail = xPath
+        xNode = self.GetSub(xHead)        
+        return xNode.GetNodeByPath(xTail)
+        
         
        
     @staticmethod 
@@ -123,13 +133,16 @@ class cNode:
     
 def repl():
     xBuffer = None
+    xTime = 0.0
     
     while True:
         try:
             
-            xInj = input(f'{xBuffer} ').lower().strip()
+            xInj = input(f'{xTime}s {xBuffer} ').lower().strip()
             xInjs = xInj.split(" ")
             if len(xInjs) < 1: continue
+            
+            xStart = time.time()
             
             xOp, *xArgs = xInjs
             if xOp == 'drop':
@@ -158,28 +171,28 @@ def repl():
                 
             elif xOp == 'cat':
                 xPath = xArgs[0].split("/")
+                xNode = xBuffer.GetNodeByPath(xPath)
+                print(xNode.xContent)
                 
-                xTerv = xBuffer
-                for xSub in xPath:
-                    xTemp = xTerv.GetSub(xSub)
-                    if xTemp:
-                        xTrev = xTemp
-                
-                print(xTrev.xContent)
+            elif xOp == 'len':
+                xPath = xArgs[0].split("/")
+                xNode = xBuffer.GetNodeByPath(xPath)
+                xLen = len(xNode.xContent)
+                print(f'{xArgs[0]}: {xLen}')
                 
             elif xOp == 'exit':
                 break
             elif xOp == 'clear':
                 os.system("cls")
                 
-                
+            xEnd = time.time()
+            xTime = xEnd - xStart
 
         except KeyboardInterrupt:
             break
 
-        #except Exception:
-        #    import traceback
-        #    print(traceback.format_exc())
+        except Exception as E:
+            print(E)
 
 if __name__ == '__main__':
     repl()
