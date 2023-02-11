@@ -22,6 +22,13 @@ class cNode:
         self.xContent   = xContent
         self.xSubNodes  = xSubNodes
         
+        
+    def GetSub(self, xName):
+        for xSub in self.xSubNodes:
+            if xSub.xName == xName:
+                return xSub
+        return None
+        
        
     @staticmethod 
     def LoadHost(xPath):
@@ -58,6 +65,8 @@ class cNode:
         
         return xNew
     
+        
+    
     def SaveRoot(self, xPath):
         xBin = self.GetBin()
         print(xBin)
@@ -77,6 +86,39 @@ class cNode:
         print(f'{"    " * xLvl}{self.xName} {self.xPrior}')
         for xSub in self.xSubNodes:
             xSub.List(xLvl=xLvl+1)
+
+    @staticmethod
+    def LoadRoot(xRaw):
+        assert xRaw.pop(0) == 0x10
+    
+        xName = []
+        while ((xTemp := xRaw.pop(0)) != TERMI): xName.append(xTemp)
+    
+        xPrior = xRaw.pop(0)
+        assert xRaw.pop(0) == TERMI
+        
+        xIsFile = xRaw.pop(0) == 0x12
+        xContent = []
+        xSubNodes = []
+        if xIsFile:
+            while xRaw[0] != TERMI:
+                xContent.append(xRaw.pop(0))
+            
+        else:
+            while xRaw[0] == 0x10:
+                xSubNodes.append(cNode.LoadRoot(xRaw))
+
+        assert xRaw.pop(0) == TERMI
+                            
+        return cNode(
+            xName = "".join(map(chr, xName)),
+            xPrior = xPrior,
+            xIsFile = xIsFile,
+            xContent = "".join(map(chr, xContent)),
+            xSubNodes = xSubNodes,    
+        )
+
+
     
     
 def repl():
@@ -107,11 +149,37 @@ def repl():
                 
                 xBuffer.SaveRoot(xPath)
                 
+            elif xOp == 'loadroot':
+                with open(xArgs[0], "rb") as xFile:
+                    xBin = list(xFile.read())
+
+                xBuffer = cNode.LoadRoot(xBin)
+
+                
+            elif xOp == 'cat':
+                xPath = xArgs[0].split("/")
+                
+                xTerv = xBuffer
+                for xSub in xPath:
+                    xTemp = xTerv.GetSub(xSub)
+                    if xTemp:
+                        xTrev = xTemp
+                
+                print(xTrev.xContent)
+                
+            elif xOp == 'exit':
+                break
+            elif xOp == 'clear':
+                os.system("cls")
+                
+                
 
         except KeyboardInterrupt:
-            break        
-        except Exception as E:
-            print(E)
+            break
+
+        #except Exception:
+        #    import traceback
+        #    print(traceback.format_exc())
 
 if __name__ == '__main__':
     repl()
