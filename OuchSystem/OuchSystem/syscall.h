@@ -6,6 +6,10 @@
 
 #include <stdlib.h>
 
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
 #define streamOutputSize (1 << 16)
 #define riverListSize 65535
 #define networkBufferSize 1024

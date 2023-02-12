@@ -175,6 +175,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     struct stream* stm;
     S1Int success;
     S1Int data;
+    struct sockaddr_in netAddr;
 
     switch (callType)
     {
@@ -283,7 +284,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         if (!syscallStackPull(proc, &port, callType)) break;
 
         //set sockaddr_in
-        struct sockaddr_in netAddr = proc->netAddr;
+        netAddr = proc->netAddr;
         netAddr.sin_port = htons(port);
 
         //bind
@@ -298,11 +299,11 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         break;
 
     case scAcctSock:;
-        struct sockaddr_in netAddr = proc->netAddr;
+        netAddr = proc->netAddr;
         int addrlen = sizeof(netAddr);
 
         //int -1 casts to 65535 in short, so it SHOULD work
-        S1Int sock = accept(proc->procSock, (struct sockaddr*)& netAddr, (socklen_t*)&addlen);
+        S1Int sock = accept(proc->procSock, (struct sockaddr*)& netAddr, (socklen_t*)&addrlen);
 
         struct stream* stm = createStream(content);
         stm->type = stmTypSocket;
