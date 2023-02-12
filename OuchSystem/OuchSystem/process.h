@@ -4,6 +4,10 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
 
 #define rawInstBufferLimit 128
 #define c16bitIntLimit (1 << 16)
@@ -14,40 +18,40 @@ typedef unsigned short int S1Int;
 
 enum s1Insts
 {
-    invalid = 0,
-    set     = 1,
-    add,
-    sub,
-    shg,
-    shs,
-    lor,
-    and,
-    xor,
-    not,
-    lDA,
-    lDR,
-    sAD,
-    sRD,
-    lPA,
-    lPR,
-    sAP,
-    sRP,
-    out,
-    got,
-    jm0,
-    jmA,
-    jmG,
-    jmL,
-    jmS,
-    ret,
-    pha,
-    pla,
-    brk,
-    clr,
-    putstr,
-    ahm,
-    fhm,
-    syscall,
+    s1Invalid = 0,
+    s1Set     = 1,
+    s1Add,
+    s1Sub,
+    s1Shg,
+    s1Shs,
+    s1Lor,
+    s1And,
+    s1Xor,
+    s1Not,
+    s1LDA,
+    s1LDR,
+    s1SAD,
+    s1SRD,
+    s1LPA,
+    s1LPR,
+    s1SAP,
+    s1SRP,
+    s1Out,
+    s1Got,
+    s1Jm0,
+    s1JmA,
+    s1JmG,
+    s1JmL,
+    s1JmS,
+    s1Ret,
+    s1Pha,
+    s1Pla,
+    s1Brk,
+    s1Clr,
+    s1Putstr,
+    s1Ahm,
+    s1Fhm,
+    s1Syscall,
 };
 
 enum S1Syscall
@@ -103,6 +107,7 @@ struct S1HeapChunk
 
 struct process
 {
+    //internals
 	int ip;
 	struct inst* prog;
     int progSize;
@@ -116,7 +121,13 @@ struct process
     S1Int acc;
     S1Int reg;
 
+    //syscall
     enum S1Syscall lastSyscall;
+
+    //network hell
+    int procSock;
+    struct sockaddr_in netAddr;
+
 };
 
 

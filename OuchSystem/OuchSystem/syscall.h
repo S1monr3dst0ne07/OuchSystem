@@ -34,8 +34,9 @@ struct stream
     enum streamType type;
 
     //general metadata
-    // stmTypFile -> file path
-    char* meta;
+    // stmTypFile   -> file path
+    // stmTypSocket -> socket fd 
+    void* meta;
 };
 
 

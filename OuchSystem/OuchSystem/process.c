@@ -5,7 +5,7 @@
 #include "process.h"
 
 #include <stdlib.h>
-
+#include <string.h>
 
 //c is a good language, but some parts are just so fucking dumb
 //like why do have to do this shit when we want to make a mapper from string to enum
@@ -43,40 +43,40 @@ struct S1HeapChunk* allocS1HeapChunk()
 enum s1Insts str2s1(char* str)
 {
     static s1Entry map[] = {
-        ENTRY(invalid),
-        ENTRY(set),
-        ENTRY(add),
-        ENTRY(sub),
-        ENTRY(shg),
-        ENTRY(shs),
-        ENTRY(lor),
-        ENTRY(and),
-        ENTRY(xor),
-        ENTRY(not),
-        ENTRY(lDA),
-        ENTRY(lDR),
-        ENTRY(sAD),
-        ENTRY(sRD),
-        ENTRY(lPA),
-        ENTRY(lPR),
-        ENTRY(sAP),
-        ENTRY(sRP),
-        ENTRY(out),
-        ENTRY(got),
-        ENTRY(jm0),
-        ENTRY(jmA),
-        ENTRY(jmG),
-        ENTRY(jmL),
-        ENTRY(jmS),
-        ENTRY(ret),
-        ENTRY(pha),
-        ENTRY(pla),
-        ENTRY(brk),
-        ENTRY(clr),
-        ENTRY(putstr),
-        ENTRY(ahm),
-        ENTRY(fhm),
-        ENTRY(syscall),
+        ENTRY(s1Invalid),
+        ENTRY(s1Set),
+        ENTRY(s1Add),
+        ENTRY(s1Sub),
+        ENTRY(s1Shg),
+        ENTRY(s1Shs),
+        ENTRY(s1Lor),
+        ENTRY(s1And),
+        ENTRY(s1Xor),
+        ENTRY(s1Not),
+        ENTRY(s1LDA),
+        ENTRY(s1LDR),
+        ENTRY(s1SAD),
+        ENTRY(s1SRD),
+        ENTRY(s1LPA),
+        ENTRY(s1LPR),
+        ENTRY(s1SAP),
+        ENTRY(s1SRP),
+        ENTRY(s1Out),
+        ENTRY(s1Got),
+        ENTRY(s1Jm0),
+        ENTRY(s1JmA),
+        ENTRY(s1JmG),
+        ENTRY(s1JmL),
+        ENTRY(s1JmS),
+        ENTRY(s1Ret),
+        ENTRY(s1Pha),
+        ENTRY(s1Pla),
+        ENTRY(s1Brk),
+        ENTRY(s1Clr),
+        ENTRY(s1Putstr),
+        ENTRY(s1Ahm),
+        ENTRY(s1Fhm),
+        ENTRY(s1Syscall),
     };
 
     static const unsigned size = sizeof(map) / sizeof(map[0]);
