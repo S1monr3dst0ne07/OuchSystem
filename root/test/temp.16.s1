@@ -152,6 +152,11 @@ got done
 lab Temp0
 got pri
 lab done
+clr 
+set 42069
+add 
+sAD 2
+out 2
 got loop
 brk 
 lab _WriteChar

@@ -115,6 +115,7 @@ void updateStreams(struct system* ouch)
         if (stm->type != stmTypSocket) continue;
 
         //read
+        /*
         memset(buffer, 0x0, networkBufferSize);
         if (0 <= recv(stm->meta, buffer, networkBufferSize, MSG_DONTWAIT))
         {
@@ -130,7 +131,7 @@ void updateStreams(struct system* ouch)
             free(stm->readContent);
             stm->readSize  = readSize;
             stm->readIndex = 0;
-        }
+        }*/
 
         //write
         if (0 <= send(stm->meta, stm->writeContent, strlen(stm->writeContent), 0))
@@ -316,6 +317,25 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
 
         if (!syscallStackPush(proc, &id, callType)) break;
+        break;
+    
+    case scCloseSock:;
+        if (!syscallStackPull(proc, &id, callType)) break;
+
+        stm = getStream(id, ouch);
+        if (stm)
+        {
+            //close socket
+            success = (0 <= close(stm->meta));
+
+            //free and reset container
+            river->count--;
+            freeStream(stm);
+            river->container[id2i(id)] = NULL;
+        }
+        else success = false;
+
+        if (!syscallStackPush(proc, &success, callType)) break;
         break;
     }
 
