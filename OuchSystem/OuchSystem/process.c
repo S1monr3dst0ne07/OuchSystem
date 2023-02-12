@@ -206,7 +206,11 @@ struct process* parseProcess(char* source)
 
     //tokenize to rawInst
     bool success = tokenize(source, rawInstCount, rawInstBuffer);
-    if (!success) return NULL;
+    if (!success)
+    {
+        free(rawInstBuffer);
+        return NULL;
+    }
 
     //count labels
     int labelCount = getLabelCount(rawInstBuffer, rawInstCount);
@@ -253,6 +257,10 @@ struct process* parseProcess(char* source)
             {
                 sprintf(cTemp, "Undefined label '%s' found while parsing\n", argStr);
                 logg(cTemp);
+
+                free(rawInstBuffer);
+                free(labelMapper);
+                free(prog);
                 return NULL;
             }
 
@@ -282,6 +290,14 @@ struct process* parseProcess(char* source)
 
     free(rawInstBuffer);
     free(labelMapper);
+
+    //network
+    if ((proc->procSock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0)) < 0)
+    {
+        freeProcess(proc);
+        return NULL;
+    }
+
     return proc;
 }
 
@@ -593,6 +609,9 @@ void launchProcess(struct process* proc, struct system* ouch)
 
 void freeProcess(struct process* proc)
 {
+    //network
+    shutdown(proc->procSock, SHUT_RDWR);
+
     //free heap
     struct S1HeapChunk* temp = proc->heap;
     while (temp != NULL)
