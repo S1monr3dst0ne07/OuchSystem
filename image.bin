@@ -11,6 +11,148 @@ pla
 sAD 1
 sAD 2
 out 2
+clr 
+set 4
+add 
+sAD 0
+set 1
+add 
+sAD 3
+set 28
+jmS _WriteChar
+set 72
+jmS _WriteChar
+set 101
+jmS _WriteChar
+set 108
+jmS _WriteChar
+set 108
+jmS _WriteChar
+set 111
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 102
+jmS _WriteChar
+set 114
+jmS _WriteChar
+set 111
+jmS _WriteChar
+set 109
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 110
+jmS _WriteChar
+set 101
+jmS _WriteChar
+set 116
+jmS _WriteChar
+set 119
+jmS _WriteChar
+set 111
+jmS _WriteChar
+set 114
+jmS _WriteChar
+set 107
+jmS _WriteChar
+set 46
+jmS _WriteChar
+set 98
+jmS _WriteChar
+set 97
+jmS _WriteChar
+set 97
+jmS _WriteChar
+set 98
+jmS _WriteChar
+set 110
+jmS _WriteChar
+set 113
+jmS _WriteChar
+set 10
+jmS _WriteChar
+set 0
+jmS _WriteChar
+lab loop
+syscall 49
+pla 
+sAD 32
+clr 
+sAD 33
+lab wait
+lDA 33
+pha 
+clr 
+set 1
+add 
+sAD 2
+pla 
+lDR 2
+add 
+sAD 33
+pha 
+clr 
+set 10000
+add 
+sAD 2
+pla 
+lDR 2
+jmL wait
+lDA 32
+pha 
+clr 
+sAD 2
+pla 
+lDR 2
+jmA loop
+lDA 32
+sAD 2
+out 2
+lDA 3
+sAD 34
+lab pri
+lPA 34
+sAD 35
+sAD 2
+out 2
+lDA 35
+pha 
+clr 
+sAD 2
+pla 
+lDR 2
+jmA done
+lDA 34
+pha 
+clr 
+set 1
+add 
+sAD 2
+pla 
+lDR 2
+add 
+sAD 34
+lDA 32
+pha 
+lDA 35
+pha 
+syscall 3
+pla 
+sAD 1
+pha 
+clr 
+set 1
+add 
+sAD 2
+pla 
+lDR 2
+jmA Temp0
+got done
+lab Temp0
+got pri
+lab done
+got loop
 brk 
 lab _WriteChar
 sRP 0

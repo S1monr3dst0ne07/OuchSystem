@@ -302,13 +302,17 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         netAddr = proc->netAddr;
         int addrlen = sizeof(netAddr);
 
-        //int -1 casts to 65535 in short, so it SHOULD work
-        S1Int sock = accept(proc->procSock, (struct sockaddr*)& netAddr, (socklen_t*)&addrlen);
+        int sock = accept(proc->procSock, (struct sockaddr*)& netAddr, (socklen_t*)&addrlen);
 
-        struct stream* stm = createStream(content);
-        stm->type = stmTypSocket;
-        stm->meta = sock;
-        id = injectStream(stm, ouch);
+        if (0 <= sock)
+        {
+            struct stream* stm = createStream(content);
+            stm->type = stmTypSocket;
+            stm->meta = sock;
+            id = injectStream(stm, ouch);
+        }
+        else
+            id = 0x0;
 
 
         if (!syscallStackPush(proc, &id, callType)) break;
