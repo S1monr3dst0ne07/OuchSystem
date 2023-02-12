@@ -70,7 +70,7 @@ bool launchProcessFromPath(char* pathStr, struct system* ouch)
 }
 
 //only one instance of struct system can exist
-struct system boot(char* imagePath)
+struct system bootOuch(char* imagePath)
 {
 	logg("Booting Ouch 1.0 ...\n");
 
@@ -95,7 +95,7 @@ struct system boot(char* imagePath)
 	return ouch;
 }
 
-void shutdown(char* imagePath, struct system* ouch)
+void shutdownOuch(char* imagePath, struct system* ouch)
 {
 	logg("Shutting down\n");
 
@@ -121,7 +121,7 @@ void ouch(char* imagePath)
 {
 	signal(SIGINT, sigHandler);
 	signal(SIGTERM, sigHandler);
-	struct system ouch = boot(imagePath);
+	struct system ouch = bootOuch(imagePath);
 	struct system* ouchPtr = &ouch;
 	logg("\n");
 
@@ -132,7 +132,7 @@ void ouch(char* imagePath)
 		while (isRunning && runPool(ouchPtr));
 
 	logg("\n");
-	shutdown(imagePath, ouchPtr);
+	shutdownOuch(imagePath, ouchPtr);
 }
 
 void test(char* imagePath, int l)
