@@ -86,7 +86,7 @@ enum s1Insts str2s1(char* str)
             return map[i].inst;
     }
 
-    return invalid;
+    return s1Invalid;
 }
 #undef ENTRY
 
@@ -375,111 +375,111 @@ enum returnCodes runProcess(struct process* proc)
 
     switch (op)
     {
-    case set:
+    case s1Set:
         *reg = (S1Int)arg;
         break;
 
-    case add:
+    case s1Add:
         *acc += *reg;
         break;
 
-    case sub:
+    case s1Sub:
         *acc -= *reg;
         break;
 
-    case shg:
+    case s1Shg:
         *acc <<= 1;
         break;
 
-    case shs:
+    case s1Shs:
         *acc >>= 1;
         break;
 
-    case lor:
+    case s1Lor:
         *acc |= *reg;
         break;
 
-    case and:
+    case s1And:
         *acc &= *reg;
         break;
 
-    case xor:
+    case s1Xor:
         *acc ^= *reg;
         break;
 
-    case not:
+    case s1Not:
         *acc = ~*acc;
         break;
 
-    case lDA:
+    case s1LDA:
         *acc = mem[arg];
         break;
 
-    case lDR:
+    case s1LDR:
         *reg = mem[arg];
         break;
 
-    case sAD:
+    case s1SAD:
         mem[arg] = *acc;
         break;
 
-    case sRD:
+    case s1SRD:
         mem[arg] = *reg;
         break;
 
 
-    case lPA:
+    case s1LPA:
         *acc = mem[(int)mem[arg]];
         break;
 
-    case lPR:
+    case s1LPR:
         *reg = mem[(int)mem[arg]];
         break;
 
-    case sAP:
+    case s1SAP:
         mem[(int)mem[arg]] = *acc;
         break;
 
-    case sRP:
+    case s1SRP:
         mem[(int)mem[arg]] = *reg;
         break;
 
-    case out:
+    case s1Out:
         sprintf(cTemp, "%d\n", mem[arg]);
         logg(cTemp);
         break;
 
-    case got:
+    case s1Got:
         *ip = (int)arg;
         break;
 
-    case jm0:
+    case s1Jm0:
         if (*acc == 0) *ip = arg;
         break;
 
-    case jmA:
+    case s1JmA:
         if (*acc == *reg) *ip = arg;
         break;
 
-    case jmG:
+    case s1JmG:
         if (*acc > *reg) *ip = arg;
         break;
 
-    case jmL:
+    case s1JmL:
         if (*acc < *reg) *ip = arg;
         break;
 
-    case jmS:
+    case s1JmS:
         //save the execPtr on the stack
         stack[(*stackPtr)++] = *ip;
         *ip = arg;
         break;
 
-    case ret:
+    case s1Ret:
         *ip = stack[--(*stackPtr)];
         break;
 
-    case pha:;
+    case s1Pha:;
         success = stackPush(stack, stackPtr, acc);
         if (!success)
         {
@@ -488,7 +488,7 @@ enum returnCodes runProcess(struct process* proc)
         }
         break;
 
-    case pla:;
+    case s1Pla:;
         success = stackPull(stack, stackPtr, acc);
         if (!success)
         {
@@ -497,19 +497,19 @@ enum returnCodes runProcess(struct process* proc)
         }
         break;
 
-    case brk:
+    case s1Brk:
         return rtExit;
 
-    case clr:
+    case s1Clr:
         *acc = 0;
         *reg = 0;
         break;
 
-    case putstr:
+    case s1Putstr:
         printf("%c", (char)*acc);
         break;
 
-    case ahm:;
+    case s1Ahm:;
         S1Int allocSize = *reg;
 
         struct S1HeapChunk* insertBase = findSpace(allocSize, proc->heap);
@@ -528,7 +528,7 @@ enum returnCodes runProcess(struct process* proc)
 
         break;
 
-    case fhm:;
+    case s1Fhm:;
         S1Int freeSize = *reg;
         S1Int freeBaseRaw = *acc;
         S1Int freeBase = freeBaseRaw & ~(1 << 15);
@@ -557,7 +557,7 @@ enum returnCodes runProcess(struct process* proc)
         break;
 
 
-    case syscall:
+    case s1Syscall:
         proc->lastSyscall = (enum S1Syscall)arg;
         return rtSyscall;
 
