@@ -298,6 +298,19 @@ struct process* parseProcess(char* source)
         return NULL;
     }
 
+    int opt = 1;
+    if (setsockopt(proc->procSock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, 
+        &opt, sizeof(opt)))
+    {
+        freeProcess(proc);
+        return NULL;
+    }
+
+    struct sockaddr_in* netAddr = &proc->netAddr;
+    netAddr->sin_family = AF_INET;
+    netAddr->sin_addr.s_addr = INADDR_ANY;
+    netAddr->sin_port = NULL;
+
     return proc;
 }
 

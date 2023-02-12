@@ -231,6 +231,29 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         freeFilePath(path);
         break;
+    
+    case scBindPort:;
+        S1Int port = 0;
+        S1Int queueSize = 0;
+        success = true;
+
+        if (!syscallStackPull(proc, &queueSize, callType)) break;
+        if (!syscallStackPull(proc, &port, callType)) break;
+
+        //set sockaddr_in
+        struct sockaddr_in netAddr = proc->netAddr;
+        netAddr.sin_port = htons(port);
+
+        //bind
+        if (bind(proc->procSock, (struct sockaddr*)&netAddr, sizeof(netAddr)) < 0)
+            success = false;
+
+        //listen
+        if (listen(proc->procSock, queueSize) < 0) 
+            success = false;
+
+        if (!syscallStackPush(proc, &success, callType)) break;
+        break;
     }
 
 
