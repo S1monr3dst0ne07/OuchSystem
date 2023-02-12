@@ -39,7 +39,6 @@ struct S1HeapChunk* allocS1HeapChunk()
     return temp;
 }
 
-#define ENTRY(x) {x, #x}
 enum s1Insts str2s1(char* str)
 {
     static s1Entry map[] = {
@@ -87,7 +86,6 @@ enum s1Insts str2s1(char* str)
 
     return s1Invalid;
 }
-#undef ENTRY
 
 
 
