@@ -152,9 +152,11 @@ got done
 lab Temp0
 got pri
 lab done
-clr 
-set 42069
-add 
+lDA 32
+pha 
+syscall 50
+pla 
+sAD 1
 sAD 2
 out 2
 got loop

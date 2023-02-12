@@ -102,8 +102,4 @@ file stuff
     arguments: 
     returns  : id (stream for sending data over the socket)
     
-0x0032 -> close connection
-    arguments: id
-    returns  : success (0 -> error, 1 -> success)
-    
 

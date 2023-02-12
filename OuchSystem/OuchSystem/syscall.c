@@ -16,7 +16,6 @@ struct streamPool* allocStreamPool()
 void freeStream(struct stream* stm)
 {
     free(stm->readContent);
-    free(stm->meta);
     free(stm);
 }
 
@@ -191,17 +190,25 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         stm = getStream(id, ouch);
         if (stm)
         {
-            //writeback
             
-            if (doWriteBack) switch (stm->type)
+            switch (stm->type)
             {
-            case 0:
+            case stmInvailed:
                 break;
-            case 1:;
-                struct filePath* path = parseFilePath(stm->meta);
-                success = writeFileContent(ouch, path, stm->writeContent);
-                freeFilePath(path);
+            case stmTypFile:;
+                //writeback
+                if (doWriteBack)
+                {
+                    struct filePath* path = parseFilePath(stm->meta);
+                    success = writeFileContent(ouch, path, stm->writeContent);
+                    freeFilePath(path);
+                }
 
+                free(stm->meta);
+                break;
+            case stmTypSocket:;
+                //close socket
+                success = (0 <= close(stm->meta));
                 break;
             default:
                 success = true;
@@ -307,7 +314,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         if (0 <= sock)
         {
-            struct stream* stm = createStream(content);
+            struct stream* stm = createStream((char*)malloc(sizeof(char)));
             stm->type = stmTypSocket;
             stm->meta = sock;
             id = injectStream(stm, ouch);
@@ -319,24 +326,6 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         if (!syscallStackPush(proc, &id, callType)) break;
         break;
     
-    case scCloseSock:;
-        if (!syscallStackPull(proc, &id, callType)) break;
-
-        stm = getStream(id, ouch);
-        if (stm)
-        {
-            //close socket
-            success = (0 <= close(stm->meta));
-
-            //free and reset container
-            river->count--;
-            freeStream(stm);
-            river->container[id2i(id)] = NULL;
-        }
-        else success = false;
-
-        if (!syscallStackPush(proc, &success, callType)) break;
-        break;
     }
 
 
