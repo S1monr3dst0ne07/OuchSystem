@@ -8,6 +8,7 @@
 
 #define streamOutputSize (1 << 16)
 #define riverListSize 65535
+#define networkBufferSize 1024
 
 #define i2id(x) x + 1
 #define id2i(x) x - 1
@@ -51,5 +52,6 @@ struct streamPool
 struct streamPool* allocStreamPool();
 void freeStreamPool(struct system* ouch);
 void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ouch);
+void updateStreams(struct system* ouch);
 
 #endif

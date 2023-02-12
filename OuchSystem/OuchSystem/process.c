@@ -294,6 +294,7 @@ struct process* parseProcess(char* source)
     //network
     if ((proc->procSock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0)) < 0)
     {
+        logg("Failed to open socket\n");
         freeProcess(proc);
         return NULL;
     }
@@ -302,6 +303,7 @@ struct process* parseProcess(char* source)
     if (setsockopt(proc->procSock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, 
         &opt, sizeof(opt)))
     {
+        logg("Failed to config socket\n");
         freeProcess(proc);
         return NULL;
     }
@@ -698,6 +700,9 @@ void freeProcPool(struct system* ouch)
 
 bool runPool(struct system* ouch)
 {
+    //update pool
+    updateStreams(ouch);
+
     struct procPool* pool = ouch->pool;
     struct procList* curList = pool->execPtr;
     if (curList)

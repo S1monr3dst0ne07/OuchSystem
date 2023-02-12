@@ -102,6 +102,48 @@ bool writeStream(struct stream* stm, S1Int val)
     return succ;
 }
 
+void updateStreams(struct system* ouch)
+{
+    struct streamPool* river = ouch->river;
+    char buffer[networkBufferSize];
+
+
+    //iterate river
+    for (int i = 0; i < river->count; i++)
+    {
+        struct stream* stm = river->container[i];
+        if (stm->type != stmTypSocket) continue;
+
+        //read
+        memset(buffer, 0x0, networkBufferSize);
+        if (0 <= recv(stm->meta, buffer, networkBufferSize, MSG_DONTWAIT))
+        {
+            int bufferSize = strlen(buffer);
+            int readDelta = stm->readSize - stm->readIndex;
+
+            //alloc new content
+            int readSize = bufferSize + readDelta;
+            char* readContentNew = (char*)malloc(sizeof(char) * readSize);
+            sprintf(readContentNew, "%s%s", stm->readContent+stm->readIndex, buffer);
+
+            //inject
+            free(stm->readContent);
+            stm->readSize  = readSize;
+            stm->readIndex = 0;
+        }
+
+        //write
+        if (0 <= send(stm->meta, stm->writeContent, strlen(stm->writeContent), 0))
+        {
+            memset(stm->writeContent, 0x0, streamOutputSize);
+            stm->writeIndex = 0;
+        }
+
+
+
+    }
+}
+
 
 void logStackCorrSc(enum S1Syscall sc)
 {
@@ -253,6 +295,22 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             success = false;
 
         if (!syscallStackPush(proc, &success, callType)) break;
+        break;
+
+    case scAcctSock:;
+        struct sockaddr_in netAddr = proc->netAddr;
+        int addrlen = sizeof(netAddr);
+
+        //int -1 casts to 65535 in short, so it SHOULD work
+        S1Int sock = accept(proc->procSock, (struct sockaddr*)& netAddr, (socklen_t*)&addlen);
+
+        struct stream* stm = createStream(content);
+        stm->type = stmTypSocket;
+        stm->meta = sock;
+        id = injectStream(stm, ouch);
+
+
+        if (!syscallStackPush(proc, &id, callType)) break;
         break;
     }
 
