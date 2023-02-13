@@ -117,6 +117,10 @@ void updateStreams(struct system* ouch)
         memset(buffer, 0x0, networkBufferSize);
         if (0 <= recv(stm->meta, buffer, networkBufferSize, MSG_DONTWAIT))
         {
+            printf("netBuffer: %s\n", buffer);
+            printf("stm->readSize:  %d\n", stm->readSize);
+            printf("stm->readIndex: %d\n", stm->readIndex);
+
             int bufferSize = strlen(buffer);
             int readDelta = stm->readSize - stm->readIndex;
 
@@ -137,7 +141,6 @@ void updateStreams(struct system* ouch)
             0 <= send(stm->meta, stm->writeContent, strlen(stm->writeContent), 0))
         {
             memset(stm->writeContent, 0x0, streamOutputSize);
-            printf("cur writeIndex: %d\n", stm->writeIndex);
             stm->writeIndex = 0;
         }
 
@@ -320,7 +323,10 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         if (0 <= sock)
         {
-            struct stream* stm = createStream((char*)malloc(sizeof(char)));
+            char* content = (char*)malloc(sizeof(char));
+            content[0] = '\x0';
+
+            struct stream* stm = createStream(content);
             stm->type = stmTypSocket;
             stm->meta = sock;
             id = injectStream(stm, ouch);
