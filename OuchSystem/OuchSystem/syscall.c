@@ -133,9 +133,12 @@ void updateStreams(struct system* ouch)
         }*/
 
         //write
-        if (0 <= send(stm->meta, stm->writeContent, strlen(stm->writeContent), 0))
+
+        if (stm->writeIndex > 0 &&
+            0 <= send(stm->meta, stm->writeContent, strlen(stm->writeContent), 0))
         {
             memset(stm->writeContent, 0x0, streamOutputSize);
+            printf("cur writeIndex: %d\n", stm->writeIndex);
             stm->writeIndex = 0;
         }
 

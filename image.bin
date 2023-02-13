@@ -151,7 +151,9 @@ got pri
 lab done
 lDA 32
 pha 
-syscall 50
+clr 
+pha 
+syscall 1
 pla 
 sAD 1
 sAD 2
