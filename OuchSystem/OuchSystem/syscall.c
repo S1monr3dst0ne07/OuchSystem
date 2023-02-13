@@ -114,7 +114,6 @@ void updateStreams(struct system* ouch)
         if (stm->type != stmTypSocket) continue;
 
         //read
-        /*
         memset(buffer, 0x0, networkBufferSize);
         if (0 <= recv(stm->meta, buffer, networkBufferSize, MSG_DONTWAIT))
         {
@@ -129,11 +128,11 @@ void updateStreams(struct system* ouch)
             //inject
             free(stm->readContent);
             stm->readSize  = readSize;
+            stm->readContent = readContentNew;
             stm->readIndex = 0;
-        }*/
+        }
 
         //write
-
         if (stm->writeIndex > 0 &&
             0 <= send(stm->meta, stm->writeContent, strlen(stm->writeContent), 0))
         {
@@ -229,6 +228,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         break;
 
     case scReadStm:;
+        updateStreams(ouch);
+
         if (!syscallStackPull(proc, &id, callType)) break;
 
         stm = getStream(id, ouch);
@@ -249,6 +250,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         success = (bool)stm && writeStream(stm, data);
 
         if (!syscallStackPush(proc, &success, callType)) break;
+
+        updateStreams(ouch);
         break;
     
     case scStmInfo:;

@@ -700,9 +700,6 @@ void freeProcPool(struct system* ouch)
 
 bool runPool(struct system* ouch)
 {
-    //update pool
-    updateStreams(ouch);
-
     struct procPool* pool = ouch->pool;
     struct procList* curList = pool->execPtr;
     if (curList)
