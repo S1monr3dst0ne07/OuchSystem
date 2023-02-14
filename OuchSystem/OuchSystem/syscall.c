@@ -4,6 +4,8 @@
 #include "kernal.h"
 #include "syscall.h"
 
+#include <errno.h>
+
 struct streamPool* allocStreamPool()
 {
     struct streamPool* stmPool = (struct streamPool*)malloc(sizeof(struct streamPool));
@@ -78,7 +80,6 @@ S1Int injectStream(struct stream* stm, struct system* ouch)
     return 0x0;
 }
 
-
 struct stream* getStream(S1Int id, struct system* ouch)
 {
     if (!isVaildStream(id, ouch)) return NULL;
@@ -110,17 +111,17 @@ void updateStreams(struct system* ouch)
     //iterate river
     for (int i = 0; i < river->count; i++)
     {
+        if (!isVaildStream(i2id(i), ouch)) continue;
         struct stream* stm = river->container[i];
         if (stm->type != stmTypSocket) continue;
 
         //read
         memset(buffer, 0x0, networkBufferSize);
-        if (0 <= recv(stm->meta, buffer, networkBufferSize, MSG_DONTWAIT))
-        {
-            printf("netBuffer: %s\n", buffer);
-            printf("stm->readSize:  %d\n", stm->readSize);
-            printf("stm->readIndex: %d\n", stm->readIndex);
+        int recvByteSize = recv(stm->meta, buffer, networkBufferSize, MSG_DONTWAIT);
+        int recvErrno = errno;
 
+        if (0 < recvByteSize)
+        {
             int bufferSize = strlen(buffer);
             int readDelta = stm->readSize - stm->readIndex;
 
@@ -135,6 +136,14 @@ void updateStreams(struct system* ouch)
             stm->readContent = readContentNew;
             stm->readIndex = 0;
         }
+        else if (recvErrno != EAGAIN || recvByteSize == 0)//kill stream if socket error
+        {
+            river->count--;
+            freeStream(stm);
+            river->container[i] = NULL;
+            continue;
+        }
+
 
         //write
         if (stm->writeIndex > 0 &&
@@ -179,7 +188,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     S1Int id = 0;
     struct stream* stm;
     S1Int success;
-    S1Int data;
+    S1Int data = 0;
     struct sockaddr_in netAddr;
 
     switch (callType)
@@ -224,6 +233,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             river->count--;
             freeStream(stm);
             river->container[id2i(id)] = NULL;
+
         }
         else success = false;        
 

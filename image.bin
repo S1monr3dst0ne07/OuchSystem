@@ -42,27 +42,7 @@ lab loop
 syscall 49
 pla 
 sAD 7
-clr 
-sAD 8
-lab wait
-lDA 8
-pha 
-clr 
-set 1
-add 
-sAD 6
-pla 
-lDR 6
-add 
-sAD 8
-pha 
-clr 
-set 10000
-add 
-sAD 6
-pla 
-lDR 6
-jmL wait
+jmS wait
 lDA 7
 pha 
 clr 
@@ -70,9 +50,6 @@ sAD 6
 pla 
 lDR 6
 jmA loop
-lDA 7
-sAD 6
-out 6
 lab catLoop
 lDA 7
 pha 
@@ -80,51 +57,38 @@ syscall 2
 pla 
 sAD 5
 pla 
-sAD 9
+sAD 8
+jmS wait
 lDA 5
 pha 
 clr 
-set 1
+sAD 6
+pla 
+lDR 6
+jmA catDone
+lDA 5
+pha 
+clr 
+set 2
 add 
 sAD 6
 pla 
 lDR 6
-jmA Temp0
-got catDone
-lab Temp0
-lDA 9
-putstr 
-lDA 9
-sAD 6
-out 6
+jmA catLoop
 lDA 7
 pha 
-lDA 9
+lDA 8
 pha 
 syscall 3
 pla 
 sAD 5
 pha 
 clr 
-set 1
-add 
 sAD 6
 pla 
 lDR 6
-jmA Temp1
-got catDone
-lab Temp1
-lDA 9
-pha 
-clr 
-set 10
-add 
-sAD 6
-pla 
-lDR 6
-jmA Temp2
+jmA catDone
 got catLoop
-lab Temp2
 lab catDone
 lDA 7
 pha 
@@ -136,6 +100,29 @@ sAD 5
 sAD 6
 out 6
 got loop
+lab wait
+clr 
+sAD 9
+lab waitLoop
+lDA 9
+pha 
+clr 
+set 1
+add 
+sAD 6
+pla 
+lDR 6
+add 
+sAD 9
+pha 
+clr 
+set 10000
+add 
+sAD 6
+pla 
+lDR 6
+jmL waitLoop
+ret 
 brk 
 lab _WriteChar
 sRP 0
