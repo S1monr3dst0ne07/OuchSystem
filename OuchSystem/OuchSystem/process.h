@@ -70,6 +70,7 @@ enum S1Syscall
     scFLocTime,
     scBindPort = 0x0030,
     scAcctSock,
+    scGetPid = 0x0040,
 
 };
 

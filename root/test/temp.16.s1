@@ -58,7 +58,6 @@ pla
 sAD 5
 pla 
 sAD 8
-jmS wait
 lDA 5
 pha 
 clr 

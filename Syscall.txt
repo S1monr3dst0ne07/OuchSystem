@@ -102,4 +102,9 @@ file stuff
     arguments: 
     returns  : id (stream for sending data over the socket)
     
+--- process ---
+0x0040 -> get id
+    quarry the pid of the process calling
+    arguments:
+    returns  : pid
 

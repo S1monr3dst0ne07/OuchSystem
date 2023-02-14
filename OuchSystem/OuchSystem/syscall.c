@@ -348,6 +348,11 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         if (!syscallStackPush(proc, &id, callType)) break;
         break;
     
+    /*
+    case scGetPid:;
+        int pid = 
+        if (!syscallStackPush(proc, &pid, callType)) break;
+        break;*/
     }
 
 

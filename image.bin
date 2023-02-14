@@ -1,4 +1,4 @@
-rootÿtestÿtemp.s1got Stack::Skip
+rootÿtestÿcatSer5000.s1got Stack::Skip
 lab Stack::Swap
 pla 
 sAD 1
@@ -58,7 +58,278 @@ pla
 sAD 5
 pla 
 sAD 8
+lDA 5
+pha 
+clr 
+sAD 6
+pla 
+lDR 6
+jmA catDone
+lDA 5
+pha 
+clr 
+set 2
+add 
+sAD 6
+pla 
+lDR 6
+jmA catLoop
+lDA 7
+pha 
+lDA 8
+pha 
+syscall 3
+pla 
+sAD 5
+pha 
+clr 
+sAD 6
+pla 
+lDR 6
+jmA catDone
+got catLoop
+lab catDone
+lDA 7
+pha 
+clr 
+pha 
+syscall 1
+pla 
+sAD 5
+sAD 6
+out 6
+got loop
+lab wait
+clr 
+sAD 9
+lab waitLoop
+lDA 9
+pha 
+clr 
+set 1
+add 
+sAD 6
+pla 
+lDR 6
+add 
+sAD 9
+pha 
+clr 
+set 10000
+add 
+sAD 6
+pla 
+lDR 6
+jmL waitLoop
+ret 
+brk 
+lab _WriteChar
+sRP 0
+lDA 0
+set 1
+add 
+sAD 0
+ret 
+
+
+
+
+ "Compiled from source: ProgrammsV5.x\Ouch\catServer5000.baabnqcatSer5001.s1got Stack::Skip
+lab Stack::Swap
+pla 
+sAD 1
+pla 
+sAD 2
+pla 
+sAD 3
+lDA 2
+pha 
+lDA 3
+pha 
+lDA 1
+pha 
+ret 
+lab Stack::Dup
+pla 
+sAD 1
+pla 
+sAD 4
+pha 
+lDA 4
+pha 
+lDA 1
+pha 
+ret 
+lab Stack::Skip
+clr 
+set 5001
+add 
+pha 
+clr 
+set 5
+add 
+pha 
+syscall 48
+pla 
+sAD 5
+sAD 6
+out 6
+lab loop
+syscall 49
+pla 
+sAD 7
 jmS wait
+lDA 7
+pha 
+clr 
+sAD 6
+pla 
+lDR 6
+jmA loop
+lab catLoop
+lDA 7
+pha 
+syscall 2
+pla 
+sAD 5
+pla 
+sAD 8
+lDA 5
+pha 
+clr 
+sAD 6
+pla 
+lDR 6
+jmA catDone
+lDA 5
+pha 
+clr 
+set 2
+add 
+sAD 6
+pla 
+lDR 6
+jmA catLoop
+lDA 7
+pha 
+lDA 8
+pha 
+syscall 3
+pla 
+sAD 5
+pha 
+clr 
+sAD 6
+pla 
+lDR 6
+jmA catDone
+got catLoop
+lab catDone
+lDA 7
+pha 
+clr 
+pha 
+syscall 1
+pla 
+sAD 5
+sAD 6
+out 6
+got loop
+lab wait
+clr 
+sAD 9
+lab waitLoop
+lDA 9
+pha 
+clr 
+set 1
+add 
+sAD 6
+pla 
+lDR 6
+add 
+sAD 9
+pha 
+clr 
+set 10000
+add 
+sAD 6
+pla 
+lDR 6
+jmL waitLoop
+ret 
+brk 
+lab _WriteChar
+sRP 0
+lDA 0
+set 1
+add 
+sAD 0
+ret 
+
+
+
+
+ "Compiled from source: ProgrammsV5.x\Ouch\catServer5001.baabnqtemp.s1got Stack::Skip
+lab Stack::Swap
+pla 
+sAD 1
+pla 
+sAD 2
+pla 
+sAD 3
+lDA 2
+pha 
+lDA 3
+pha 
+lDA 1
+pha 
+ret 
+lab Stack::Dup
+pla 
+sAD 1
+pla 
+sAD 4
+pha 
+lDA 4
+pha 
+lDA 1
+pha 
+ret 
+lab Stack::Skip
+clr 
+set 5000
+add 
+pha 
+clr 
+set 5
+add 
+pha 
+syscall 48
+pla 
+sAD 5
+sAD 6
+out 6
+lab loop
+syscall 49
+pla 
+sAD 7
+jmS wait
+lDA 7
+pha 
+clr 
+sAD 6
+pla 
+lDR 6
+jmA loop
+lab catLoop
+lDA 7
+pha 
+syscall 2
+pla 
+sAD 5
+pla 
+sAD 8
 lDA 5
 pha 
 clr 
@@ -1726,4 +1997,5 @@ ret
 
 
 
- "Compiled from source: ProgrammsV5.x\TreeParseEvalMathExpr.baabnqauto.ochÿtest/temp.s1example.txtÿthis is an example file, it contains text
+ "Compiled from source: ProgrammsV5.x\TreeParseEvalMathExpr.baabnqauto.ochÿtest/catSer5000.s1
+test/catSer5001.s1example.txtÿthis is an example file, it contains text
