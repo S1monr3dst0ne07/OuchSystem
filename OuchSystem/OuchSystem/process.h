@@ -108,6 +108,8 @@ struct S1HeapChunk
 
 struct process
 {
+    unsigned int pid;
+
     //internals
 	int ip;
 	struct inst* prog;

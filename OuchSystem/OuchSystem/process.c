@@ -274,6 +274,7 @@ struct process* parseProcess(char* source)
 
     struct process* proc = (struct process*)malloc(sizeof(struct process));
     proc->ip = 0;
+    proc->pid = (unsigned int) -1;
     proc->prog = prog;
     proc->progSize = instCount;
    
@@ -597,12 +598,37 @@ enum returnCodes runProcess(struct process* proc)
 }
 
 
+//THIS WILL ALLOCATE MEMORY
+unsigned int* getAllPids(struct system* ouch)
+{
+    struct procPool* pool = ouch->pool;
+    struct procList* scanPtr = pool->procs;
+    
+    //create list
+    unsigned int* pidList = (unsigned int*)malloc(sizeof(unsigned int) * pool->procCount);
+
+    //scan procList
+    int i = 0;
+    while (scanPtr)
+    {
+        pidList[i++] = scanPtr->proc->pid;
+        scanPtr = scanPtr->next;
+    }
+
+    return pidList;
+}
 
 
 void launchProcess(struct process* proc, struct system* ouch)
 {
     struct procPool* pool = ouch->pool;
     struct procList* last = pool->procs;
+
+    //generate pid
+    unsigned int* pids = getAllPids(ouch);
+    unsigned int newPid = getSmallPosivNumNotInList(pids, pool->procCount);
+    proc->pid = newPid;
+    free(pids);
 
     //new procList
     struct procList* newProcList = (struct procList*)malloc(sizeof(struct procList));
