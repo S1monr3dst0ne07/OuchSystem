@@ -58,23 +58,23 @@ file stuff
     arguments: path pointer (pointer to char array)
     returns  : id
 
-0x0011 -> create object (object always has priority n-1 where n is the priority of the process calling the syscall)
+!0x0011 -> create object (object always has priority n-1 where n is the priority of the process calling the syscall)
     create file object given it's path and type
     arguments: path pointer, type (0 -> invaild, 1 -> file, 2 -> dir)
     returns  : success (0 -> error, 1 -> success, 2 -> object already exists)
     
-0x0012 -> delete object
+!0x0012 -> delete object
     deletes file object given it's path
     arguments: path pointer
     returns  : sucess (0 -> error (insufficient permission), 1 -> success)
         
 --- time ---
-0x0020 -> sleepMs
+!0x0020 -> sleepMs
     pulls the process out of the execution pool for n ms
     arguments: time (time to sleep in ms)
     returns  :
 
-0x0021 -> unix epoch
+!0x0021 -> unix epoch
     returns unix epoch (64-bit) in 4 segments
     arguments: 
     returns  :  segment 1 (containing lsb)
@@ -82,7 +82,7 @@ file stuff
                 segment 3
                 segment 4 (containing msb)
     
-0x0022 -> formatted local time
+!0x0022 -> formatted local time
     returns local time in (years, months, days, hours, mins, secs)
     arguments:
     returns  :  secs
@@ -103,8 +103,30 @@ file stuff
     returns  : id (stream for sending data over the socket)
     
 --- process ---
-0x0040 -> get id
+0x0040 -> get pid
     quarry the pid of the process calling
     arguments:
     returns  : pid
+
+!0x0041 -> launch process
+    launches new process given a source path
+    arguments: path pointer
+    returns  : success (0 -> error, 1 -> success)
+    
+!0x0042 -> kill process
+    sends kill signal to process
+    arguments: pid
+    returns  : sucess (0 -> error, 1 -> success)
+
+!0x0043 -> process meta
+    get metadata about process
+    arguments: pid
+    returns  : <not implemented yet>
+
+!0x0045 -> fork process
+    create exacte copy of caller process
+    arguments:
+    returns  : <not implemented yet>
+
+    
 
