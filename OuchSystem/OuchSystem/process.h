@@ -103,8 +103,8 @@ struct procList
 
 struct S1HeapChunk
 {
-    int ptr;
-    int size;
+    S1Int ptr;
+    S1Int size;
     struct S1HeapChunk* next;
 };
 

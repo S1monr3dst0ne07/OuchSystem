@@ -5,6 +5,7 @@
 #include "syscall.h"
 
 #include <errno.h>
+#include <string.h>
 
 struct streamPool* allocStreamPool()
 {
@@ -29,7 +30,7 @@ void freeStreamPool(struct system* ouch)
     {        
         struct stream* temp;
         for (int i = 0; i < riverListSize; i++)
-            if (temp = river->container[i]) freeStream(temp);
+            if ((temp = river->container[i])) freeStream(temp);
     }
 
     free(river);
@@ -117,7 +118,7 @@ void updateStreams(struct system* ouch)
 
         //read
         memset(buffer, 0x0, networkBufferSize);
-        int recvByteSize = recv(stm->meta, buffer, networkBufferSize, MSG_DONTWAIT);
+        int recvByteSize = recv((int)stm->meta, buffer, networkBufferSize, MSG_DONTWAIT);
         int recvErrno = errno;
 
         if (0 < recvByteSize)
@@ -147,7 +148,7 @@ void updateStreams(struct system* ouch)
 
         //write
         if (stm->writeIndex > 0 &&
-            0 <= send(stm->meta, stm->writeContent, strlen(stm->writeContent), 0))
+            0 <= send((int)stm->meta, stm->writeContent, strlen(stm->writeContent), 0))
         {
             memset(stm->writeContent, 0x0, streamOutputSize);
             stm->writeIndex = 0;
@@ -222,7 +223,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
                 break;
             case stmTypSocket:;
                 //close socket
-                success = (0 <= close(stm->meta));
+                success = (0 <= close((int)stm->meta));
                 break;
             default:
                 success = true;
@@ -338,7 +339,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
             struct stream* stm = createStream(content);
             stm->type = stmTypSocket;
-            stm->meta = sock;
+            stm->meta = (void*)sock;
             id = injectStream(stm, ouch);
         }
         else

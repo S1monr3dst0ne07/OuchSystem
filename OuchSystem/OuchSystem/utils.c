@@ -2,6 +2,8 @@
 #include "utils.h"
 
 #include <stdio.h>
+#include <ctype.h>
+#include <string.h>
 
 #ifdef _WINDOWS
 #include <windows.h>
@@ -14,7 +16,7 @@
 
 void logg(char* msg)
 {
-	printf(msg);
+	printf("%s", msg);
 
 }
 

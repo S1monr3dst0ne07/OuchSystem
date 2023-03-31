@@ -34,7 +34,7 @@ struct S1HeapChunk* allocS1HeapChunk()
 {
     struct S1HeapChunk* temp = (struct S1HeapChunk*)malloc(sizeof(struct S1HeapChunk));
     temp->next = NULL;
-    temp->ptr = NULL;
+    temp->ptr  = 0;
     temp->size = 0;
     return temp;
 }
@@ -312,7 +312,7 @@ struct process* parseProcess(char* source)
     struct sockaddr_in* netAddr = &proc->netAddr;
     netAddr->sin_family = AF_INET;
     netAddr->sin_addr.s_addr = INADDR_ANY;
-    netAddr->sin_port = NULL;
+    netAddr->sin_port = 0;
 
     //timing
     proc->procNap = NULL;
@@ -674,7 +674,6 @@ void freeProcess(struct process* proc)
 void removeProcessList(struct procList* list, struct system* ouch)
 {
     struct procPool* pool = ouch->pool;
-    struct procList* procs = pool->procs;
 
     //link previouse to next
     if (list->prev)
@@ -720,7 +719,7 @@ void freeProcPool(struct system* ouch)
 {
     struct procPool* pool = ouch->pool;
     struct procList* cur;
-    while (cur = pool->procs)
+    while ((cur = pool->procs))
         removeProcessList(cur, ouch);
 
 
