@@ -69,12 +69,17 @@ file stuff
     returns  : sucess (0 -> error (insufficient permission), 1 -> success, 2 -> object not existent)
         
 --- time ---
-!0x0020 -> sleepMs
+!0x0020 -> napMs
     pulls the process out of the execution pool for n ms
     arguments: time (time to sleep in ms)
     returns  :
 
-!0x0021 -> unix epoch
+!0x0021 -> napS
+    pulls the process out of the execution pool for n secs
+    arguments: time (time to sleep in secs)
+    returns  :    
+
+!0x0022 -> unix epoch
     returns unix epoch (64-bit) in 4 segments
     arguments: 
     returns  :  segment 1 (containing lsb)
@@ -82,7 +87,7 @@ file stuff
                 segment 3
                 segment 4 (containing msb)
     
-!0x0022 -> formatted local time
+!0x0023 -> formatted local time
     returns local time in (years, months, days, hours, mins, secs)
     arguments:
     returns  :  secs

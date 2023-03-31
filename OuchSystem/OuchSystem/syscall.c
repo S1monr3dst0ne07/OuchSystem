@@ -197,6 +197,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     case scNoop:
         break;
 
+    //--- streams ---
     case scCloseStm:;
         S1Int doWriteBack = 0;
         if (!syscallStackPull(proc, &doWriteBack, callType)) break;
@@ -279,7 +280,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         if (!syscallStackPush(proc, &type, callType)) break;
         break;
 
-
+    //--- files ---
     case scOpenFileObj:;
         S1Int pathPtr = 0;
         if (!syscallStackPull(proc, &pathPtr, callType)) break;
@@ -302,7 +303,15 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         freeFilePath(path);
         break;
-    
+
+    //--- time ---
+    case scNapMs:;
+        S1Int durMs = 0;
+        if (!syscallStackPull(proc, &durMs, callType)) break;
+        procNap(durMs, proc);
+        break;
+
+    //--- process ---
     case scBindPort:;
         S1Int port = 0;
         S1Int queueSize = 0;
