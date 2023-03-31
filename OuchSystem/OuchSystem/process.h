@@ -1,6 +1,9 @@
 #ifndef HPROCESS
 #define HPROCESS
 
+#include "kernal.h"
+#include "timing.h"
+
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -130,6 +133,10 @@ struct process
     //network hell
     int procSock;
     struct sockaddr_in netAddr;
+
+    //timing hell
+    //if procNap is NULL, the process isn't napping
+    struct processNap* procNap;
 
 };
 

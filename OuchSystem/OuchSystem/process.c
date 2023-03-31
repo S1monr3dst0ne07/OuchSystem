@@ -314,6 +314,9 @@ struct process* parseProcess(char* source)
     netAddr->sin_addr.s_addr = INADDR_ANY;
     netAddr->sin_port = NULL;
 
+    //timing
+    proc->procNap = NULL;
+
     return proc;
 }
 
@@ -730,8 +733,14 @@ bool runPool(struct system* ouch)
     struct procList* curList = pool->execPtr;
     if (curList)
     {
+        enum returnCodes rt = rtNormal;
         struct process* curProc = curList->proc;
-        enum returnCodes rt = runProcess(curProc);
+        
+        //check if process is napping
+        if (curProc->procNap)
+            updateProcNap(curProc);
+        else
+            rt = runProcess(curProc);
 
         //advance execPtr
         pool->execPtr = curList->next;
