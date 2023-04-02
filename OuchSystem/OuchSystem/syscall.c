@@ -172,7 +172,7 @@ bool syscallStackPull(struct process* proc, S1Int* val, enum S1Syscall callType)
     if (!succ) logStackCorrSc(callType);
     return succ;
 }
-bool syscallStackPush(struct process* proc, S1Int* val, enum S1Syscall callType)
+bool syscallStackPush(struct process* proc, const S1Int* val, enum S1Syscall callType)
 {
     bool succ = processStackPush(proc, val);
     if (!succ) logStackCorrSc(callType);
@@ -312,7 +312,21 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         break;
 
     case scFLocTime:;
+        time_t now = time(NULL);
+        struct tm* time = localtime(&now);
 
+        //pull time into array and cast
+        #define timePartsSize 8
+        #define t(x) (S1Int)time->x
+        const S1Int timeParts[timePartsSize] = {
+            t(tm_sec),  t(tm_min),  t(tm_hour),
+            t(tm_wday), t(tm_mday), t(tm_yday),
+            t(tm_mon),  t(tm_year)
+        };
+        #undef t
+
+        for (int i = timePartsSize - 1; i >= 0; i--)
+            if (!syscallStackPush(proc, &timeParts[i], callType)) break;
 
         break;
 

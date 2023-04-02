@@ -158,8 +158,8 @@ bool removeProcess(struct process* proc, struct system* ouch);
 void freeProcPool(struct system* ouch);
 bool runPool(struct system* ouch);
 
-bool processStackPush(struct process* proc, S1Int* value);
-bool processStackPull(struct process* proc, S1Int* value);
+bool processStackPush(struct process* proc, const S1Int* value);
+bool processStackPull(struct process* proc,       S1Int* value);
 
 char* readStringFromProcessMemory(struct process* proc, S1Int ptr);
 

@@ -331,7 +331,7 @@ struct procPool* allocProcPool()
     return pool;
 }
 
-bool stackPush(S1Int* stack, int* stackPtr, S1Int* value)
+bool stackPush(S1Int* stack, int* stackPtr, const S1Int* value)
 {
     if (*stackPtr >= c16bitIntLimit) return false;
     stack[(*stackPtr)++] = *value;
@@ -777,7 +777,7 @@ bool runPool(struct system* ouch)
 }
 
 
-bool processStackPush(struct process* proc, S1Int* value)
+bool processStackPush(struct process* proc, const S1Int* value)
 { return stackPush(proc->stack, &proc->stackPtr, value); }
 
 bool processStackPull(struct process* proc, S1Int* value)
