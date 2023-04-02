@@ -311,6 +311,11 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         procNap(durMs, proc);
         break;
 
+    case scFLocTime:;
+
+
+        break;
+
     //--- process ---
     case scBindPort:;
         S1Int port = 0;

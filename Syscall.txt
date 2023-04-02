@@ -69,7 +69,7 @@ file stuff
     returns  : sucess (0 -> error (insufficient permission), 1 -> success, 2 -> object not existent)
         
 --- time ---
-!0x0020 -> napMs
+0x0020 -> napMs
     pulls the process out of the execution pool for n ms
     arguments: time (time to sleep in ms)
     returns  :
@@ -93,7 +93,9 @@ file stuff
     returns  :  secs
                 mins
                 hours
-                days
+                wdays (week)
+                mdays (month)
+                ydays (year)
                 months
                 years
                 
