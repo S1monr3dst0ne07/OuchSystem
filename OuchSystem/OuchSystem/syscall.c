@@ -116,9 +116,12 @@ void updateStreams(struct system* ouch)
         struct stream* stm = river->container[i];
         if (stm->type != stmTypSocket) continue;
 
+        //read socket discriptor
+        const int socketFd = (int)stm->meta;
+
         //read
         memset(buffer, 0x0, networkBufferSize);
-        int recvByteSize = recv((int)stm->meta, buffer, networkBufferSize, MSG_DONTWAIT);
+        int recvByteSize = recv(socketFd, buffer, networkBufferSize, MSG_DONTWAIT);
         int recvErrno = errno;
 
         if (0 < recvByteSize)
@@ -148,7 +151,7 @@ void updateStreams(struct system* ouch)
 
         //write
         if (stm->writeIndex > 0 &&
-            0 <= send((int)stm->meta, stm->writeContent, strlen(stm->writeContent), 0))
+            0 <= send(socketFd, stm->writeContent, strlen(stm->writeContent), 0))
         {
             memset(stm->writeContent, 0x0, streamOutputSize);
             stm->writeIndex = 0;
@@ -321,7 +324,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         const S1Int timeParts[timePartsSize] = {
             t(tm_sec),  t(tm_min),  t(tm_hour),
             t(tm_wday), t(tm_mday), t(tm_yday),
-            t(tm_mon),  t(tm_year)
+            t(tm_mon) + 1, t(tm_year) + 1900
         };
         #undef t
 
@@ -330,7 +333,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         break;
 
-    //--- process ---
+    //--- network ---
     case scBindPort:;
         S1Int port = 0;
         S1Int queueSize = 0;

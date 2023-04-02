@@ -87,7 +87,7 @@ file stuff
                 segment 3
                 segment 4 (containing msb)
     
-!0x0023 -> formatted local time
+0x0023 -> formatted local time
     returns local time in (years, months, days, hours, mins, secs)
     arguments:
     returns  :  secs
