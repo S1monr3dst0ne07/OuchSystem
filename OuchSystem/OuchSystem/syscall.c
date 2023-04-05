@@ -394,8 +394,18 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
 
     case scForkProc:;
-        break;
+        struct process* procNew = cloneProcess(proc);
+        launchProcess(procNew, ouch);
 
+        //sub process pid
+        S1Int pid = (S1Int)procNew->pid;
+        if (!syscallStackPush(proc, &pid, callType)) break;
+
+        //super process pid is just 0
+        S1Int zero = 0;
+        if (!syscallStackPush(proc, &zero, callType)) break;
+
+        break;
 
     default:
         break;

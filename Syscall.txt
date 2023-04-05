@@ -130,12 +130,12 @@ file stuff
     arguments: pid
     returns  : <not implemented yet>
 
-!0x0045 -> fork process
+!0x0044 -> fork process
     create exacte copy of caller process
     arguments:
     returns  : <not implemented yet>
 
-!0x0046 -> get all pids
+!0x0045 -> get all pids
     get pids of all currently running processes
     arguments: pid
     returns  : <not implemented yet>

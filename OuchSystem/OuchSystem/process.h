@@ -155,6 +155,7 @@ struct inst
 
 void freeProcess(struct process* proc);
 struct process* parseProcess(char* source);
+struct process* cloneProcess(struct process* src);
 
 struct procPool* allocProcPool();
 void launchProcess(struct process* proc, struct system* ouch);
