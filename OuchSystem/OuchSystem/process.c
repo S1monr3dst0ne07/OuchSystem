@@ -838,7 +838,7 @@ bool runPool(struct system* ouch)
             return false;
 
         //nap according to napMs
-        usleep(*napMs * 1000);
+        if (*napMs) usleep(*napMs * 1000);
         *napMs = 200;
     }
 
