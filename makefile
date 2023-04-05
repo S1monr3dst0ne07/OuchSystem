@@ -22,3 +22,5 @@ $(TARGET): $(OBJECTS)
 clean:
 	-rm -f *.o
 	-rm -f $(TARGET)
+
+re: clean default

@@ -117,7 +117,7 @@ void updateStreams(struct system* ouch)
         if (stm->type != stmTypSocket) continue;
 
         //read socket discriptor
-        const int socketFd = (int)stm->meta;
+        const int socketFd = *(int*)stm->meta;
 
         //read
         memset(buffer, 0x0, networkBufferSize);
@@ -227,7 +227,9 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
                 break;
             case stmTypSocket:;
                 //close socket
-                success = (0 <= close((int)stm->meta));
+                int* sockPtr = (int*)stm->meta;
+                success = (0 <= close(*sockPtr));
+                free(sockPtr);
                 break;
             default:
                 success = true;
@@ -330,7 +332,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         for (int i = timePartsSize - 1; i >= 0; i--)
             if (!syscallStackPush(proc, &timeParts[i], callType)) break;
-
+        
+        #undef timePartsSize
         break;
 
     //--- network ---
@@ -365,12 +368,16 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         if (0 <= sock)
         {
+            //generate pointer to socket for stream, metadata of stream is only stored as void ptr
+            int* sockPtr = malloc(sizeof(int));
+            *sockPtr = sock;
+
             char* content = (char*)malloc(sizeof(char));
             content[0] = '\x0';
 
             struct stream* stm = createStream(content);
             stm->type = stmTypSocket;
-            stm->meta = (void*)sock;
+            stm->meta = sockPtr;
             id = injectStream(stm, ouch);
         }
         else
@@ -389,6 +396,9 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     case scForkProc:;
         break;
 
+
+    default:
+        break;
 
     }
 
