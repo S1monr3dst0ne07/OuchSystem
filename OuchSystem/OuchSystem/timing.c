@@ -31,7 +31,7 @@ int getNapDelta(struct processNap* procNap)
 {
 	clock_t now   = clock();
 	clock_t delta = now - procNap->startTime;
-	int      msec = delta * 1000 / CLOCKS_PER_SEC;
+	int     msec  = delta * 1000 / CLOCKS_PER_SEC;
 
 	return msec;
 }

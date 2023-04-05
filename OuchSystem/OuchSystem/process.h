@@ -75,6 +75,11 @@ enum S1Syscall
     scBindPort = 0x0030,
     scAcctSock,
     scGetPid = 0x0040,
+    scLaunchProc,
+    scKillProc,
+    scProcMeta,
+    scForkProc,
+    scAllPids,
 
 };
 

@@ -39,6 +39,29 @@ struct S1HeapChunk* allocS1HeapChunk()
     return temp;
 }
 
+struct process* allocProcess()
+{
+    struct process* proc = (struct process*)malloc(sizeof(struct process));
+    proc->ip = 0;
+    proc->pid = (unsigned int)-1;
+
+    proc->prog = NULL;
+    proc->progSize = 0;
+
+    memset(proc->mem, 0, S1IntBufferSize);
+    memset(proc->stack, 0, S1IntBufferSize);
+
+    proc->stackPtr = 0;
+    proc->acc = 0;
+    proc->reg = 0;
+
+    proc->heap = allocS1HeapChunk();
+
+    proc->procNap = NULL;
+
+    return proc;
+}
+
 enum s1Insts str2s1(char* str)
 {
     static s1Entry map[] = {
@@ -272,23 +295,10 @@ struct process* parseProcess(char* source)
     }
 
 
-    struct process* proc = (struct process*)malloc(sizeof(struct process));
-    proc->ip = 0;
-    proc->pid = (unsigned int) -1;
+    struct process* proc = allocProcess();
     proc->prog = prog;
     proc->progSize = instCount;
    
-
-    //zero the rest of the process
-    memset(proc->mem,   0, S1IntBufferSize);
-    memset(proc->stack, 0, S1IntBufferSize);
-
-    proc->stackPtr = 0;
-    proc->acc = 0;
-    proc->reg = 0;
-
-    proc->heap = allocS1HeapChunk();
-
     free(rawInstBuffer);
     free(labelMapper);
 
@@ -314,12 +324,15 @@ struct process* parseProcess(char* source)
     netAddr->sin_addr.s_addr = INADDR_ANY;
     netAddr->sin_port = 0;
 
-    //timing
-    proc->procNap = NULL;
-
     return proc;
 }
 
+
+struct process* cloneProcess(struct process* proc)
+{
+    struct process* procNew = allocProcess();
+
+}
 
 
 struct procPool* allocProcPool()

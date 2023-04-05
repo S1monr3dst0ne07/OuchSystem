@@ -750,14 +750,14 @@ lDA 22
 pha 
 jmS Stack::Swap
 ret 
-lab String::GetSize
+lab String::StrLen
 pla 
 sAD 1
 pla 
 sAD 15
 clr 
 sAD 27
-lab String::GetSize::CountLoop
+lab String::StrLen::CountLoop
 lDA 27
 pha 
 lDA 15
@@ -773,7 +773,7 @@ clr
 sAD 5
 pla 
 lDR 5
-jmA String::GetSize::Exit
+jmA String::StrLen::Exit
 lDA 27
 pha 
 clr 
@@ -784,14 +784,14 @@ pla
 lDR 5
 add 
 sAD 27
-got String::GetSize::CountLoop
-lab String::GetSize::Exit
+got String::StrLen::CountLoop
+lab String::StrLen::Exit
 lDA 27
 pha 
 lDA 1
 pha 
 ret 
-lab String::CopyN
+lab String::MemCpy
 pla 
 sAD 1
 pla 
@@ -802,7 +802,7 @@ pla
 sAD 30
 clr 
 sAD 20
-lab String::CopyN::Loop
+lab String::MemCpy::Loop
 lDA 30
 pha 
 lDA 20
@@ -841,7 +841,7 @@ sAD 5
 pla 
 lDR 5
 jmA Temp27
-got String::CopyN::Loop
+got String::MemCpy::Loop
 lab Temp27
 lDA 1
 pha 
@@ -906,12 +906,12 @@ lDA 1
 pha 
 lDA 34
 pha 
-jmS String::GetSize
+jmS String::StrLen
 pla 
 sAD 35
 lDA 33
 pha 
-jmS String::GetSize
+jmS String::StrLen
 pla 
 sAD 36
 pla 
@@ -1040,6 +1040,151 @@ pha
 lDA 1
 pha 
 ret 
+lab String::Join
+jmS Stack::Swap
+pla 
+sAD 39
+clr 
+sAD 26
+clr 
+sAD 20
+lab String::Join::Count
+lDA 39
+pha 
+lDA 20
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+lPA 5
+sAD 40
+pha 
+clr 
+sAD 5
+pla 
+lDR 5
+jmA String::Join::CountDone
+lDA 40
+pha 
+jmS String::StrLen
+pla 
+sAD 28
+lDA 26
+pha 
+lDA 28
+sAD 5
+pla 
+lDR 5
+add 
+sAD 26
+lDA 20
+pha 
+clr 
+set 1
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 20
+got String::Join::Count
+lab String::Join::CountDone
+lDA 26
+pha 
+clr 
+set 1
+add 
+sAD 5
+pla 
+lDR 5
+add 
+set 1
+add 
+sAD 5
+lDR 5
+ahm 
+sAD 5
+sRP 5
+set 1
+add 
+sAD 41
+clr 
+pha 
+lDA 41
+pha 
+lDA 26
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+clr 
+sAD 42
+clr 
+sAD 43
+lab String::Join::Copy
+lDA 39
+pha 
+lDA 42
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+lPA 5
+sAD 40
+lDA 42
+pha 
+clr 
+set 1
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 42
+lDA 40
+pha 
+clr 
+sAD 5
+pla 
+lDR 5
+jmA String::Join::CopyDone
+lDA 40
+pha 
+jmS String::StrLen
+pla 
+sAD 28
+lDA 40
+pha 
+lDA 41
+pha 
+lDA 43
+sAD 5
+pla 
+lDR 5
+add 
+pha 
+lDA 28
+pha 
+lDA 43
+pha 
+lDA 28
+sAD 5
+pla 
+lDR 5
+add 
+sAD 43
+jmS String::MemCpy
+got String::Join::Copy
+lab String::Join::CopyDone
+lDA 41
+pha 
+jmS Stack::Swap
+ret 
 lab String::Skip
 got Ouch::Syscall::Skip
 lab Ouch::Syscall::Noop
@@ -1106,153 +1251,29 @@ syscall 64
 pha 
 ret 
 lab Ouch::Syscall::Skip
-set 11
-ahm 
-sAD 0
-set 1
+clr 
+set 45
 add 
-sAD 39
-set 11
-jmS _WriteChar
-set 83
-jmS _WriteChar
-set 101
-jmS _WriteChar
-set 99
-jmS _WriteChar
-set 111
-jmS _WriteChar
-set 110
-jmS _WriteChar
-set 100
-jmS _WriteChar
-set 115
-jmS _WriteChar
-set 58
-jmS _WriteChar
-set 32
-jmS _WriteChar
-set 0
-jmS _WriteChar
-set 11
-ahm 
-sAD 0
-set 1
-add 
-sAD 40
-set 11
-jmS _WriteChar
-set 77
-jmS _WriteChar
-set 105
-jmS _WriteChar
-set 110
-jmS _WriteChar
-set 117
-jmS _WriteChar
-set 116
-jmS _WriteChar
-set 101
-jmS _WriteChar
-set 115
-jmS _WriteChar
-set 58
-jmS _WriteChar
-set 32
-jmS _WriteChar
-set 0
-jmS _WriteChar
-set 11
-ahm 
-sAD 0
-set 1
-add 
-sAD 41
-set 11
-jmS _WriteChar
-set 72
-jmS _WriteChar
-set 111
-jmS _WriteChar
-set 117
-jmS _WriteChar
-set 114
-jmS _WriteChar
-set 115
-jmS _WriteChar
-set 32
-jmS _WriteChar
-set 32
-jmS _WriteChar
-set 58
-jmS _WriteChar
-set 32
-jmS _WriteChar
-set 0
-jmS _WriteChar
-set 11
-ahm 
-sAD 0
-set 1
-add 
-sAD 42
-set 11
-jmS _WriteChar
-set 68
-jmS _WriteChar
-set 97
-jmS _WriteChar
-set 121
-jmS _WriteChar
-set 115
-jmS _WriteChar
-set 32
-jmS _WriteChar
-set 32
-jmS _WriteChar
-set 32
-jmS _WriteChar
-set 58
-jmS _WriteChar
-set 32
-jmS _WriteChar
-set 0
-jmS _WriteChar
-set 11
-ahm 
-sAD 0
-set 1
-add 
-sAD 43
-set 11
-jmS _WriteChar
-set 77
-jmS _WriteChar
-set 111
-jmS _WriteChar
-set 110
-jmS _WriteChar
-set 116
-jmS _WriteChar
-set 104
-jmS _WriteChar
-set 32
-jmS _WriteChar
-set 32
-jmS _WriteChar
-set 58
-jmS _WriteChar
-set 32
-jmS _WriteChar
-set 0
-jmS _WriteChar
-set 17
-ahm 
 sAD 0
 set 1
 add 
 sAD 44
-set 17
+set 4
+jmS _WriteChar
+set 10
+jmS _WriteChar
+set 13
+jmS _WriteChar
+set 0
+jmS _WriteChar
+clr 
+set 50
+add 
+sAD 0
+set 1
+add 
+sAD 49
+set 18
 jmS _WriteChar
 set 84
 jmS _WriteChar
@@ -1284,84 +1305,285 @@ set 103
 jmS _WriteChar
 set 10
 jmS _WriteChar
+set 13
+jmS _WriteChar
 set 0
 jmS _WriteChar
-set 4
-ahm 
+clr 
+set 69
+add 
 sAD 0
 set 1
 add 
-sAD 45
-set 4
+sAD 68
+set 11
 jmS _WriteChar
-set 42
+set 83
+jmS _WriteChar
+set 101
+jmS _WriteChar
+set 99
+jmS _WriteChar
+set 111
+jmS _WriteChar
+set 110
+jmS _WriteChar
+set 100
+jmS _WriteChar
+set 115
+jmS _WriteChar
+set 58
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 0
+jmS _WriteChar
+clr 
+set 81
+add 
+sAD 0
+set 1
+add 
+sAD 80
+set 11
+jmS _WriteChar
+set 77
+jmS _WriteChar
+set 105
+jmS _WriteChar
+set 110
+jmS _WriteChar
+set 117
+jmS _WriteChar
+set 116
+jmS _WriteChar
+set 101
+jmS _WriteChar
+set 115
+jmS _WriteChar
+set 58
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 0
+jmS _WriteChar
+clr 
+set 93
+add 
+sAD 0
+set 1
+add 
+sAD 92
+set 11
+jmS _WriteChar
+set 72
+jmS _WriteChar
+set 111
+jmS _WriteChar
+set 117
+jmS _WriteChar
+set 114
+jmS _WriteChar
+set 115
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 58
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 0
+jmS _WriteChar
+clr 
+set 105
+add 
+sAD 0
+set 1
+add 
+sAD 104
+set 11
+jmS _WriteChar
+set 68
+jmS _WriteChar
+set 97
+jmS _WriteChar
+set 121
+jmS _WriteChar
+set 115
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 58
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 0
+jmS _WriteChar
+clr 
+set 117
+add 
+sAD 0
+set 1
+add 
+sAD 116
+set 11
+jmS _WriteChar
+set 77
+jmS _WriteChar
+set 111
+jmS _WriteChar
+set 110
+jmS _WriteChar
+set 116
+jmS _WriteChar
+set 104
+jmS _WriteChar
+set 115
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 58
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 0
+jmS _WriteChar
+clr 
+set 128
+add 
+sAD 39
+clr 
+set 161
+add 
+sAD 0
+set 1
+add 
+sAD 160
+set 12
+jmS _WriteChar
+set 27
+jmS _WriteChar
+set 91
+jmS _WriteChar
+set 49
+jmS _WriteChar
+set 59
+jmS _WriteChar
+set 49
+jmS _WriteChar
+set 72
+jmS _WriteChar
+set 27
+jmS _WriteChar
+set 91
+jmS _WriteChar
+set 50
+jmS _WriteChar
+set 74
+jmS _WriteChar
+set 0
+jmS _WriteChar
+clr 
+set 5000
+add 
+pha 
+clr 
+set 5
+add 
+pha 
+jmS Ouch::Syscall::BindSock
+pla 
+sAD 173
+sAD 5
+out 5
+lab loop
+jmS Ouch::Syscall::AcceptSock
+pla 
+sAD 174
+clr 
+set 50
+add 
+pha 
+jmS Ouch::Syscall::NapMs
+lDA 174
+pha 
+clr 
+sAD 5
+pla 
+lDR 5
+jmA loop
+clr 
+set 176
+add 
+sAD 0
+set 1
+add 
+sAD 175
+set 19
+jmS _WriteChar
+set 99
+jmS _WriteChar
+set 108
+jmS _WriteChar
+set 105
+jmS _WriteChar
+set 101
+jmS _WriteChar
+set 110
+jmS _WriteChar
+set 116
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 99
+jmS _WriteChar
+set 111
+jmS _WriteChar
+set 110
+jmS _WriteChar
+set 110
+jmS _WriteChar
+set 101
+jmS _WriteChar
+set 99
+jmS _WriteChar
+set 116
+jmS _WriteChar
+set 101
+jmS _WriteChar
+set 100
 jmS _WriteChar
 set 10
 jmS _WriteChar
 set 0
 jmS _WriteChar
-lDA 44
+lDA 175
 pha 
-jmS String::GetSize
+jmS String::PrintString
+lab serveLoop
+jmS render
 pla 
-sAD 46
+sAD 195
 clr 
-set 2
-add 
-sAD 47
+sAD 196
+lab writeLoop
+lDA 195
 pha 
-lDA 47
+lDA 196
 sAD 5
 pla 
 lDR 5
 add 
-pha 
-lDA 46
 sAD 5
-pla 
-lDR 5
-add 
-sAD 48
-clr 
-sAD 49
-lDA 48
-sAD 50
-lab Loop
-jmS Ouch::Syscall::FormatLocalTime
-pla 
-sAD 51
-pla 
-sAD 52
-pla 
-sAD 53
-pla 
-sAD 54
-pla 
-sAD 55
-pla 
-sAD 54
-pla 
-sAD 56
-pla 
-sAD 54
-lDA 49
-pha 
-jmS PrintIndent
-lDA 49
-pha 
-lDA 48
-sAD 5
-pla 
-lDR 5
-jmA Temp29
-got UpperResetSkip
-lab Temp29
-clr 
-set 65535
-add 
-sAD 49
-lab UpperResetSkip
-lDA 49
+lPA 5
+sAD 197
+lDA 196
 pha 
 clr 
 set 1
@@ -1370,163 +1592,204 @@ sAD 5
 pla 
 lDR 5
 add 
-sAD 49
-lDA 45
-pha 
-jmS String::PrintString
-lDA 47
-pha 
-lDA 47
-pha 
-lDA 47
-pha 
-lDA 47
-pha 
-lDA 47
-pha 
-lDA 47
-pha 
-jmS PrintIndent
-lDA 44
-pha 
-jmS String::PrintString
-jmS PrintIndent
-lDA 39
-pha 
-jmS String::PrintString
-clr 
-set 59
-add 
-pha 
-lDA 51
-sAD 5
-pla 
-lDR 5
-sub 
-sAD 5
-out 5
-jmS PrintIndent
-lDA 40
-pha 
-jmS String::PrintString
-clr 
-set 59
-add 
-pha 
-lDA 52
-sAD 5
-pla 
-lDR 5
-sub 
-sAD 5
-out 5
-jmS PrintIndent
-lDA 41
-pha 
-jmS String::PrintString
-clr 
-set 23
-add 
-pha 
-lDA 53
-sAD 5
-pla 
-lDR 5
-sub 
-sAD 5
-out 5
-jmS PrintIndent
-lDA 42
-pha 
-jmS String::PrintString
-clr 
-set 31
-add 
-pha 
-lDA 55
-sAD 5
-pla 
-lDR 5
-sub 
-sAD 5
-out 5
-jmS PrintIndent
-lDA 43
-pha 
-jmS String::PrintString
-clr 
-set 12
-add 
-pha 
-lDA 56
-sAD 5
-pla 
-lDR 5
-sub 
-sAD 5
-out 5
-lDA 50
-pha 
-jmS PrintIndent
-lDA 50
+sAD 196
+lDA 197
 pha 
 clr 
 sAD 5
 pla 
 lDR 5
-jmA Temp30
-got LowerResetSkip
-lab Temp30
-lDA 48
+jmA writeDone
+lDA 174
+pha 
+lDA 197
+pha 
+jmS Ouch::Syscall::WriteStream
+pla 
+sAD 173
 pha 
 clr 
+sAD 5
+pla 
+lDR 5
+jmA writeDone
+got writeLoop
+lab writeDone
+lDA 195
 set 1
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 50
-lab LowerResetSkip
-lDA 50
-pha 
-clr 
-set 1
-add 
-sAD 5
-pla 
-lDR 5
 sub 
-sAD 50
-lDA 45
-pha 
-jmS String::PrintString
+sAD 5
+lPR 5
+fhm 
 clr 
 set 200
 add 
 pha 
 jmS Ouch::Syscall::NapMs
-got Loop
-lab PrintIndent
-pla 
-sAD 1
-pla 
-sAD 57
-lDA 1
-pha 
-lab PrintIndent::Loop
-clr 
-set 32
-add 
-putstr 
-lDA 57
+lDA 173
 pha 
 clr 
 sAD 5
 pla 
 lDR 5
-jmA PrintIndent::Exit
-lDA 57
+jmA Temp29
+got serveLoop
+lab Temp29
+lab serveDone
+clr 
+set 199
+add 
+sAD 0
+set 1
+add 
+sAD 198
+set 22
+jmS _WriteChar
+set 99
+jmS _WriteChar
+set 108
+jmS _WriteChar
+set 105
+jmS _WriteChar
+set 101
+jmS _WriteChar
+set 110
+jmS _WriteChar
+set 116
+jmS _WriteChar
+set 32
+jmS _WriteChar
+set 100
+jmS _WriteChar
+set 105
+jmS _WriteChar
+set 115
+jmS _WriteChar
+set 99
+jmS _WriteChar
+set 111
+jmS _WriteChar
+set 110
+jmS _WriteChar
+set 110
+jmS _WriteChar
+set 101
+jmS _WriteChar
+set 99
+jmS _WriteChar
+set 116
+jmS _WriteChar
+set 101
+jmS _WriteChar
+set 100
+jmS _WriteChar
+set 10
+jmS _WriteChar
+set 0
+jmS _WriteChar
+lDA 198
+pha 
+jmS String::PrintString
+got loop
+brk 
+lab render
+jmS Ouch::Syscall::FormatLocalTime
+pla 
+sAD 221
+pla 
+sAD 222
+pla 
+sAD 223
+pla 
+sAD 224
+pla 
+sAD 225
+pla 
+sAD 224
+pla 
+sAD 226
+pla 
+sAD 224
+clr 
+set 59
+add 
+pha 
+lDA 221
+sAD 5
+pla 
+lDR 5
+sub 
+pha 
+jmS String::Int2Str
+pla 
+sAD 227
+clr 
+set 59
+add 
+pha 
+lDA 222
+sAD 5
+pla 
+lDR 5
+sub 
+pha 
+jmS String::Int2Str
+pla 
+sAD 228
+clr 
+set 23
+add 
+pha 
+lDA 223
+sAD 5
+pla 
+lDR 5
+sub 
+pha 
+jmS String::Int2Str
+pla 
+sAD 229
+clr 
+set 31
+add 
+pha 
+lDA 225
+sAD 5
+pla 
+lDR 5
+sub 
+pha 
+jmS String::Int2Str
+pla 
+sAD 230
+clr 
+set 12
+add 
+pha 
+lDA 226
+sAD 5
+pla 
+lDR 5
+sub 
+pha 
+jmS String::Int2Str
+pla 
+sAD 231
+lDA 160
+pha 
+lDA 39
+pha 
+clr 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 49
+pha 
+lDA 39
 pha 
 clr 
 set 1
@@ -1534,10 +1797,258 @@ add
 sAD 5
 pla 
 lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 68
+pha 
+lDA 39
+pha 
+clr 
+set 2
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 227
+pha 
+lDA 39
+pha 
+clr 
+set 3
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 44
+pha 
+lDA 39
+pha 
+clr 
+set 4
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 80
+pha 
+lDA 39
+pha 
+clr 
+set 5
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 228
+pha 
+lDA 39
+pha 
+clr 
+set 6
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 44
+pha 
+lDA 39
+pha 
+clr 
+set 7
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 92
+pha 
+lDA 39
+pha 
+clr 
+set 8
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 229
+pha 
+lDA 39
+pha 
+clr 
+set 9
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 44
+pha 
+lDA 39
+pha 
+clr 
+set 10
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 104
+pha 
+lDA 39
+pha 
+clr 
+set 11
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 230
+pha 
+lDA 39
+pha 
+clr 
+set 12
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 44
+pha 
+lDA 39
+pha 
+clr 
+set 13
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 116
+pha 
+lDA 39
+pha 
+clr 
+set 14
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 231
+pha 
+lDA 39
+pha 
+clr 
+set 15
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 44
+pha 
+lDA 39
+pha 
+clr 
+set 16
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 39
+pha 
+jmS String::Join
+pla 
+sAD 41
+lDA 227
+set 1
 sub 
-sAD 57
-got PrintIndent::Loop
-lab PrintIndent::Exit
+sAD 5
+lPR 5
+fhm 
+lDA 228
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 229
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 230
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 231
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 41
+pha 
+jmS Stack::Swap
 ret 
 brk 
 lab _WriteChar
@@ -1551,7 +2062,7 @@ ret
 
 
 
- "Compiled from source: ProgrammsV5.x\Ouch\tests\CountDown.baabnqcatSer5000.s1got Stack::Skip
+ "Compiled from source: ProgrammsV5.x\Ouch\cntdwnSerSingleUser.baabnqcatSer5000.s1got Stack::Skip
 lab Stack::Swap
 pla 
 sAD 1
@@ -1578,6 +2089,71 @@ lDA 1
 pha 
 ret 
 lab Stack::Skip
+got Ouch::Syscall::Skip
+lab Ouch::Syscall::Noop
+syscall 0
+ret 
+lab Ouch::Syscall::CloseStream
+pla 
+syscall 1
+pha 
+ret 
+lab Ouch::Syscall::ReadStream
+pla 
+syscall 2
+pha 
+ret 
+lab Ouch::Syscall::WriteStream
+pla 
+syscall 3
+pha 
+ret 
+lab Ouch::Syscall::StreamInfo
+pla 
+syscall 4
+pha 
+ret 
+lab Ouch::Syscall::OpenFileObj
+pla 
+syscall 16
+pha 
+ret 
+lab Ouch::Syscall::CreateFileObj
+pla 
+syscall 17
+pha 
+ret 
+lab Ouch::Syscall::DeleteFileObj
+pla 
+syscall 18
+pha 
+ret 
+lab Ouch::Syscall::NapMs
+pla 
+syscall 32
+pha 
+ret 
+lab Ouch::Syscall::FormatLocalTime
+pla 
+syscall 35
+pha 
+ret 
+lab Ouch::Syscall::BindSock
+pla 
+syscall 48
+pha 
+ret 
+lab Ouch::Syscall::AcceptSock
+pla 
+syscall 49
+pha 
+ret 
+lab Ouch::Syscall::GetPid
+pla 
+syscall 64
+pha 
+ret 
+lab Ouch::Syscall::Skip
 clr 
 set 5000
 add 
@@ -1586,13 +2162,13 @@ clr
 set 5
 add 
 pha 
-syscall 48
+jmS Ouch::Syscall::BindSock
 pla 
 sAD 5
 sAD 6
 out 6
 lab loop
-syscall 49
+jmS Ouch::Syscall::AcceptSock
 pla 
 sAD 7
 jmS wait
@@ -1606,7 +2182,7 @@ jmA loop
 lab catLoop
 lDA 7
 pha 
-syscall 2
+jmS Ouch::Syscall::ReadStream
 pla 
 sAD 5
 pla 
@@ -1631,7 +2207,7 @@ lDA 7
 pha 
 lDA 8
 pha 
-syscall 3
+jmS Ouch::Syscall::WriteStream
 pla 
 sAD 5
 pha 
@@ -1646,7 +2222,7 @@ lDA 7
 pha 
 clr 
 pha 
-syscall 1
+jmS Ouch::Syscall::CloseStream
 pla 
 sAD 5
 sAD 6

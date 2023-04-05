@@ -384,6 +384,12 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         S1Int pid = (S1Int)proc->pid;
         if (!syscallStackPush(proc, &pid, callType)) break;
         break;
+
+
+    case scForkProc:;
+
+
+
     }
 
 

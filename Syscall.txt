@@ -135,5 +135,8 @@ file stuff
     arguments:
     returns  : <not implemented yet>
 
-    
+!0x0046 -> get all pids
+    get pids of all currently running processes
+    arguments: pid
+    returns  : <not implemented yet>
 
