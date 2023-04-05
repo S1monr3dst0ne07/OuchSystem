@@ -401,9 +401,9 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         pid = (S1Int)procNew->pid;
         if (!syscallStackPush(procNew, &pid, callType)) break;
 
-        //super process pid is just 0
-        S1Int zero = 0;
-        if (!syscallStackPush(proc, &zero, callType)) break;
+        //super process pid
+        pid = (S1Int)proc->pid;
+        if (!syscallStackPush(proc, &pid, callType)) break;
 
         break;
 

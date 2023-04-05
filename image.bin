@@ -1451,11 +1451,31 @@ set 10
 jmS _WriteChar
 set 0
 jmS _WriteChar
-jmS Ouch::Syscall::ForkProcess
+jmS Ouch::Syscall::GetPid
 pla 
 sAD 134
+jmS Ouch::Syscall::ForkProcess
+pla 
+sAD 135
+pha 
+lDA 134
 sAD 5
-out 5
+pla 
+lDR 5
+jmA Temp29
+jmS SubProc
+lab Temp29
+lDA 135
+pha 
+lDA 134
+sAD 5
+pla 
+lDR 5
+jmA Temp32
+got Temp31
+lab Temp32
+jmS SupProc
+lab Temp31
 lDA 126
 pha 
 jmS String::PrintString
@@ -1469,7 +1489,7 @@ jmS Ouch::Syscall::NapMs
 lDA 85
 pha 
 jmS String::PrintString
-lDA 134
+lDA 135
 sAD 5
 out 5
 ret 
@@ -1477,7 +1497,7 @@ lab SupProc
 lDA 44
 pha 
 jmS String::PrintString
-lDA 134
+lDA 135
 sAD 5
 out 5
 ret 
@@ -5025,4 +5045,6 @@ ret
 
 
 
- "Compiled from source: ProgrammsV5.x\TreeParseEvalMathExpr.baabnqauto.ochÿtest/build.s1example.txtÿthis is an example file, it contains text
+ "Compiled from source: ProgrammsV5.x\TreeParseEvalMathExpr.baabnqauto.ochÿtest/build.s1
+test/build.s1
+test/build.s1example.txtÿthis is an example file, it contains text

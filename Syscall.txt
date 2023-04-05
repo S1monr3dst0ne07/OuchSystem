@@ -133,7 +133,7 @@ file stuff
 0x0044 -> fork process
     create exacte copy of caller process
     arguments:
-    returns  : <not implemented yet>
+    returns  : pid of process respectily
 
 !0x0045 -> get all pids
     get pids of all currently running processes
