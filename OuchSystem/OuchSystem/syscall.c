@@ -387,7 +387,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
 
     case scForkProc:;
-
+        break;
 
 
     }

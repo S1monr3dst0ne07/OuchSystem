@@ -25,6 +25,15 @@ struct processNap* createProcNap(int durMs)
 
 };
 
+//kinda redundant, ik, but it may be usefull in the future
+struct processNap* cloneProcNap(struct processNap* src)
+{
+	if (!src) return NULL;
+
+	struct processNap* dst = allocProcNap();
+	dst = src;
+	return dst;
+}
 
 //get time the process has been napping for, in msecs
 int getNapDelta(struct processNap* procNap)

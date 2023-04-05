@@ -327,12 +327,48 @@ struct process* parseProcess(char* source)
     return proc;
 }
 
-
-struct process* cloneProcess(struct process* proc)
+//clones heap, given a start ptr
+struct S1HeapChunk* cloneHeap(struct S1HeapChunk* src)
 {
-    struct process* procNew = allocProcess();
+    if (!src) return NULL;
+    struct S1HeapChunk* out = allocS1HeapChunk();
+    struct S1HeapChunk* dst = out;
 
+    //move throught heap and copy
+    for (;;)
+    {
+        //copy data
+        dst = src;
+
+        //check if the end is reached
+        if (!src->next) break;
+
+        //allocate new chunk for dst and move ptrs
+        dst->next = allocS1HeapChunk();
+
+        dst = dst->next;
+        src = src->next;
+    }
+
+    return out;
 }
+
+struct process* cloneProcess(struct process* src)
+{
+    //alloc new process and copy static data
+    struct process* dst = allocProcess();
+    memcpy(dst, src, sizeof(struct process));
+
+    //copy dynamics
+    dst->prog = malloc(sizeof(struct inst) * src->progSize);
+    memcpy(dst->prog, src->prog, src->progSize);
+
+    dst->heap = cloneHeap(src->heap);
+    dst->procNap = cloneProcNap(src->procNap);
+
+    return dst;
+}
+
 
 
 struct procPool* allocProcPool()
