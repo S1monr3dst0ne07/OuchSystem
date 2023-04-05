@@ -2017,6 +2017,33 @@ sAD 5
 lPR 5
 fhm 
 clr 
+set 218
+add 
+sAD 0
+set 1
+add 
+sAD 217
+set 7
+jmS _WriteChar
+set 108
+jmS _WriteChar
+set 111
+jmS _WriteChar
+set 111
+jmS _WriteChar
+set 112
+jmS _WriteChar
+set 10
+jmS _WriteChar
+set 0
+jmS _WriteChar
+lDA 217
+pha 
+jmS String::PrintString
+lDA 174
+sAD 5
+out 5
+clr 
 set 200
 add 
 pha 
@@ -2041,12 +2068,12 @@ sAD 174
 sAD 5
 out 5
 clr 
-set 218
+set 226
 add 
 sAD 0
 set 1
 add 
-sAD 217
+sAD 225
 set 28
 jmS _WriteChar
 set 99
@@ -2103,7 +2130,7 @@ set 32
 jmS _WriteChar
 set 0
 jmS _WriteChar
-lDA 217
+lDA 225
 pha 
 jmS String::PrintString
 lDA 176

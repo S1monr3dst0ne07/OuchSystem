@@ -108,13 +108,15 @@ void updateStreams(struct system* ouch)
     struct streamPool* river = ouch->river;
     char buffer[networkBufferSize];
 
-
-    //iterate river
-    for (int i = 0; i < river->count; i++)
+    //iterate river and count streams
+    for (int i = 0, c = 0; c < river->count; i++)
     {
         if (!isVaildStream(i2id(i), ouch)) continue;
         struct stream* stm = river->container[i];
         if (stm->type != stmTypSocket) continue;
+
+        //incmentent cound of stream if found
+        c++;
 
         //read socket discriptor
         const int socketFd = *(int*)stm->meta;
@@ -264,6 +266,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         break;
 
     case scWriteStm:;
+
         if (!syscallStackPull(proc, &data, callType)) break;
         if (!syscallStackPull(proc, &id, callType)) break;
 
