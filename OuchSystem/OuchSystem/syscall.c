@@ -145,6 +145,7 @@ void updateStreams(struct system* ouch)
             river->count--;
             freeStream(stm);
             river->container[i] = NULL;
+            close(socketFd);
             continue;
         }
 
@@ -361,7 +362,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         break;
 
     case scAcctSock:;
-        netAddr = proc->netAddr;
+        //netAddr = proc->netAddr;
+        //struct sockaddr_in netAddr;
         int addrlen = sizeof(netAddr);
 
         int sock = accept(proc->procSock, (struct sockaddr*)& netAddr, (socklen_t*)&addrlen);

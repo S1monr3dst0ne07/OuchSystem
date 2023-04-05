@@ -50,12 +50,11 @@ struct process* allocProcess()
 
     memset(proc->mem, 0, S1IntBufferSize);
     memset(proc->stack, 0, S1IntBufferSize);
+    proc->heap = allocS1HeapChunk();
 
     proc->stackPtr = 0;
     proc->acc = 0;
     proc->reg = 0;
-
-    proc->heap = allocS1HeapChunk();
 
     proc->procNap = NULL;
 
@@ -311,7 +310,7 @@ struct process* parseProcess(char* source)
     }
 
     int opt = 1;
-    if (setsockopt(proc->procSock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, 
+    if (setsockopt(proc->procSock, SOL_SOCKET, SO_REUSEPORT | SO_REUSEADDR,
         &opt, sizeof(opt)))
     {
         logg("Failed to config socket\n");
@@ -358,6 +357,9 @@ struct process* cloneProcess(struct process* src)
     //alloc new process and copy static data
     struct process* dst = allocProcess();
     memcpy(dst, src, sizeof(struct process));
+
+    //removed file system file descriptor, ik this is buggy, idc
+    dst->procSock = 0;
 
     //copy dynamics
     int progMemSize = sizeof(struct inst) * src->progSize;

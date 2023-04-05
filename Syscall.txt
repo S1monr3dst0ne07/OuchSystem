@@ -50,6 +50,7 @@ Then calling a syscall with stream id 0x0, the syscall will just do nothing and 
     arguments: id
     returns  :  type (0 -> unknown, 1 -> file, 2 -> directory, 3 -> socket),
                 input content size (output is practically infinite)
+                
 
 file stuff
 --- files ---
