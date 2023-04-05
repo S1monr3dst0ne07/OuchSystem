@@ -97,6 +97,8 @@ struct procPool
 	int procCount;
 
 	struct procList* execPtr;
+
+    int napMs;
 };
 
 struct procList

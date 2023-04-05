@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 //c is a good language, but some parts are just so fucking dumb
 //like why do have to do this shit when we want to make a mapper from string to enum
@@ -380,6 +381,7 @@ struct procPool* allocProcPool()
     pool->procs = NULL;
     pool->procCount = 0;
     pool->execPtr = NULL;
+    pool->napMs = 0;
     return pool;
 }
 
@@ -782,16 +784,28 @@ bool runPool(struct system* ouch)
 {
     struct procPool* pool = ouch->pool;
     struct procList* curList = pool->execPtr;
+
+    //the task switcher keeps track of how long it can sleep after it's gone through all the processes
+    //it does this by keeping track of the minimun each process has to remain sleeping
+    //however it will not sleep longer then a second
+    int* napMs = &pool->napMs;
+
     if (curList)
     {
         enum returnCodes rt = rtNormal;
         struct process* curProc = curList->proc;
         
-        //check if process is napping
+        //check if process is napping and if so update the napMs
         if (curProc->procNap)
-            updateProcNap(curProc);
+        {
+            int napProcMs = updateProcNap(curProc);
+            if (*napMs > napProcMs) *napMs = napProcMs;
+        }
         else
+        {
             rt = runProcess(curProc);
+            *napMs = 0; //if not all processes are napping, the switch can nap either
+        }
 
         //advance execPtr
         pool->execPtr = curList->next;
@@ -823,6 +837,9 @@ bool runPool(struct system* ouch)
         if (pool->procs == NULL)
             return false;
 
+        //nap according to napMs
+        usleep(*napMs * 1000);
+        *napMs = 200;
     }
 
     return true;

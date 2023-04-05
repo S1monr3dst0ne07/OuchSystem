@@ -4,15 +4,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-
-#ifdef _WINDOWS
-#include <windows.h>
-#endif 
-#ifdef _LINUX
-#include <unistd.h>
-#define Sleep(x) usleep((x)*1000)
-#endif
-
+#include <time.h>
 
 void logg(char* msg)
 {
@@ -20,6 +12,13 @@ void logg(char* msg)
 
 }
 
+long clockMsRT()
+{
+    struct timespec spec;
+    clock_gettime(CLOCK_REALTIME, &spec);
+
+    return (spec.tv_sec * 1000) + (spec.tv_nsec / 1000000);
+}
 
 char consu(char* s, int* i)
 {

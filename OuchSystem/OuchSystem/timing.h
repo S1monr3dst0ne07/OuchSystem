@@ -13,7 +13,7 @@ struct processNap
 	int durMs;
 };
 
-void updateProcNap(struct process* proc);
+int updateProcNap(struct process* proc);
 void procNap(int durMs, struct process* proc);
 struct processNap* cloneProcNap(struct processNap* src);
 

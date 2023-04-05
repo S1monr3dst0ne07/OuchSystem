@@ -1,7 +1,7 @@
 
 #include "process.h"
 #include "timing.h"
-
+#include "utils.h"
 
 struct processNap* allocProcNap()
 {
@@ -38,32 +38,35 @@ struct processNap* cloneProcNap(struct processNap* src)
 //get time the process has been napping for, in msecs
 int getNapDelta(struct processNap* procNap)
 {
-	clock_t now   = clock();
-	clock_t delta = now - procNap->startTime;
-	int     msec  = delta * 1000 / CLOCKS_PER_SEC;
+	long now   = clockMsRT();
+	int delta = now - procNap->startTime;
 
-	return msec;
+	return delta;
 }
 
 //updates nap of given process
-void updateProcNap(struct process* proc)
+int updateProcNap(struct process* proc)
 {
 	struct processNap* procNap = proc->procNap;
 	int msecDelta = getNapDelta(procNap);
+	int msecRem = procNap->durMs - msecDelta;
 
 	//if process has napped for the specified duration, remove the nap struct
 	if (msecDelta >= procNap->durMs)
 	{
 		freeProcNap(procNap);
 		proc->procNap = NULL;
+		return 0;
 	}
-
+	
+	//return the remaining naptime
+	return msecRem;
 }
 
 //put process to nap for specified amount of msecs
 void procNap(int durMs, struct process* proc)
 {
 	struct processNap* procNap = createProcNap(durMs);
-	procNap->startTime = clock(); //set start time, so the task switcher knows when the nap started
+	procNap->startTime = clockMsRT(); //set start time, so the task switcher knows when the nap started
 	proc->procNap = procNap;
 }

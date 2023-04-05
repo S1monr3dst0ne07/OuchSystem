@@ -6,6 +6,8 @@
 
 void logg(char* msg);
 
+long clockMsRT();
+
 char consu(char* s, int* i);
 bool charInString(char* str, char c);
 char readStringCustomDelim(char* dst, char* src, int* index, char* delim);
