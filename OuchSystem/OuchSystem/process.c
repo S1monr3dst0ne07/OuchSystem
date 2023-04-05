@@ -360,8 +360,9 @@ struct process* cloneProcess(struct process* src)
     memcpy(dst, src, sizeof(struct process));
 
     //copy dynamics
-    dst->prog = malloc(sizeof(struct inst) * src->progSize);
-    memcpy(dst->prog, src->prog, src->progSize);
+    int progMemSize = sizeof(struct inst) * src->progSize;
+    dst->prog = malloc(progMemSize);
+    memcpy(dst->prog, src->prog, progMemSize);
 
     dst->heap = cloneHeap(src->heap);
     dst->procNap = cloneProcNap(src->procNap);

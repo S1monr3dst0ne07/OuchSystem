@@ -130,7 +130,7 @@ file stuff
     arguments: pid
     returns  : <not implemented yet>
 
-!0x0044 -> fork process
+0x0044 -> fork process
     create exacte copy of caller process
     arguments:
     returns  : <not implemented yet>
