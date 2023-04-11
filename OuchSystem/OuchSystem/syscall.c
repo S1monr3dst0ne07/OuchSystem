@@ -145,6 +145,7 @@ void updateStreams(struct system* ouch)
         else if (recvErrno != EAGAIN || recvByteSize == 0)//kill stream if socket error
         {
             river->count--;
+            free((int*)stm->meta); //important: free socket fd
             freeStream(stm);
             river->container[i] = NULL;
             close(socketFd);

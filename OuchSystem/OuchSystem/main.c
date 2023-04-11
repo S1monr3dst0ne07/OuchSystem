@@ -13,6 +13,5 @@
 int main()
 {
 	ouch(imgPath);
-
 	return 0;
 }
