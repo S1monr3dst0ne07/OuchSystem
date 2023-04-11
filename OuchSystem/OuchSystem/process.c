@@ -1,4 +1,5 @@
 
+#include "timing.h"
 #include "kernal.h"
 #include "utils.h"
 #include "syscall.h"
@@ -338,7 +339,7 @@ struct S1HeapChunk* cloneHeap(struct S1HeapChunk* src)
     for (;;)
     {
         //copy data
-        dst = src;
+        memcpy(dst, src, sizeof(struct S1HeapChunk));
 
         //check if the end is reached
         if (!src->next) break;
@@ -357,6 +358,7 @@ struct process* cloneProcess(struct process* src)
 {
     //alloc new process and copy static data
     struct process* dst = allocProcess();
+    free(dst->heap); //allocProcess generates a base heap chunk that must be free before cloning
     memcpy(dst, src, sizeof(struct process));
 
     //removed file system file descriptor, ik this is buggy, idc
@@ -718,6 +720,9 @@ void freeProcess(struct process* proc)
         free(temp);
         temp = next;
     }
+
+    //check for procNap
+    if (proc->procNap) freeProcNap(proc->procNap);
 
     free(proc->prog);
     free(proc);
