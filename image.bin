@@ -1,4 +1,4 @@
-ÿtestÿbuild.s1got Stack::Skip
+rootÿtestÿbuild.s1got Stack::Skip
 lab Stack::Swap
 pla 
 sAD 1
@@ -1256,13 +1256,61 @@ syscall 68
 pha 
 ret 
 lab Ouch::Syscall::Skip
+got Ouch::Stream::Skip
+lab Ouch::Stream::Write
+jmS Stack::Swap
+pla 
+sAD 22
+jmS Stack::Swap
+pla 
+sAD 44
+lab Ouch::Stream::Write::Loop
+lPA 22
+sAD 45
+lDA 22
+pha 
 clr 
-set 45
+set 1
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 22
+lDA 45
+pha 
+clr 
+sAD 5
+pla 
+lDR 5
+jmA Ouch::Stream::Write::Done
+lDA 44
+pha 
+lDA 45
+pha 
+jmS Ouch::Syscall::WriteStream
+pla 
+sAD 46
+pha 
+clr 
+sAD 5
+pla 
+lDR 5
+jmA Ouch::Stream::Write::Done
+got Ouch::Stream::Write::Loop
+lab Ouch::Stream::Write::Done
+lDA 46
+pha 
+jmS Stack::Swap
+ret 
+lab Ouch::Stream::Skip
+clr 
+set 48
 add 
 sAD 0
 set 1
 add 
-sAD 44
+sAD 47
 set 4
 jmS _WriteChar
 set 10
@@ -1272,12 +1320,12 @@ jmS _WriteChar
 set 0
 jmS _WriteChar
 clr 
-set 50
+set 53
 add 
 sAD 0
 set 1
 add 
-sAD 49
+sAD 52
 set 18
 jmS _WriteChar
 set 84
@@ -1315,12 +1363,12 @@ jmS _WriteChar
 set 0
 jmS _WriteChar
 clr 
-set 69
+set 72
 add 
 sAD 0
 set 1
 add 
-sAD 68
+sAD 71
 set 11
 jmS _WriteChar
 set 83
@@ -1344,12 +1392,12 @@ jmS _WriteChar
 set 0
 jmS _WriteChar
 clr 
-set 81
+set 84
 add 
 sAD 0
 set 1
 add 
-sAD 80
+sAD 83
 set 11
 jmS _WriteChar
 set 77
@@ -1373,12 +1421,12 @@ jmS _WriteChar
 set 0
 jmS _WriteChar
 clr 
-set 93
+set 96
 add 
 sAD 0
 set 1
 add 
-sAD 92
+sAD 95
 set 11
 jmS _WriteChar
 set 72
@@ -1402,12 +1450,12 @@ jmS _WriteChar
 set 0
 jmS _WriteChar
 clr 
-set 105
+set 108
 add 
 sAD 0
 set 1
 add 
-sAD 104
+sAD 107
 set 11
 jmS _WriteChar
 set 68
@@ -1431,12 +1479,12 @@ jmS _WriteChar
 set 0
 jmS _WriteChar
 clr 
-set 117
+set 120
 add 
 sAD 0
 set 1
 add 
-sAD 116
+sAD 119
 set 11
 jmS _WriteChar
 set 77
@@ -1460,16 +1508,16 @@ jmS _WriteChar
 set 0
 jmS _WriteChar
 clr 
-set 128
+set 131
 add 
 sAD 39
 clr 
-set 161
+set 164
 add 
 sAD 0
 set 1
 add 
-sAD 160
+sAD 163
 set 12
 jmS _WriteChar
 set 27
@@ -1496,7 +1544,7 @@ set 0
 jmS _WriteChar
 jmS Ouch::Syscall::GetPid
 pla 
-sAD 173
+sAD 176
 clr 
 set 5000
 add 
@@ -1507,21 +1555,19 @@ add
 pha 
 jmS Ouch::Syscall::BindSock
 pla 
-sAD 174
+sAD 46
 sAD 5
 out 5
-clr 
-sAD 175
 lab loop
 jmS Ouch::Syscall::AcceptSock
 pla 
-sAD 176
+sAD 177
 clr 
-set 50
+set 250
 add 
 pha 
 jmS Ouch::Syscall::NapMs
-lDA 176
+lDA 177
 pha 
 clr 
 sAD 5
@@ -1530,38 +1576,19 @@ lDR 5
 jmA loop
 jmS Ouch::Syscall::ForkProcess
 pla 
-sAD 177
+sAD 178
 pha 
-lDA 173
+lDA 176
 sAD 5
 pla 
 lDR 5
 jmA Temp29
 got serveClient
 lab Temp29
-lDA 175
-pha 
-clr 
-set 1
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 175
-pha 
-clr 
-set 2
-add 
-sAD 5
-pla 
-lDR 5
-jmL loop
+got loop
 brk 
 lab render
 jmS Ouch::Syscall::FormatLocalTime
-pla 
-sAD 178
 pla 
 sAD 179
 pla 
@@ -1571,24 +1598,13 @@ sAD 181
 pla 
 sAD 182
 pla 
-sAD 181
-pla 
 sAD 183
 pla 
-sAD 181
-clr 
-set 59
-add 
-pha 
-lDA 178
-sAD 5
-pla 
-lDR 5
-sub 
-pha 
-jmS String::Int2Str
+sAD 182
 pla 
 sAD 184
+pla 
+sAD 182
 clr 
 set 59
 add 
@@ -1603,7 +1619,7 @@ jmS String::Int2Str
 pla 
 sAD 185
 clr 
-set 23
+set 59
 add 
 pha 
 lDA 180
@@ -1616,10 +1632,10 @@ jmS String::Int2Str
 pla 
 sAD 186
 clr 
-set 31
+set 23
 add 
 pha 
-lDA 182
+lDA 181
 sAD 5
 pla 
 lDR 5
@@ -1629,7 +1645,7 @@ jmS String::Int2Str
 pla 
 sAD 187
 clr 
-set 12
+set 31
 add 
 pha 
 lDA 183
@@ -1641,7 +1657,20 @@ pha
 jmS String::Int2Str
 pla 
 sAD 188
-lDA 160
+clr 
+set 12
+add 
+pha 
+lDA 184
+sAD 5
+pla 
+lDR 5
+sub 
+pha 
+jmS String::Int2Str
+pla 
+sAD 189
+lDA 163
 pha 
 lDA 39
 pha 
@@ -1653,7 +1682,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 49
+lDA 52
 pha 
 lDA 39
 pha 
@@ -1667,7 +1696,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 68
+lDA 71
 pha 
 lDA 39
 pha 
@@ -1681,7 +1710,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 184
+lDA 185
 pha 
 lDA 39
 pha 
@@ -1695,7 +1724,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 44
+lDA 47
 pha 
 lDA 39
 pha 
@@ -1709,7 +1738,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 80
+lDA 83
 pha 
 lDA 39
 pha 
@@ -1723,7 +1752,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 185
+lDA 186
 pha 
 lDA 39
 pha 
@@ -1737,7 +1766,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 44
+lDA 47
 pha 
 lDA 39
 pha 
@@ -1751,7 +1780,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 92
+lDA 95
 pha 
 lDA 39
 pha 
@@ -1765,7 +1794,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 186
+lDA 187
 pha 
 lDA 39
 pha 
@@ -1779,7 +1808,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 44
+lDA 47
 pha 
 lDA 39
 pha 
@@ -1793,7 +1822,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 104
+lDA 107
 pha 
 lDA 39
 pha 
@@ -1807,7 +1836,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 187
+lDA 188
 pha 
 lDA 39
 pha 
@@ -1821,7 +1850,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 44
+lDA 47
 pha 
 lDA 39
 pha 
@@ -1835,7 +1864,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 116
+lDA 119
 pha 
 lDA 39
 pha 
@@ -1849,7 +1878,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 188
+lDA 189
 pha 
 lDA 39
 pha 
@@ -1863,7 +1892,7 @@ add
 sAD 5
 pla 
 sAP 5
-lDA 44
+lDA 47
 pha 
 lDA 39
 pha 
@@ -1882,12 +1911,6 @@ pha
 jmS String::Join
 pla 
 sAD 41
-lDA 184
-set 1
-sub 
-sAD 5
-lPR 5
-fhm 
 lDA 185
 set 1
 sub 
@@ -1912,18 +1935,24 @@ sub
 sAD 5
 lPR 5
 fhm 
+lDA 189
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
 lDA 41
 pha 
 jmS Stack::Swap
 ret 
 lab serveClient
 clr 
-set 190
+set 191
 add 
 sAD 0
 set 1
 add 
-sAD 189
+sAD 190
 set 25
 jmS _WriteChar
 set 99
@@ -1974,73 +2003,33 @@ set 32
 jmS _WriteChar
 set 0
 jmS _WriteChar
-lDA 189
+lDA 190
 pha 
 jmS String::PrintString
-lDA 177
+lDA 178
 sAD 5
 out 5
 lab serveLoop
 jmS render
+jmS Stack::Dup
 pla 
-sAD 215
-clr 
 sAD 216
-lab writeLoop
-lDA 215
+lDA 177
 pha 
+jmS Stack::Swap
+jmS Ouch::Stream::Write
 lDA 216
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-lPA 5
-sAD 217
-lDA 216
-pha 
-clr 
-set 1
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 216
-lDA 217
-pha 
-clr 
-sAD 5
-pla 
-lDR 5
-jmA writeDone
-lDA 176
-pha 
-lDA 217
-pha 
-jmS Ouch::Syscall::WriteStream
-pla 
-sAD 174
-pha 
-clr 
-sAD 5
-pla 
-lDR 5
-jmA writeDone
-got writeLoop
-lab writeDone
-lDA 215
 set 1
 sub 
 sAD 5
 lPR 5
 fhm 
 clr 
-set 200
+set 750
 add 
 pha 
 jmS Ouch::Syscall::NapMs
-lDA 174
+lDA 46
 pha 
 clr 
 sAD 5
@@ -2050,22 +2039,22 @@ jmA Temp30
 got serveLoop
 lab Temp30
 lab serveDone
-lDA 176
+lDA 177
 pha 
 clr 
 pha 
 jmS Ouch::Syscall::CloseStream
 pla 
-sAD 174
+sAD 46
 sAD 5
 out 5
 clr 
-set 219
+set 218
 add 
 sAD 0
 set 1
 add 
-sAD 218
+sAD 217
 set 28
 jmS _WriteChar
 set 99
@@ -2122,10 +2111,10 @@ set 32
 jmS _WriteChar
 set 0
 jmS _WriteChar
-lDA 218
+lDA 217
 pha 
 jmS String::PrintString
-lDA 177
+lDA 178
 sAD 5
 out 5
 brk 
