@@ -438,19 +438,25 @@ void launchProcess(struct process* proc, struct system* ouch)
 
 }
 
+
+void freeS1Heap(struct S1HeapChunk* ptr)
+{
+    while (ptr != NULL)
+    {
+        struct S1HeapChunk* next = ptr->next;
+        free(ptr);
+        ptr = next;
+    }
+}
+
+
 void freeProcess(struct process* proc)
 {
     //network
     shutdown(proc->procSock, SHUT_RDWR);
 
     //free heap
-    struct S1HeapChunk* temp = proc->heap;
-    while (temp != NULL)
-    {
-        struct S1HeapChunk* next = temp->next;
-        free(temp);
-        temp = next;
-    }
+    freeS1Heap(proc->heap);
 
     //check for procNap
     if (proc->procNap) freeProcNap(proc->procNap);
