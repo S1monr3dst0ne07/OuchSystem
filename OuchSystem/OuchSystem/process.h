@@ -155,6 +155,8 @@ struct inst
 	int arg;
 };
 
+struct S1HeapChunk* allocS1HeapChunk();
+
 void freeProcess(struct process* proc);
 struct process* parseProcess(char* source);
 struct process* cloneProcess(struct process* src);
