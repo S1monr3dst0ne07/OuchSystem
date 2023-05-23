@@ -115,7 +115,7 @@ void updateStreams(struct system* ouch)
         struct stream* stm = river->container[i];
         if (stm->type != stmTypSocket) continue;
 
-        //incmentent cound of stream if found
+        //incmentent count of stream if found
         c++;
 
         //read socket discriptor
@@ -366,8 +366,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         break;
 
     case scAcctSock:;
-        //netAddr = proc->netAddr;
-        //struct sockaddr_in netAddr;
+        struct sockaddr_in netAddr = { .sin_addr.s_addr = 0x0 };
         int addrlen = sizeof(netAddr);
 
         int sock = accept(proc->procSock, (struct sockaddr*)& netAddr, (socklen_t*)&addrlen);
@@ -389,6 +388,12 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         else
             id = 0x0;
 
+        unsigned int acctIp = netAddr.sin_addr.s_addr;
+        unsigned short acctIpLow  = acctIp & 0x0000FFFF;
+        unsigned short acctIpHigh = acctIp & 0xFFFF0000;
+
+        if (!syscallStackPush(proc, &acctIpHigh, callType)) break; //high
+        if (!syscallStackPush(proc, &acctIpLow, callType))  break; //low
 
         if (!syscallStackPush(proc, &id, callType)) break;
         break;

@@ -109,6 +109,8 @@ file stuff
 0x0031 -> accept pending connection
     arguments: 
     returns  : id (stream for sending data over the socket)
+	           ip low  (---.---.???.???)
+			   ip high (???.???.---.---)
     
 --- process ---
 0x0040 -> get pid
