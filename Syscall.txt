@@ -109,7 +109,7 @@ file stuff
 0x0031 -> accept pending connection
     arguments: 
     returns  : id (stream for sending data over the socket)
-	           ip low  (---.---.???.???)
+	           ip low  (---.---.???.???) (!!! ip is in reverse: e.g. localhost => 1.0.0.127)
 			   ip high (???.???.---.---)
     
 --- process ---
