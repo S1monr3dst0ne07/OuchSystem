@@ -58,21 +58,23 @@ bool isOnlyDigits(const char* s)
 
 unsigned int getSmallPosivNumNotInList(unsigned int* list, unsigned int len)
 {
-    //get bad inital, for special cases
-    unsigned int res = 0;
+    //get biggest number in list
+    unsigned int limit = 0;
     for (int i = 0; i < len; i++)
-        if (res <= list[i]) res = list[i] + 1;
+        if (limit <= list[i]) limit = list[i];
 
     //record what value are free from the list
-    bool* freeRecord = (bool*)malloc(sizeof(bool) * len);
-    memset(freeRecord, true, len);
+    unsigned int freeRecSize = sizeof(bool) * (limit + 1);
+    bool* freeRecord = (bool*)malloc(freeRecSize);
+    memset(freeRecord, true, freeRecSize);
 
     //populate the record
     for (int i = 0; i < len; i++)
         freeRecord[list[i]] = false;
 
     //find first value in freeRecord that is free
-    for (int i = 0; i < len; i++)
+    unsigned int res = limit + 1;
+    for (int i = 0; i < limit; i++)
         if (freeRecord[i])
         {
             res = (unsigned int)i;

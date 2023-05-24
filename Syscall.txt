@@ -134,7 +134,7 @@ file stuff
     returns  : <not implemented yet>
 
 0x0044 -> fork process
-    create exacte copy of caller process
+    create exacte (except networking) copy of caller process
     arguments:
     returns  : pid of process respectily
 

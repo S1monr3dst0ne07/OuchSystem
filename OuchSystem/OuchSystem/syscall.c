@@ -389,7 +389,6 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             id = 0x0;
 
         unsigned int acctIp = netAddr.sin_addr.s_addr;
-        if (acctIp) printf("!!! IP: %d\n", acctIp);
         unsigned short acctIpLow  = acctIp          & 0xFFFF;
         unsigned short acctIpHigh = (acctIp >> 16 ) & 0xFFFF;
 

@@ -362,7 +362,7 @@ struct process* cloneProcess(struct process* src)
     free(dst->heap); //allocProcess generates a base heap chunk that must be free before cloning
     memcpy(dst, src, sizeof(struct process));
 
-    //removed file system file descriptor, ik this is buggy, idc
+    //remove socket file descriptor, ik this is buggy, idc
     dst->procSock = 0;
 
     //copy dynamics
