@@ -16,6 +16,11 @@
 #define rawInstBufferLimit 128
 #define c16bitIntLimit (1 << 16)
 
+//number of total process iterations in one cycle of task switching
+//therefore number of iters per proc is 
+//iterLimit = procIterCycle / procCount
+#define procIterCycle 65535
+
 typedef unsigned short int S1Int;
 
 #define S1IntBufferSize (c16bitIntLimit * sizeof(S1Int))

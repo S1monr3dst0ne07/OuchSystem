@@ -2317,7 +2317,7 @@ sAD 5
 lPR 5
 fhm 
 clr 
-set 750
+set 25
 add 
 pha 
 jmS Ouch::Syscall::NapMs

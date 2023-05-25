@@ -6,6 +6,6 @@
 
 bool stackPush(S1Int* stack, int* stackPtr, const S1Int* value);
 bool stackPull(S1Int* stack, int* stackPtr, S1Int* value);
-enum returnCodes runProcess(struct process* proc);
+enum returnCodes runProcess(struct process* proc, int iterLimit);
 
 #endif

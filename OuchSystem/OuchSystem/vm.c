@@ -55,7 +55,7 @@ struct S1HeapChunk* findPrevChunkByPtrAndSize(S1Int ptr, S1Int size, struct S1He
 
 
 //runs process, advancing by n instructions
-enum returnCodes runProcess(struct process* proc)
+enum returnCodes runProcess(struct process* proc, int iterLimit)
 {
     int* ip = &proc->ip;
 
@@ -68,7 +68,7 @@ enum returnCodes runProcess(struct process* proc)
 
     bool success; //temp
 
-    for (int i = 0; i < 4000; i++)
+    for (int iter = 0; iter < iterLimit; iter++)
     {
         //check if ip is out bound
         if (*ip > proc->progSize) return rtExit;

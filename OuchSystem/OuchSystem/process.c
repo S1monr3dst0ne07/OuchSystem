@@ -545,7 +545,8 @@ bool runPool(struct system* ouch)
         }
         else
         {
-            rt = runProcess(curProc);
+            int iterLimit = procIterCycle / pool->procCount;
+            rt = runProcess(curProc, iterLimit);
             *napMs = 0; //if not all processes are napping, the switch can nap either
         }
 
