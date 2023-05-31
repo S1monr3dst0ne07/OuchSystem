@@ -61,7 +61,7 @@ bool launchProcessFromPath(char* pathStr, struct system* ouch)
 	if (!proc) return false;
 
 	launchProcess(proc, ouch);
-	
+
 	freeFilePath(path);
 	free(source);
 	return true;

@@ -9,7 +9,7 @@
 
 void flog(char* format, ...)
 {
-    char tmp[2048];
+    char tmp[2048] = { 0 };
 
     va_list vargs;
     va_start(vargs, format);
@@ -66,6 +66,9 @@ bool isOnlyDigits(const char* s)
 
 unsigned int getSmallPosivNumNotInList(unsigned int* list, unsigned int len)
 {
+    //base case
+    if (!len) return 0;
+
     //get biggest number in list
     unsigned int limit = 0;
     for (int i = 0; i < len; i++)

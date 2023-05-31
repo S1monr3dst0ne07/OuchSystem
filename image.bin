@@ -1,4 +1,4 @@
-ÿtestÿbuild.s1got Stack::Skip
+rootÿtestÿbuild.s1got Stack::Skip
 lab Stack::Swap
 pla 
 sAD 1
@@ -1304,9 +1304,8 @@ pha
 jmS Stack::Swap
 ret 
 lab Ouch::Stream::Skip
-clr 
-set 48
-add 
+set 4
+ahm 
 sAD 0
 set 1
 add 
@@ -1319,13 +1318,12 @@ set 13
 jmS _WriteChar
 set 0
 jmS _WriteChar
-clr 
-set 53
-add 
+set 18
+ahm 
 sAD 0
 set 1
 add 
-sAD 52
+sAD 48
 set 18
 jmS _WriteChar
 set 84
@@ -1362,13 +1360,12 @@ set 13
 jmS _WriteChar
 set 0
 jmS _WriteChar
-clr 
-set 72
-add 
+set 11
+ahm 
 sAD 0
 set 1
 add 
-sAD 71
+sAD 49
 set 11
 jmS _WriteChar
 set 83
@@ -1391,13 +1388,12 @@ set 32
 jmS _WriteChar
 set 0
 jmS _WriteChar
-clr 
-set 84
-add 
+set 11
+ahm 
 sAD 0
 set 1
 add 
-sAD 83
+sAD 50
 set 11
 jmS _WriteChar
 set 77
@@ -1420,13 +1416,12 @@ set 32
 jmS _WriteChar
 set 0
 jmS _WriteChar
-clr 
-set 96
-add 
+set 11
+ahm 
 sAD 0
 set 1
 add 
-sAD 95
+sAD 51
 set 11
 jmS _WriteChar
 set 72
@@ -1449,13 +1444,12 @@ set 32
 jmS _WriteChar
 set 0
 jmS _WriteChar
-clr 
-set 108
-add 
+set 11
+ahm 
 sAD 0
 set 1
 add 
-sAD 107
+sAD 52
 set 11
 jmS _WriteChar
 set 68
@@ -1478,13 +1472,12 @@ set 32
 jmS _WriteChar
 set 0
 jmS _WriteChar
-clr 
-set 120
-add 
+set 11
+ahm 
 sAD 0
 set 1
 add 
-sAD 119
+sAD 53
 set 11
 jmS _WriteChar
 set 77
@@ -1508,16 +1501,24 @@ jmS _WriteChar
 set 0
 jmS _WriteChar
 clr 
-set 131
+set 32
+add 
+set 1
+add 
+sAD 5
+lDR 5
+ahm 
+sAD 5
+sRP 5
+set 1
 add 
 sAD 39
-clr 
-set 164
-add 
+set 12
+ahm 
 sAD 0
 set 1
 add 
-sAD 163
+sAD 54
 set 12
 jmS _WriteChar
 set 27
@@ -1542,709 +1543,24 @@ set 74
 jmS _WriteChar
 set 0
 jmS _WriteChar
-clr 
-set 177
-add 
+set 3
+ahm 
 sAD 0
 set 1
 add 
-sAD 176
+sAD 55
 set 3
 jmS _WriteChar
 set 46
 jmS _WriteChar
 set 0
 jmS _WriteChar
-jmS Ouch::Syscall::GetPid
-pla 
-sAD 180
-clr 
-set 5000
-add 
-pha 
-clr 
-set 5
-add 
-pha 
-jmS Ouch::Syscall::BindSock
-pla 
-sAD 46
-sAD 5
-out 5
-lab loop
-jmS Ouch::Syscall::AcceptSock
-pla 
-sAD 181
-pla 
-sAD 182
-pla 
-sAD 183
-clr 
-set 250
-add 
-pha 
-jmS Ouch::Syscall::NapMs
-lDA 181
-pha 
-clr 
-sAD 5
-pla 
-lDR 5
-jmA loop
-lDA 182
-pha 
-clr 
-set 255
-add 
-sAD 5
-pla 
-lDR 5
-and 
-pha 
-jmS String::Int2Str
-pla 
-sAD 184
-pha 
-lDA 39
-pha 
-clr 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 182
-pha 
-clr 
-set 8
-add 
-sAD 5
-pla 
-sAD 9
-lab Temp29
-lDA 5
-jm0 Temp30
-set 1
-sub 
-sAD 5
-lDA 9
-shs 
-sAD 9
-got Temp29
-lab Temp30
-lDA 9
-pha 
-clr 
-set 255
-add 
-sAD 5
-pla 
-lDR 5
-and 
-pha 
-jmS String::Int2Str
-pla 
-sAD 184
-pha 
-lDA 39
-pha 
-clr 
-set 2
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 183
-pha 
-clr 
-set 255
-add 
-sAD 5
-pla 
-lDR 5
-and 
-pha 
-jmS String::Int2Str
-pla 
-sAD 184
-pha 
-lDA 39
-pha 
-clr 
-set 4
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 183
-pha 
-clr 
-set 8
-add 
-sAD 5
-pla 
-sAD 9
-lab Temp31
-lDA 5
-jm0 Temp32
-set 1
-sub 
-sAD 5
-lDA 9
-shs 
-sAD 9
-got Temp31
-lab Temp32
-lDA 9
-pha 
-clr 
-set 255
-add 
-sAD 5
-pla 
-lDR 5
-and 
-pha 
-jmS String::Int2Str
-pla 
-sAD 184
-pha 
-lDA 39
-pha 
-clr 
-set 6
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 176
-pha 
-lDA 39
-pha 
-clr 
-set 1
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 176
-pha 
-lDA 39
-pha 
-clr 
-set 3
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 176
-pha 
-lDA 39
-pha 
-clr 
-set 5
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 47
-pha 
-lDA 39
-pha 
-clr 
-set 7
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 39
-pha 
-jmS String::Join
-pla 
-sAD 41
-pha 
-jmS String::PrintString
-lDA 41
-set 1
-sub 
-sAD 5
-lPR 5
-fhm 
-lDA 39
-pha 
-clr 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-lPA 5
-sAD 184
-set 1
-sub 
-sAD 5
-lPR 5
-fhm 
-lDA 39
-pha 
-clr 
-set 2
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-lPA 5
-sAD 184
-set 1
-sub 
-sAD 5
-lPR 5
-fhm 
-lDA 39
-pha 
-clr 
-set 4
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-lPA 5
-sAD 184
-set 1
-sub 
-sAD 5
-lPR 5
-fhm 
-lDA 39
-pha 
-clr 
-set 6
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-lPA 5
-sAD 184
-set 1
-sub 
-sAD 5
-lPR 5
-fhm 
-jmS Ouch::Syscall::ForkProcess
-pla 
-sAD 185
-pha 
-lDA 180
-sAD 5
-pla 
-lDR 5
-jmA Temp33
-got serveClient
-lab Temp33
-got loop
-brk 
-lab render
-jmS Ouch::Syscall::FormatLocalTime
-pla 
-sAD 186
-pla 
-sAD 187
-pla 
-sAD 188
-pla 
-sAD 189
-pla 
-sAD 190
-pla 
-sAD 189
-pla 
-sAD 191
-pla 
-sAD 189
-clr 
-set 59
-add 
-pha 
-lDA 186
-sAD 5
-pla 
-lDR 5
-sub 
-pha 
-jmS String::Int2Str
-pla 
-sAD 192
-clr 
-set 59
-add 
-pha 
-lDA 187
-sAD 5
-pla 
-lDR 5
-sub 
-pha 
-jmS String::Int2Str
-pla 
-sAD 193
-clr 
-set 23
-add 
-pha 
-lDA 188
-sAD 5
-pla 
-lDR 5
-sub 
-pha 
-jmS String::Int2Str
-pla 
-sAD 194
-clr 
-set 31
-add 
-pha 
-lDA 190
-sAD 5
-pla 
-lDR 5
-sub 
-pha 
-jmS String::Int2Str
-pla 
-sAD 195
-clr 
-set 12
-add 
-pha 
-lDA 191
-sAD 5
-pla 
-lDR 5
-sub 
-pha 
-jmS String::Int2Str
-pla 
-sAD 196
-lDA 163
-pha 
-lDA 39
-pha 
-clr 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 52
-pha 
-lDA 39
-pha 
-clr 
-set 1
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 71
-pha 
-lDA 39
-pha 
-clr 
-set 2
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 192
-pha 
-lDA 39
-pha 
-clr 
-set 3
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 47
-pha 
-lDA 39
-pha 
-clr 
-set 4
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 83
-pha 
-lDA 39
-pha 
-clr 
-set 5
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 193
-pha 
-lDA 39
-pha 
-clr 
-set 6
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 47
-pha 
-lDA 39
-pha 
-clr 
-set 7
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 95
-pha 
-lDA 39
-pha 
-clr 
-set 8
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 194
-pha 
-lDA 39
-pha 
-clr 
-set 9
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 47
-pha 
-lDA 39
-pha 
-clr 
-set 10
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 107
-pha 
-lDA 39
-pha 
-clr 
-set 11
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 195
-pha 
-lDA 39
-pha 
-clr 
-set 12
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 47
-pha 
-lDA 39
-pha 
-clr 
-set 13
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 119
-pha 
-lDA 39
-pha 
-clr 
-set 14
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 196
-pha 
-lDA 39
-pha 
-clr 
-set 15
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 47
-pha 
-lDA 39
-pha 
-clr 
-set 16
-add 
-sAD 5
-pla 
-lDR 5
-add 
-sAD 5
-pla 
-sAP 5
-lDA 39
-pha 
-jmS String::Join
-pla 
-sAD 41
-lDA 192
-set 1
-sub 
-sAD 5
-lPR 5
-fhm 
-lDA 193
-set 1
-sub 
-sAD 5
-lPR 5
-fhm 
-lDA 194
-set 1
-sub 
-sAD 5
-lPR 5
-fhm 
-lDA 195
-set 1
-sub 
-sAD 5
-lPR 5
-fhm 
-lDA 196
-set 1
-sub 
-sAD 5
-lPR 5
-fhm 
-lDA 41
-pha 
-jmS Stack::Swap
-ret 
-lab serveClient
-clr 
-set 198
-add 
+set 25
+ahm 
 sAD 0
 set 1
 add 
-sAD 197
+sAD 56
 set 25
 jmS _WriteChar
 set 99
@@ -2295,58 +1611,12 @@ set 32
 jmS _WriteChar
 set 0
 jmS _WriteChar
-lDA 197
-pha 
-jmS String::PrintString
-lDA 185
-sAD 5
-out 5
-lab serveLoop
-jmS render
-jmS Stack::Dup
-pla 
-sAD 223
-lDA 181
-pha 
-jmS Stack::Swap
-jmS Ouch::Stream::Write
-lDA 223
-set 1
-sub 
-sAD 5
-lPR 5
-fhm 
-clr 
-set 25
-add 
-pha 
-jmS Ouch::Syscall::NapMs
-lDA 46
-pha 
-clr 
-sAD 5
-pla 
-lDR 5
-jmA Temp34
-got serveLoop
-lab Temp34
-lab serveDone
-lDA 181
-pha 
-clr 
-pha 
-jmS Ouch::Syscall::CloseStream
-pla 
-sAD 46
-sAD 5
-out 5
-clr 
-set 225
-add 
+set 28
+ahm 
 sAD 0
 set 1
 add 
-sAD 224
+sAD 57
 set 28
 jmS _WriteChar
 set 99
@@ -2403,10 +1673,740 @@ set 32
 jmS _WriteChar
 set 0
 jmS _WriteChar
-lDA 224
+jmS Ouch::Syscall::GetPid
+pla 
+sAD 58
+sAD 5
+out 5
+clr 
+set 5000
+add 
+pha 
+clr 
+set 5
+add 
+pha 
+jmS Ouch::Syscall::BindSock
+pla 
+sAD 46
+sAD 5
+out 5
+lab loop
+jmS Ouch::Syscall::AcceptSock
+pla 
+sAD 59
+pla 
+sAD 60
+pla 
+sAD 61
+clr 
+set 250
+add 
+pha 
+jmS Ouch::Syscall::NapMs
+lDA 59
+pha 
+clr 
+sAD 5
+pla 
+lDR 5
+jmA loop
+lDA 60
+pha 
+clr 
+set 255
+add 
+sAD 5
+pla 
+lDR 5
+and 
+pha 
+jmS String::Int2Str
+pla 
+sAD 62
+pha 
+lDA 39
+pha 
+clr 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 60
+pha 
+clr 
+set 8
+add 
+sAD 5
+pla 
+sAD 9
+lab Temp29
+lDA 5
+jm0 Temp30
+set 1
+sub 
+sAD 5
+lDA 9
+shs 
+sAD 9
+got Temp29
+lab Temp30
+lDA 9
+pha 
+clr 
+set 255
+add 
+sAD 5
+pla 
+lDR 5
+and 
+pha 
+jmS String::Int2Str
+pla 
+sAD 62
+pha 
+lDA 39
+pha 
+clr 
+set 2
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 61
+pha 
+clr 
+set 255
+add 
+sAD 5
+pla 
+lDR 5
+and 
+pha 
+jmS String::Int2Str
+pla 
+sAD 62
+pha 
+lDA 39
+pha 
+clr 
+set 4
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 61
+pha 
+clr 
+set 8
+add 
+sAD 5
+pla 
+sAD 9
+lab Temp31
+lDA 5
+jm0 Temp32
+set 1
+sub 
+sAD 5
+lDA 9
+shs 
+sAD 9
+got Temp31
+lab Temp32
+lDA 9
+pha 
+clr 
+set 255
+add 
+sAD 5
+pla 
+lDR 5
+and 
+pha 
+jmS String::Int2Str
+pla 
+sAD 62
+pha 
+lDA 39
+pha 
+clr 
+set 6
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 55
+pha 
+lDA 39
+pha 
+clr 
+set 1
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 55
+pha 
+lDA 39
+pha 
+clr 
+set 3
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 55
+pha 
+lDA 39
+pha 
+clr 
+set 5
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 47
+pha 
+lDA 39
+pha 
+clr 
+set 7
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 39
+pha 
+jmS String::Join
+pla 
+sAD 41
 pha 
 jmS String::PrintString
-lDA 185
+lDA 41
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 39
+pha 
+clr 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+lPA 5
+sAD 62
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 39
+pha 
+clr 
+set 2
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+lPA 5
+sAD 62
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 39
+pha 
+clr 
+set 4
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+lPA 5
+sAD 62
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 39
+pha 
+clr 
+set 6
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+lPA 5
+sAD 62
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+jmS Ouch::Syscall::ForkProcess
+pla 
+sAD 63
+pha 
+lDA 58
+sAD 5
+pla 
+lDR 5
+jmA Temp33
+got serveClient
+lab Temp33
+got loop
+brk 
+lab render
+jmS Ouch::Syscall::FormatLocalTime
+pla 
+sAD 64
+pla 
+sAD 65
+pla 
+sAD 66
+pla 
+sAD 67
+pla 
+sAD 68
+pla 
+sAD 67
+pla 
+sAD 69
+pla 
+sAD 67
+clr 
+set 59
+add 
+pha 
+lDA 64
+sAD 5
+pla 
+lDR 5
+sub 
+pha 
+jmS String::Int2Str
+pla 
+sAD 70
+clr 
+set 59
+add 
+pha 
+lDA 65
+sAD 5
+pla 
+lDR 5
+sub 
+pha 
+jmS String::Int2Str
+pla 
+sAD 71
+clr 
+set 23
+add 
+pha 
+lDA 66
+sAD 5
+pla 
+lDR 5
+sub 
+pha 
+jmS String::Int2Str
+pla 
+sAD 72
+clr 
+set 31
+add 
+pha 
+lDA 68
+sAD 5
+pla 
+lDR 5
+sub 
+pha 
+jmS String::Int2Str
+pla 
+sAD 73
+clr 
+set 12
+add 
+pha 
+lDA 69
+sAD 5
+pla 
+lDR 5
+sub 
+pha 
+jmS String::Int2Str
+pla 
+sAD 74
+lDA 54
+pha 
+lDA 39
+pha 
+clr 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 48
+pha 
+lDA 39
+pha 
+clr 
+set 1
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 49
+pha 
+lDA 39
+pha 
+clr 
+set 2
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 70
+pha 
+lDA 39
+pha 
+clr 
+set 3
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 47
+pha 
+lDA 39
+pha 
+clr 
+set 4
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 50
+pha 
+lDA 39
+pha 
+clr 
+set 5
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 71
+pha 
+lDA 39
+pha 
+clr 
+set 6
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 47
+pha 
+lDA 39
+pha 
+clr 
+set 7
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 51
+pha 
+lDA 39
+pha 
+clr 
+set 8
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 72
+pha 
+lDA 39
+pha 
+clr 
+set 9
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 47
+pha 
+lDA 39
+pha 
+clr 
+set 10
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 52
+pha 
+lDA 39
+pha 
+clr 
+set 11
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 73
+pha 
+lDA 39
+pha 
+clr 
+set 12
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 47
+pha 
+lDA 39
+pha 
+clr 
+set 13
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 53
+pha 
+lDA 39
+pha 
+clr 
+set 14
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 74
+pha 
+lDA 39
+pha 
+clr 
+set 15
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 47
+pha 
+lDA 39
+pha 
+clr 
+set 16
+add 
+sAD 5
+pla 
+lDR 5
+add 
+sAD 5
+pla 
+sAP 5
+lDA 39
+pha 
+jmS String::Join
+pla 
+sAD 41
+lDA 70
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 71
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 72
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 73
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 74
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+lDA 41
+pha 
+jmS Stack::Swap
+ret 
+lab serveClient
+lDA 56
+pha 
+jmS String::PrintString
+lDA 63
+sAD 5
+out 5
+lab serveLoop
+jmS render
+jmS Stack::Dup
+pla 
+sAD 75
+lDA 59
+pha 
+jmS Stack::Swap
+jmS Ouch::Stream::Write
+lDA 75
+set 1
+sub 
+sAD 5
+lPR 5
+fhm 
+clr 
+set 25
+add 
+pha 
+jmS Ouch::Syscall::NapMs
+lDA 46
+pha 
+clr 
+sAD 5
+pla 
+lDR 5
+jmA Temp34
+got serveLoop
+lab Temp34
+lab serveDone
+lDA 59
+pha 
+clr 
+pha 
+jmS Ouch::Syscall::CloseStream
+pla 
+sAD 46
+sAD 5
+out 5
+lDA 57
+pha 
+jmS String::PrintString
+lDA 63
 sAD 5
 out 5
 brk 
