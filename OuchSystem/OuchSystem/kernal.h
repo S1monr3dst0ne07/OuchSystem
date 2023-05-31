@@ -1,6 +1,8 @@
 #ifndef HKERNAL
 #define HKERNAL
 
+#include "types.h"
+
 #include <stdbool.h>
 
 extern char cTemp[];

@@ -1,6 +1,8 @@
 #ifndef HUTILS
 #define HUTILS
 
+#include "types.h"
+
 #include <stdbool.h>
 #include <stdlib.h>
 

@@ -1,5 +1,9 @@
 
 #include "vm.h"
+#include "files.h"
+
+#include <string.h>
+
 
 bool stackPush(S1Int* stack, int* stackPtr, const S1Int* value)
 {
@@ -53,9 +57,25 @@ struct S1HeapChunk* findPrevChunkByPtrAndSize(S1Int ptr, S1Int size, struct S1He
     return NULL;
 }
 
+//load file into memory for fileMap
+bool loadFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch)
+{
+    char* content = readFileContent(ouch, fmap->filePath);
+    if (!content) return false;
+
+    char* contOffset = content + fmap->offset;
+    S1Int* mem = proc->mem;
+
+    memcpy(mem + fmap->addr, contOffset, strlen(contOffset));
+
+    free(content);
+    return true;
+}
+
+
 
 //runs process, advancing by n instructions
-enum returnCodes runProcess(struct process* proc, int iterLimit)
+enum returnCodes runProcess(struct process* proc, int iterLimit, struct system* ouch)
 {
     int* ip = &proc->ip;
 

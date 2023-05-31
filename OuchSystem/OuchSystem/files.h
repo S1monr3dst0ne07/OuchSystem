@@ -9,6 +9,7 @@
 #define defBufferSize 128
 
 #include "kernal.h"
+#include "types.h"
 
 //i hate microsoft
 #define _CRT_NONSTDC_NO_DEPRECATE

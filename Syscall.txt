@@ -143,3 +143,17 @@ file stuff
     arguments: pid
     returns  : <not implemented yet>
 
+--- threading ---
+0x0050 -> map memory
+	maps file into memory, mapping persists for lifetime of process
+	arguments: path pointer
+	           address (addr to load file to, in process memory)
+			   offset  (offset into file to start loading from)
+	returns  : success (0 -> error, 1 -> success)
+
+0x0051 -> tsl (test and set lock)
+	copies value and sets, atomically
+	arguments: ptr (pointer to lock memory)
+	returns  : value (copied value)
+
+

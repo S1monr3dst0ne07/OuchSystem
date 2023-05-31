@@ -4,20 +4,22 @@ D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(181,38): warning C4267: 'i
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(343,9): error C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _strdup. See online help for details.
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(357,18): error C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _strdup. See online help for details.
   kernal.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(11,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(13,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
   main.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(11,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(13,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
   process.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(11,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(13,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
   syscall.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(11,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(13,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
   timing.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(11,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(13,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
   utils.c
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(18,5): warning C4013: 'clock_gettime' undefined; assuming extern returning int
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(18,33): error C2065: 'CLOCK_REALTIME': undeclared identifier
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(20,33): warning C4244: 'return': conversion from 'time_t' to 'long', possible loss of data
 D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(63,23): warning C4018: '<': signed/unsigned mismatch
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(71,23): warning C4018: '<': signed/unsigned mismatch
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(75,23): warning C4018: '<': signed/unsigned mismatch
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(72,23): warning C4018: '<': signed/unsigned mismatch
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(77,23): warning C4018: '<': signed/unsigned mismatch
+  vm.c
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(13,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
   Generating Code...

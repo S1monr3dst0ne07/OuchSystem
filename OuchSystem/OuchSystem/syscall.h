@@ -3,6 +3,7 @@
 
 #include "utils.h"
 #include "process.h"
+#include "types.h"
 
 #include <stdlib.h>
 

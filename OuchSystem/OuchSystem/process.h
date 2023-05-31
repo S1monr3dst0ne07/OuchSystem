@@ -3,6 +3,8 @@
 
 #include "kernal.h"
 #include "timing.h"
+#include "vm.h"
+#include "types.h"
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -20,8 +22,6 @@
 //therefore number of iters per proc is 
 //iterLimit = procIterCycle / procCount
 #define procIterCycle 65535
-
-typedef unsigned short int S1Int;
 
 #define S1IntBufferSize (c16bitIntLimit * sizeof(S1Int))
 
@@ -151,6 +151,8 @@ struct process
     //if procNap is NULL, the process isn't napping
     struct processNap* procNap;
 
+    //thread / shared mem hell
+    struct fileMap* fMaps;
 };
 
 

@@ -4,6 +4,8 @@
 //forward
 struct process;
 
+#include "types.h"
+
 #include <time.h>
 
 //keeps track of duration process is napping for
