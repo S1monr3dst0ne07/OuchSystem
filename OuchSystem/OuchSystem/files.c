@@ -359,6 +359,17 @@ bool writeFileContent(struct system* ouch, struct filePath* path, char* content)
 	return true;
 }
 
+//BE CAREFUL WITH THIS
+char* getFileContentPtr(struct system* ouch, struct filePath* path)
+{
+	struct fileNode* root = ouch->root;
+	if (!root) return NULL;
+
+	struct fileNode* temp = getNodeByPath(root, path);
+	if (!temp) return NULL;
+
+	return temp->content;
+}
 
 void printImage(struct fileNode* ptr, int l)
 {

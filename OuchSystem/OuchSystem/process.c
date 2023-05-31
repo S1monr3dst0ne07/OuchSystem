@@ -461,6 +461,9 @@ void freeProcess(struct process* proc)
     //check for procNap
     if (proc->procNap) freeProcNap(proc->procNap);
 
+    //free fileMaps
+    freeFileMaps(proc->fMaps);
+
     free(proc->prog);
     free(proc);
 

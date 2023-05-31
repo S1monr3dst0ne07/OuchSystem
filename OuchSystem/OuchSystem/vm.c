@@ -57,19 +57,71 @@ struct S1HeapChunk* findPrevChunkByPtrAndSize(S1Int ptr, S1Int size, struct S1He
     return NULL;
 }
 
-//load file into memory for fileMap
+
 bool loadFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch)
 {
-    char* content = readFileContent(ouch, fmap->filePath);
-    if (!content) return false;
+    char* file = getFileContentPtr(ouch, fmap->filePath);
+    if (!file) return false;
 
-    char* contOffset = content + fmap->offset;
     S1Int* mem = proc->mem;
+    memcpy(mem + fmap->addr, file + fmap->offset, fmap->size);
 
-    memcpy(mem + fmap->addr, contOffset, strlen(contOffset));
-
-    free(content);
     return true;
+}
+
+bool saveFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch)
+{
+    char* file = getFileContentPtr(ouch, fmap->filePath);
+    if (!file) return false;
+
+    S1Int* mem = proc->mem;
+    memcpy(file + fmap->offset, mem + fmap->addr, fmap->size);
+
+    return true;
+}
+
+//inject new file map into process
+void injectFileMap(struct process* proc, struct fileMap* fmap)
+{
+    //base case
+    if (!proc->fMaps)
+    {
+        proc->fMaps = fmap;
+        return;
+    }
+
+    //get last fMap and inject
+    struct fileMap* tmp = proc->fMaps;
+    while (tmp->next)
+        tmp = tmp->next;
+
+    tmp->next = fmap;
+}
+
+struct fileMap* createFileMap(char* filePath, S1Int size, S1Int addr, S1Int offset)
+{
+
+    struct fileMap* fmap = malloc(sizeof(struct fileMap));
+
+    fmap->filePath = parseFilePath(filePath);
+    fmap->size     = size;
+    fmap->addr     = addr;
+    fmap->offset   = offset;
+
+    return fmap;
+}
+
+void freeFileMaps(struct fileMap* fmaps)
+{
+    while (fmaps)
+    {
+        struct fileMap* tmp = fmaps->next;
+
+        freeFilePath(fmaps->filePath);
+        free(fmaps);
+
+        fmaps = tmp;
+    }
 }
 
 

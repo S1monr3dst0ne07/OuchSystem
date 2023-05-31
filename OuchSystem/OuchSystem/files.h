@@ -49,6 +49,7 @@ void freeFilePath(struct filePath* path);
 
 char* readFileContent(struct system* ouch, struct filePath* path);
 bool writeFileContent(struct system* ouch, struct filePath* path, char* content);
+char* getFileContentPtr(struct system* ouch, struct filePath* path);
 
 void printImage(struct fileNode* ptr, int l);
 
