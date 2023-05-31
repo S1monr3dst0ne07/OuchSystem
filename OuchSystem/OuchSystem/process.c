@@ -222,9 +222,7 @@ struct process* parseProcess(char* source)
 {
     //get instruction count
     int rawInstCount = getInstCount(source);
-    sprintf(cTemp, "Parsing process, %d insts found\n", rawInstCount);
-    logg(cTemp);
-
+    flog("Parsing process, %d insts found\n", rawInstCount);
 
     //alloc
     struct rawInst* rawInstBuffer = (struct rawInst*)malloc(sizeof(struct rawInst) * rawInstCount);
@@ -263,8 +261,7 @@ struct process* parseProcess(char* source)
         enum s1Insts inst = str2s1(opStr);
         if (!inst)
         {
-            sprintf(cTemp, "Invaild operation '%s' found while parsing\n", opStr);
-            logg(cTemp);
+            flog("Invaild operation '%s' found while parsing\n", opStr);
             return NULL;
         }
 
@@ -280,8 +277,7 @@ struct process* parseProcess(char* source)
             int address = label2address(argStr, labelMapper, labelCount);
             if (address < 0)
             {
-                sprintf(cTemp, "Undefined label '%s' found while parsing\n", argStr);
-                logg(cTemp);
+                flog("Undefined label '%s' found while parsing\n", argStr);
 
                 free(rawInstBuffer);
                 free(labelMapper);
@@ -307,7 +303,7 @@ struct process* parseProcess(char* source)
     //network
     if ((proc->procSock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0)) < 0)
     {
-        logg("Failed to open socket\n");
+        flog("Failed to open socket\n");
         freeProcess(proc);
         return NULL;
     }
@@ -316,7 +312,7 @@ struct process* parseProcess(char* source)
     if (setsockopt(proc->procSock, SOL_SOCKET, SO_REUSEPORT | SO_REUSEADDR,
         &opt, sizeof(opt)))
     {
-        logg("Failed to config socket\n");
+        flog("Failed to config socket\n");
         freeProcess(proc);
         return NULL;
     }
@@ -563,7 +559,7 @@ bool runPool(struct system* ouch)
 
         case rtExit:
             //remove 
-            logg("Process finished, removing\n");
+            flog("Process finished, removing\n");
             removeProcessList(curList, ouch);
             break;
 

@@ -10,7 +10,6 @@
 #include <stdio.h>
 
 static volatile bool isRunning = true;
-char cTemp[2048];
 
 /*
 This is the ouch operating system, meant to run and server s1asm processes
@@ -26,12 +25,12 @@ interaction between a process and the operating system itself (file io, networki
 
 void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 {
-	logg("Launching auto startup processes\n\n");
+	flog("Launching auto startup processes\n\n");
 	char* autoStartupFile = readFileContent(ouch, autoPath);
 	
 	if (autoStartupFile == NULL)
 	{
-		logg("Unable to read auto.och file\n");
+		flog("Unable to read auto.och file\n");
 		return;
 	}
 
@@ -39,18 +38,17 @@ void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 
 	while (splitPtr != NULL)
 	{
-		sprintf(cTemp, "Launching '%s' ... \n", splitPtr);
-		logg(cTemp);
+		flog("Launching '%s' ... \n", splitPtr);
 
 		bool success = launchProcessFromPath(splitPtr, ouch);
-		if (success) logg("OK\n");
-		else         logg("Failed\n");
+		if (success) flog("OK\n");
+		else         flog("Failed\n");
 		
 		splitPtr = strtok(NULL, "\n");
 	}
 
 	free(autoStartupFile);
-	logg("\nOK\n");
+	flog("\nOK\n");
 }
 
 bool launchProcessFromPath(char* pathStr, struct system* ouch)
@@ -72,9 +70,9 @@ bool launchProcessFromPath(char* pathStr, struct system* ouch)
 //only one instance of struct system can exist
 struct system bootOuch(char* imagePath)
 {
-	logg("Booting Ouch 1.0 ...\n");
+	flog("Booting Ouch 1.0 ...\n");
 
-	logg("\n");
+	flog("\n");
 
 	struct system ouch = {
 		.root  = mountRootImage(imagePath),
@@ -83,21 +81,21 @@ struct system bootOuch(char* imagePath)
 	};
 
 
-	logg("\n");
+	flog("\n");
 
 	struct filePath* autoPath = parseFilePath("auto.och");
 	launchAutoProcesses(autoPath, &ouch);
 	freeFilePath(autoPath);
 
-	logg("\n");
+	flog("\n");
 
-	logg("Booting complete\n");
+	flog("Booting complete\n");
 	return ouch;
 }
 
 void shutdownOuch(char* imagePath, struct system* ouch)
 {
-	logg("Shutting down\n");
+	flog("Shutting down\n");
 
 	//file system writeback and dealloc
 	struct fileNode* root = ouch->root;
@@ -112,8 +110,7 @@ void shutdownOuch(char* imagePath, struct system* ouch)
 
 void sigHandler(int sig)
 {
-	sprintf(cTemp, "Signal detected: %d", sig);
-	logg(cTemp);
+	flog("Signal detected: %d", sig);
 	isRunning = false;
 }
 
@@ -123,15 +120,15 @@ void ouch(char* imagePath)
 	signal(SIGTERM, sigHandler);
 	struct system ouch = bootOuch(imagePath);
 	struct system* ouchPtr = &ouch;
-	logg("\n");
+	flog("\n");
 
 	//check for root
 	if (!ouchPtr->root)
-		logg("Booting failed, shuting down\n");	
+		flog("Booting failed, shuting down\n");	
 	else
 		while (isRunning && runPool(ouchPtr));
 
-	logg("\n");
+	flog("\n");
 	shutdownOuch(imagePath, ouchPtr);
 }
 

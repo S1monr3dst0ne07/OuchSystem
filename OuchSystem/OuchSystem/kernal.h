@@ -5,8 +5,6 @@
 
 #include <stdbool.h>
 
-extern char cTemp[];
-
 struct system
 {
 	struct fileNode*   root;

@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-void logg(char* msg);
+void flog(char* format, ...);
 
 long clockMsRT();
 

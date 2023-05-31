@@ -117,13 +117,12 @@ void writeTermed(struct rawImage* image, char* str)
 //mounts file system from host system image file
 struct fileNode* mountRootImage(char* path)
 {
-	sprintf(cTemp, "Parsing root image from %s\n", path);
-	logg(cTemp);
+	flog("Parsing root image from %s\n", path);
 
 	FILE* fp = fopen(path, "rb");
 	if (!fp)
 	{
-		logg("Root image file not found\n");
+		flog("Root image file not found\n");
 		return NULL;
 	}
 
@@ -131,8 +130,7 @@ struct fileNode* mountRootImage(char* path)
 	int size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
-	sprintf(cTemp, "Root image found: %d bytes\n", size);
-	logg(cTemp);
+	flog("Root image found: %d bytes\n", size);
 
 	char* rawContent = (char*)malloc(sizeof(char) * size);
 	if (!rawContent) return NULL;
@@ -144,14 +142,14 @@ struct fileNode* mountRootImage(char* path)
 	//parseNode doesn't want the header
 	if (!consImage(image))
 	{
-		logg("Root image empty\n");
+		flog("Root image empty\n");
 		return NULL;
 	}
 
 	struct fileNode* root = parseNode(image);
 	freeRawImage(image);
 
-	logg("Root image parsed successfully\n");
+	flog("Root image parsed successfully\n");
 	fclose(fp);
 	return root;
 }
@@ -226,19 +224,18 @@ void genNode(struct fileNode* node, struct rawImage* image)
 
 void unmountRootImage(char* path, struct fileNode* root)
 {
-	sprintf(cTemp, "Unmounting file system to %s\n", path);
-	logg(cTemp);
+	flog("Unmounting file system to %s\n", path);
 
 	if (!root)
 	{
-		logg("Root node corrupted, unable to generate image\n");
+		flog("Root node corrupted, unable to generate image\n");
 		return;
 	}
 
 	FILE* fp = fopen(path, "wb");
 	if (!fp)
 	{
-		logg("Root image file not found\n");
+		flog("Root image file not found\n");
 		return;
 	}
 
@@ -255,7 +252,7 @@ void unmountRootImage(char* path, struct fileNode* root)
 	//free raw image
 	freeRawImage(image);
 
-	logg("File system unmounted successfully\n");
+	flog("File system unmounted successfully\n");
 	fclose(fp);
 }
 

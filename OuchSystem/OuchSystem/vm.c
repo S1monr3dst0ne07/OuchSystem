@@ -221,8 +221,7 @@ enum returnCodes runProcess(struct process* proc, int iterLimit, struct system* 
             break;
 
         case s1Out:
-            sprintf(cTemp, "%d\n", mem[arg]);
-            logg(cTemp);
+            flog("%d\n", mem[arg]);
             break;
 
         case s1Got:
@@ -259,7 +258,7 @@ enum returnCodes runProcess(struct process* proc, int iterLimit, struct system* 
             success = stackPush(stack, stackPtr, acc);
             if (!success)
             {
-                logg("Stackoverflow, killing process\n");
+                flog("Stackoverflow, killing process\n");
                 return rtExit;
             }
             break;
@@ -268,7 +267,7 @@ enum returnCodes runProcess(struct process* proc, int iterLimit, struct system* 
             success = stackPull(stack, stackPtr, acc);
             if (!success)
             {
-                logg("Stackunderflow, killing process\n");
+                flog("Stackunderflow, killing process\n");
                 return rtExit;
             }
             break;
@@ -325,10 +324,7 @@ enum returnCodes runProcess(struct process* proc, int iterLimit, struct system* 
                 for (int i = 0; i < freeSize; i++) mem[freeBaseRaw + i] = 0;
             }
             else
-            {
-                sprintf(cTemp, "Chunk (ptr: %d, size: %d) could not be found", freeBase, freeSize);
-                logg(cTemp);
-            }
+                flog("Chunk (ptr: %d, size: %d) could not be found", freeBase, freeSize);
 
             break;
 

@@ -5,10 +5,18 @@
 #include <ctype.h>
 #include <string.h>
 #include <time.h>
+#include <stdarg.h>
 
-void logg(char* msg)
+void flog(char* format, ...)
 {
-	printf("%s", msg);
+    char tmp[2048];
+
+    va_list vargs;
+    va_start(vargs, format);
+    vsprintf(tmp, format, vargs);
+    va_end(vargs);
+
+	printf("%s", tmp);
 
 }
 
