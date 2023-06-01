@@ -600,7 +600,7 @@ char* readStringFromProcessMemory(struct process* proc, S1Int ptr)
     
     //count size, including null terminator
     int size = 0;
-    while ((size + ptr) <= c16bitIntLimit && mem[(size++) + ptr]);
+    while ((size + ptr) <= Bit16IntLimit && mem[(size++) + ptr]);
  
     char* str = (char*)malloc(sizeof(char) * size);
     for (int i = 0; i < size; i++)

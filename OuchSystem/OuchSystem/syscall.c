@@ -168,6 +168,7 @@ void updateStreams(struct system* ouch)
 }
 
 
+
 void logStackCorrSc(enum S1Syscall sc)
 {
     flog("Syscall 0x%x: Stack corrupted\n", sc);
@@ -185,6 +186,10 @@ bool syscallStackPush(struct process* proc, const S1Int* val, enum S1Syscall cal
     if (!succ) logStackCorrSc(callType);
     return succ;
 }
+
+
+#define guardPull(x) if (!processStackPull(proc, &x)) { flog("Syscall 0x%x: Stack corrupted\n", callType); break; }
+#define guardPush(x) if (!processStackPush(proc, &x)) { flog("Syscall 0x%x: Stack corrupted\n", callType); break; }
 
 
 void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ouch)
@@ -205,8 +210,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     //--- streams ---
     case scCloseStm:;
         S1Int doWriteBack = 0;
-        if (!syscallStackPull(proc, &doWriteBack, callType)) break;
-        if (!syscallStackPull(proc, &id, callType)) break;
+        guardPull(doWriteBack);
+        guardPull(id);
 
         stm = getStream(id, ouch);
         if (stm)
@@ -246,13 +251,15 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         }
         else success = false;        
 
-        if (!syscallStackPush(proc, &success, callType)) break;
+        //if (!syscallStackPush(proc, &success, callType)) break;
+        guardPush(success);
         break;
 
     case scReadStm:;
         updateStreams(ouch);
 
-        if (!syscallStackPull(proc, &id, callType)) break;
+        //if (!syscallStackPull(proc, &id, callType)) break;
+        guardPull(id);
 
         stm = getStream(id, ouch);
         if (stm)
@@ -260,38 +267,47 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         else
             success = 0;
 
-        if (!syscallStackPush(proc, &data, callType)) break;
-        if (!syscallStackPush(proc, &success, callType)) break;
+        //if (!syscallStackPush(proc, &data, callType)) break;
+        //if (!syscallStackPush(proc, &success, callType)) break;
+        guardPush(data);
+        guardPush(success);
         break;
 
     case scWriteStm:;
 
-        if (!syscallStackPull(proc, &data, callType)) break;
-        if (!syscallStackPull(proc, &id, callType)) break;
+        //if (!syscallStackPull(proc, &data, callType)) break;
+        //if (!syscallStackPull(proc, &id, callType)) break;
+        guardPull(data);
+        guardPull(id);
 
         stm = getStream(id, ouch);
         success = (bool)stm && writeStream(stm, data);
 
-        if (!syscallStackPush(proc, &success, callType)) break;
+        //if (!syscallStackPush(proc, &success, callType)) break;
+        guardPush(success);
 
         updateStreams(ouch);
         break;
     
     case scStmInfo:;
-        if (!syscallStackPull(proc, &id, callType)) break;
+        //if (!syscallStackPull(proc, &id, callType)) break;
+        guardPull(id);
         stm = getStream(id, ouch);
 
         S1Int type = (S1Int)(stm ? stm->type : stmInvailed);
         S1Int size = (S1Int)(stm ? stm->readSize : 0);
 
-        if (!syscallStackPush(proc, &size, callType)) break;
-        if (!syscallStackPush(proc, &type, callType)) break;
+        //if (!syscallStackPush(proc, &size, callType)) break;
+        //if (!syscallStackPush(proc, &type, callType)) break;
+        guardPush(size);
+        guardPush(type);
         break;
 
     //--- files ---
     case scOpenFileObj:;
         S1Int pathPtr = 0;
-        if (!syscallStackPull(proc, &pathPtr, callType)) break;
+        //if (!syscallStackPull(proc, &pathPtr, callType)) break;
+        guardPull(pathPtr);
 
         char* pathStr = readStringFromProcessMemory(proc, pathPtr);
         struct filePath* path = parseFilePath(pathStr);
@@ -307,7 +323,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         else
             id = 0x0;
 
-        if (!syscallStackPush(proc, &id, callType)) break;
+        //if (!syscallStackPush(proc, &id, callType)) break;
+        guardPush(id);
 
         freeFilePath(path);
         break;
@@ -315,7 +332,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     //--- time ---
     case scNapMs:;
         S1Int durMs = 0;
-        if (!syscallStackPull(proc, &durMs, callType)) break;
+        //if (!syscallStackPull(proc, &durMs, callType)) break;
+        guardPull(durMs);
         procNap(durMs, proc);
         break;
 
@@ -334,8 +352,9 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         #undef t
 
         for (int i = timePartsSize - 1; i >= 0; i--)
-            if (!syscallStackPush(proc, &timeParts[i], callType)) break;
-        
+            //if (!syscallStackPush(proc, &timeParts[i], callType)) break;
+            guardPush(timeParts[i]);
+
         #undef timePartsSize
         break;
 
@@ -345,8 +364,11 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         S1Int queueSize = 0;
         success = true;
 
-        if (!syscallStackPull(proc, &queueSize, callType)) break;
-        if (!syscallStackPull(proc, &port, callType)) break;
+        //if (!syscallStackPull(proc, &queueSize, callType)) break;
+        //if (!syscallStackPull(proc, &port, callType)) break;
+        guardPull(queueSize);
+        guardPull(port);
+
 
         //set sockaddr_in
         netAddr = proc->netAddr;
@@ -360,7 +382,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         if (listen(proc->procSock, queueSize) < 0) 
             success = false;
 
-        if (!syscallStackPush(proc, &success, callType)) break;
+        //if (!syscallStackPush(proc, &success, callType)) break;
+        guardPush(success);
         break;
 
     case scAcctSock:;
@@ -390,15 +413,19 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         unsigned short acctIpLow  = acctIp          & 0xFFFF;
         unsigned short acctIpHigh = (acctIp >> 16 ) & 0xFFFF;
 
-        if (!syscallStackPush(proc, &acctIpHigh, callType)) break; //high
-        if (!syscallStackPush(proc, &acctIpLow, callType))  break; //low
+        //if (!syscallStackPush(proc, &acctIpHigh, callType)) break; //high
+        //if (!syscallStackPush(proc, &acctIpLow, callType))  break; //low
+        guardPush(acctIpHigh);
+        guardPush(acctIpLow);
 
-        if (!syscallStackPush(proc, &id, callType)) break;
+        //if (!syscallStackPush(proc, &id, callType)) break;
+        guardPush(id);
         break;
     
     case scGetPid:;
         pid = (S1Int)proc->pid;
-        if (!syscallStackPush(proc, &pid, callType)) break;
+        //if (!syscallStackPush(proc, &pid, callType)) break;
+        guardPush(pid);
         break;
 
 
@@ -417,6 +444,24 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         break;
 
     case scMMap:;
+        S1Int offset, addr = 0;
+
+        guardPull(offset);
+        guardPull(size);
+        guardPull(addr);
+        guardPull(pathPtr);
+
+        pathStr = readStringFromProcessMemory(proc, pathPtr);
+        struct fileMap* fmap = createFileMap(pathStr, size, addr, offset);
+        free(pathStr);
+
+        //check if filePath is valid
+        if ((success = isFile(ouch, fmap->filePath)))
+            injectFileMap(proc, fmap);
+        else
+            freeFileMaps(fmap);
+
+        guardPush(success);
 
         break;
 

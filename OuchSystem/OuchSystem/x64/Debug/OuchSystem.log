@@ -1,25 +1,77 @@
 ﻿  files.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(192,14): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(181,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(343,9): error C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _strdup. See online help for details.
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(357,18): error C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _strdup. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1282,1): warning C4005: 'max': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(17): message : see previous definition of 'max'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1283,1): warning C4005: 'min': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(24): message : see previous definition of 'min'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(185,14): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(174,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(326,9): error C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _strdup. See online help for details.
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\files.c(340,18): error C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _strdup. See online help for details.
   kernal.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(13,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1282,1): warning C4005: 'max': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(17): message : see previous definition of 'max'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1283,1): warning C4005: 'min': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(24): message : see previous definition of 'min'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(147,24): error C2079: 'netAddr' uses undefined struct 'sockaddr_in'
   main.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(13,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1282,1): warning C4005: 'max': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(17): message : see previous definition of 'max'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1283,1): warning C4005: 'min': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(24): message : see previous definition of 'min'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(147,24): error C2079: 'netAddr' uses undefined struct 'sockaddr_in'
   process.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(13,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1282,1): warning C4005: 'max': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(17): message : see previous definition of 'max'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1283,1): warning C4005: 'min': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(24): message : see previous definition of 'min'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(147,24): error C2079: 'netAddr' uses undefined struct 'sockaddr_in'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(54,26): error C2100: illegal indirection
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(55,28): error C2100: illegal indirection
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(302,27): warning C4013: 'socket' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(310,9): warning C4013: 'setsockopt' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(318,1): warning C4133: 'initializing': incompatible types - from 'int *' to 'sockaddr_in *'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(450,5): warning C4013: 'shutdown' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(581,21): warning C4013: 'usleep' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.c(603,43): error C2065: 'c16bitIntLimit': undeclared identifier
   syscall.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(13,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1282,1): warning C4005: 'max': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(17): message : see previous definition of 'max'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1283,1): warning C4005: 'min': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(24): message : see previous definition of 'min'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(147,24): error C2079: 'netAddr' uses undefined struct 'sockaddr_in'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(54,21): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(127,28): warning C4013: 'recv' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(152,13): warning C4013: 'close' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(159,18): warning C4013: 'send' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(132,30): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(374,32): error C2440: '=': cannot convert from 'int' to 'sockaddr_in'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(375,28): warning C4013: 'htons' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(378,13): warning C4013: 'bind' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(382,13): warning C4013: 'listen' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\syscall.c(393,20): warning C4013: 'accept' undefined; assuming extern returning int
   timing.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(13,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1282,1): warning C4005: 'max': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(17): message : see previous definition of 'max'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1283,1): warning C4005: 'min': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(24): message : see previous definition of 'min'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(147,24): error C2079: 'netAddr' uses undefined struct 'sockaddr_in'
   utils.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(18,5): warning C4013: 'clock_gettime' undefined; assuming extern returning int
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(18,33): error C2065: 'CLOCK_REALTIME': undeclared identifier
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(20,33): warning C4244: 'return': conversion from 'time_t' to 'long', possible loss of data
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(63,23): warning C4018: '<': signed/unsigned mismatch
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(72,23): warning C4018: '<': signed/unsigned mismatch
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(77,23): warning C4018: '<': signed/unsigned mismatch
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1282,1): warning C4005: 'max': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(17): message : see previous definition of 'max'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1283,1): warning C4005: 'min': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(24): message : see previous definition of 'min'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(26,5): warning C4013: 'clock_gettime' undefined; assuming extern returning int
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(28,33): warning C4244: 'return': conversion from 'time_t' to 'long', possible loss of data
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(74,23): warning C4018: '<': signed/unsigned mismatch
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(83,23): warning C4018: '<': signed/unsigned mismatch
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\utils.c(88,23): warning C4018: '<': signed/unsigned mismatch
   vm.c
-D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(13,10): fatal  error C1083: Cannot open include file: 'netinet/in.h': No such file or directory
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1282,1): warning C4005: 'max': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(17): message : see previous definition of 'max'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1283,1): warning C4005: 'min': macro redefinition
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\types.h(24): message : see previous definition of 'min'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\process.h(147,24): error C2079: 'netAddr' uses undefined struct 'sockaddr_in'
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\vm.c(10,36): error C2065: 'c16bitIntLimit': undeclared identifier
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\vm.c(74,25): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\ProjekteC\OuchSystem\OuchSystem\OuchSystem\vm.c(96,25): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   Generating Code...

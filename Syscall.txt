@@ -148,6 +148,7 @@ file stuff
 	maps file into memory, mapping persists for lifetime of process
 	arguments: path pointer
 	           address (addr to load file to, in process memory)
+			   size    (size of segment to map)
 			   offset  (offset into file to start loading from)
 	returns  : success (0 -> error, 1 -> success)
 

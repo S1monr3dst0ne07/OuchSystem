@@ -354,6 +354,11 @@ char* getFileContentPtr(struct system* ouch, struct filePath* path)
 	return temp->content;
 }
 
+bool isFile(struct system* ouch, struct filePath* path)
+{ 
+	return getFileContentPtr(ouch, path) ? true : false; 
+}
+
 void printImage(struct fileNode* ptr, int l)
 {
 	for (int i = 0; i < l; i++) printf("\t");

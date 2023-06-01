@@ -7,9 +7,11 @@
 
 #include <stdlib.h>
 
+#ifndef _WIN32
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#endif
 
 #define streamOutputSize (1 << 16)
 #define riverListSize 65535

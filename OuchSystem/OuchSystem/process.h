@@ -10,20 +10,20 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifndef _WIN32
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
-
+#endif
 
 #define rawInstBufferLimit 128
-#define c16bitIntLimit (1 << 16)
 
 //number of total process iterations in one cycle of task switching
 //therefore number of iters per proc is 
 //iterLimit = procIterCycle / procCount
 #define procIterCycle 65535
 
-#define S1IntBufferSize (c16bitIntLimit * sizeof(S1Int))
+#define S1IntBufferSize (Bit16IntLimit * sizeof(S1Int))
 
 enum s1Insts
 {
@@ -131,8 +131,8 @@ struct process
 	struct inst* prog;
     int progSize;
 
-    S1Int mem[c16bitIntLimit];
-    S1Int stack[c16bitIntLimit];
+    S1Int mem[Bit16IntLimit];
+    S1Int stack[Bit16IntLimit];
     int stackPtr;
 
     struct S1HeapChunk* heap;

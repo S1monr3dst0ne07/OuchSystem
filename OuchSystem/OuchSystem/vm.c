@@ -7,7 +7,7 @@
 
 bool stackPush(S1Int* stack, int* stackPtr, const S1Int* value)
 {
-    if (*stackPtr >= c16bitIntLimit) return false;
+    if (*stackPtr >= Bit16IntLimit) return false;
     stack[(*stackPtr)++] = *value;
     return true;
 }
@@ -64,11 +64,18 @@ bool loadFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch
 {
     while (fmap)
     {
-        char* file = getFileContentPtr(ouch, fmap->filePath);
-        if (!file) return false;
+        char* fileBase = getFileContentPtr(ouch, fmap->filePath);
+        if (!fileBase) return false;
 
-        S1Int* mem = proc->mem;
-        memcpy(mem + fmap->addr, file + fmap->offset, fmap->size);
+        S1Int size = fmap->size;
+        char* file = fileBase + fmap->offset;
+
+        //bounds check, sizeLimit needs to be recalculated because the file can change
+        int sizeLimit = min(Bit16IntLimit - fmap->addr, strlen(file));
+        if (size > sizeLimit) return false;
+
+        S1Int* mem = proc->mem + fmap->addr;
+        for (int i = 0; i < size; i++) mem[i] = file[i];
 
         fmap = fmap->next;
     } 
@@ -80,11 +87,18 @@ bool saveFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch
 {
     while (fmap)
     {
-        char* file = getFileContentPtr(ouch, fmap->filePath);
-        if (!file) return false;
+        char* fileBase = getFileContentPtr(ouch, fmap->filePath);
+        if (!fileBase) return false;
 
-        S1Int* mem = proc->mem;
-        memcpy(file + fmap->offset, mem + fmap->addr, fmap->size);
+        S1Int size = fmap->size;
+        char* file = fileBase + fmap->offset;
+
+        //bounds check
+        int sizeLimit = min(Bit16IntLimit - fmap->addr, strlen(file));
+        if (size > sizeLimit) return false;
+
+        S1Int* mem = proc->mem + fmap->addr;
+        for (int i = 0; i < size; i++) file[i] = mem[i];
 
         fmap = fmap->next;
     }
@@ -119,6 +133,7 @@ struct fileMap* createFileMap(char* filePath, S1Int size, S1Int addr, S1Int offs
     fmap->size     = size;
     fmap->addr     = addr;
     fmap->offset   = offset;
+    fmap->next     = NULL;
 
     return fmap;
 }
