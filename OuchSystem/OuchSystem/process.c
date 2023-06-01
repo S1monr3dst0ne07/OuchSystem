@@ -61,6 +61,8 @@ struct process* allocProcess()
 
     proc->procNap = NULL;
 
+    proc->fMaps = NULL;
+
     return proc;
 }
 
