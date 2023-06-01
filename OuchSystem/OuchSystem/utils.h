@@ -16,4 +16,11 @@ char readStringCustomDelim(char* dst, char* src, int* index, char* delim);
 bool isOnlyDigits(const char* s);
 unsigned int getSmallPosivNumNotInList(unsigned int* list, unsigned int len);
 
+
+#ifdef _WIN32
+#define CLOCK_REALTIME 0
+#endif
+
+
+
 #endif

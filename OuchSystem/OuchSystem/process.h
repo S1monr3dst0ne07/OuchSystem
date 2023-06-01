@@ -85,7 +85,7 @@ enum S1Syscall
     scProcMeta,
     scForkProc,
     scAllPids,
-
+    scMMap = 0x0050,
 };
 
 enum returnCodes

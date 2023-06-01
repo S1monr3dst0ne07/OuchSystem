@@ -1255,6 +1255,11 @@ pla
 syscall 68
 pha 
 ret 
+lab Ouch::Syscall::MMap
+pla 
+syscall 80
+pha 
+ret 
 lab Ouch::Syscall::Skip
 got Ouch::Stream::Skip
 lab Ouch::Stream::Write

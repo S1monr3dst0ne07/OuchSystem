@@ -3,6 +3,7 @@
 #include "files.h"
 #include "kernal.h"
 #include "syscall.h"
+#include "vm.h"
 
 #include <errno.h>
 #include <string.h>
@@ -412,6 +413,10 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         //super process pid
         pid = (S1Int)proc->pid;
         if (!syscallStackPush(proc, &pid, callType)) break;
+
+        break;
+
+    case scMMap:;
 
         break;
 

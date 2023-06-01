@@ -259,11 +259,7 @@ struct process* parseProcess(char* source)
 
         //convert
         enum s1Insts inst = str2s1(opStr);
-        if (!inst)
-        {
-            flog("Invaild operation '%s' found while parsing\n", opStr);
-            return NULL;
-        }
+        fguard(inst, "Invaild operation '%s' found while parsing\n" COMMA opStr, NULL);
 
         prog[progIndex].op = (int)inst;
 

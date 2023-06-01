@@ -75,9 +75,9 @@ unsigned int getSmallPosivNumNotInList(unsigned int* list, unsigned int len)
         if (limit <= list[i]) limit = list[i];
 
     //record what value are free from the list
-    unsigned int freeRecSize = sizeof(bool) * (limit + 1);
-    bool* freeRecord = (bool*)malloc(freeRecSize);
-    memset(freeRecord, true, freeRecSize);
+    bool* freeRecord = (bool*)malloc(limit + 1);
+    fguard(freeRecord, msgMallocGuard, -1);
+    memset(freeRecord, true, limit + 1);
 
     //populate the record
     for (int i = 0; i < len; i++)

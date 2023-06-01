@@ -23,6 +23,12 @@ struct fileMap
 bool stackPush(S1Int* stack, int* stackPtr, const S1Int* value);
 bool stackPull(S1Int* stack, int* stackPtr, S1Int* value);
 
+bool loadFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch);
+bool saveFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch);
+
+void injectFileMap(struct process* proc, struct fileMap* fmap);
+struct fileMap* createFileMap(char* filePath, S1Int size, S1Int addr, S1Int offset);
+
 void freeFileMaps(struct fileMap* fmaps);
 
 enum returnCodes runProcess(struct process* proc, int iterLimit, struct system* ouch);

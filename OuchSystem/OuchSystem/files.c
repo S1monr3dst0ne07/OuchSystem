@@ -23,7 +23,8 @@ struct fileNode* allocFileNode()
 
 struct rawImage* allocRawImage(char* rawContent)
 {
-	struct rawImage* image = (struct rawImage*)malloc(sizeof(struct rawImage));
+	struct rawImage* image = malloc(sizeof(struct rawImage));
+	if (!image) return NULL;
 	image->index = 0;
 	image->rawContent = rawContent;
 	return image;
@@ -56,6 +57,7 @@ char* readTermed(struct rawImage* image)
 	while (consImage(image) != imageTermi) len++;
 
 	char* output = (char*)malloc(len * sizeof(char*));
+	if (!output) return NULL;
 	for (int i = 0; i < len; i++)
 		output[i] = image->rawContent[stringOrigin + i];
 
@@ -120,11 +122,7 @@ struct fileNode* mountRootImage(char* path)
 	flog("Parsing root image from %s\n", path);
 
 	FILE* fp = fopen(path, "rb");
-	if (!fp)
-	{
-		flog("Root image file not found\n");
-		return NULL;
-	}
+	fguard(fp, "Root image file not found\n", NULL);
 
 	fseek(fp, 0, SEEK_END);
 	int size = ftell(fp);
@@ -140,11 +138,8 @@ struct fileNode* mountRootImage(char* path)
 
 	//consImageme header and check image contains nodes
 	//parseNode doesn't want the header
-	if (!consImage(image))
-	{
-		flog("Root image empty\n");
-		return NULL;
-	}
+	char c = consImage(image);
+	fguard(c, "Root image empty\n", NULL);
 
 	struct fileNode* root = parseNode(image);
 	freeRawImage(image);
@@ -225,23 +220,16 @@ void genNode(struct fileNode* node, struct rawImage* image)
 void unmountRootImage(char* path, struct fileNode* root)
 {
 	flog("Unmounting file system to %s\n", path);
-
-	if (!root)
-	{
-		flog("Root node corrupted, unable to generate image\n");
-		return;
-	}
+	fguard(root, "Root node corrupted, unable to generate image\n", );
 
 	FILE* fp = fopen(path, "wb");
-	if (!fp)
-	{
-		flog("Root image file not found\n");
-		return;
-	}
+	fguard(fp, "Root image file not found\n", );
 
 	//generate image from file system
 	int size = calcImageSize(root);
-	char* rawContent = (char*)malloc(sizeof(char) * size);
+	char* rawContent = malloc(sizeof(char) * size);
+	fguard(rawContent, msgMallocGuard, );
+
 	memset(rawContent, 0x0, size);
 	struct rawImage* image = allocRawImage(rawContent);
 	genNode(root, image);
@@ -278,37 +266,35 @@ struct fileNode* getNodeByPath(struct fileNode* root, struct filePath* path)
 	return temp;
 }
 
-
-
 struct filePath* parseFilePath(char* path)
 {
 	char buffer[defBufferSize];
 	memset(buffer, 0, sizeof(buffer));
 
 	struct filePath* output = (struct filePath*)malloc(sizeof(struct filePath));
+	fguard(output, msgMallocGuard, NULL);
 
 	int pathIndex = 0;
 	int bufferIndex = 0;
-	for (int i = 0;;i++)
+	for (int i = 0; ; i++)
 	{
 		if (path[i] == '/' || path[i] == 0)
 		{
 			//if a subterminator is found, relocate the buffer
-			char* temp = (char*)malloc(sizeof(char) * (bufferIndex + 1));
+			char* temp = (char*)malloc(bufferIndex + 1);
+			fguard(temp, msgMallocGuard, NULL);
+			memset(temp, 0x0, bufferIndex + 1);
 
-			strncpy(temp, buffer, bufferIndex);
-			temp[bufferIndex] = 0;
+			strncat(temp, buffer, bufferIndex);
 			bufferIndex = 0;
 
 			output->dirPath[pathIndex] = temp;
 			pathIndex++;
 
-			if (path[i] == 0) break;
+			if (!path[i]) break;
 		}
 		else 
-		{ 
 			buffer[bufferIndex++] = path[i];
-		}
 	}
 
 	output->len = pathIndex;
