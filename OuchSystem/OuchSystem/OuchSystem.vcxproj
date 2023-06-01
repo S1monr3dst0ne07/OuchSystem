@@ -142,6 +142,7 @@
     <ClInclude Include="process.h" />
     <ClInclude Include="syscall.h" />
     <ClInclude Include="timing.h" />
+    <ClInclude Include="types.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vm.h" />
   </ItemGroup>

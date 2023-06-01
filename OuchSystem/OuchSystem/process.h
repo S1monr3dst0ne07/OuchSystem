@@ -180,4 +180,42 @@ bool processStackPull(struct process* proc,       S1Int* value);
 
 char* readStringFromProcessMemory(struct process* proc, S1Int ptr);
 
+
+
+
+
+
+
+//--- definitions to make visual studio shut up ---
+// (sorry for using windows, i should be hanged)
+
+#if _WIN32
+
+#define AF_INET         0
+#define SOCK_STREAM     0
+#define SOCK_NONBLOCK   0
+#define SOL_SOCKET      0
+#define SO_REUSEPORT    0
+#define SO_REUSEADDR    0
+#define INADDR_ANY      0
+#define MSG_DONTWAIT    0
+
+#define SHUT_RDWR       0
+
+typedef void socklen_t;
+
+struct in_addr 
+{
+    int s_addr;
+};
+struct sockaddr_in {
+    short int          sin_family;  // Address family, AF_INET
+    unsigned short int sin_port;    // Port number
+    struct in_addr     sin_addr;    // Internet address
+    unsigned char      sin_zero[8]; // Same size as struct sockaddr
+};
+
+#endif
+
+
 #endif

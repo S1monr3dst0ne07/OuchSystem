@@ -62,22 +62,32 @@ struct S1HeapChunk* findPrevChunkByPtrAndSize(S1Int ptr, S1Int size, struct S1He
 
 bool loadFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch)
 {
-    char* file = getFileContentPtr(ouch, fmap->filePath);
-    if (!file) return false;
+    while (fmap)
+    {
+        char* file = getFileContentPtr(ouch, fmap->filePath);
+        if (!file) return false;
 
-    S1Int* mem = proc->mem;
-    memcpy(mem + fmap->addr, file + fmap->offset, fmap->size);
+        S1Int* mem = proc->mem;
+        memcpy(mem + fmap->addr, file + fmap->offset, fmap->size);
+
+        fmap = fmap->next;
+    } 
 
     return true;
 }
 
 bool saveFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch)
 {
-    char* file = getFileContentPtr(ouch, fmap->filePath);
-    if (!file) return false;
+    while (fmap)
+    {
+        char* file = getFileContentPtr(ouch, fmap->filePath);
+        if (!file) return false;
 
-    S1Int* mem = proc->mem;
-    memcpy(file + fmap->offset, mem + fmap->addr, fmap->size);
+        S1Int* mem = proc->mem;
+        memcpy(file + fmap->offset, mem + fmap->addr, fmap->size);
+
+        fmap = fmap->next;
+    }
 
     return true;
 }
@@ -126,10 +136,8 @@ void freeFileMaps(struct fileMap* fmaps)
     }
 }
 
-
-
-//runs process, advancing by n instructions
-enum returnCodes runProcess(struct process* proc, int iterLimit, struct system* ouch)
+//simulates process, advancing by n instructions
+enum returnCodes simProcess(struct process* proc, int iterLimit)
 {
     int* ip = &proc->ip;
 
@@ -342,3 +350,34 @@ enum returnCodes runProcess(struct process* proc, int iterLimit, struct system* 
 
     return rtNormal;
 }
+
+
+
+
+
+
+
+//runs process, given cycle window
+enum returnCodes runProcess(struct process* proc, int iterLimit, struct system* ouch)
+{
+    //load data from file map
+    if (!loadFileMap(proc, proc->fMaps, ouch))
+    {
+        flog("LoadFileMap failed, killing process\n");
+        return rtExit;
+    }
+
+    enum returnCodes rt = simProcess(proc, iterLimit);
+
+    //save data back to file map
+    if (!saveFileMap(proc, proc->fMaps, ouch))
+    {
+        flog("SaveFileMap failed, killing process\n");
+        return rtExit;
+    }
+
+    return rt;
+}
+
+
+
