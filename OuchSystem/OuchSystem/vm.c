@@ -151,6 +151,30 @@ void freeFileMaps(struct fileMap* fmaps)
     }
 }
 
+
+struct fileMap* cloneFileMap(struct fileMap* src)
+{
+    if (!src) return NULL;
+
+    struct fileMap* dst = malloc(sizeof(struct fileMap));
+    if (!dst) return NULL;
+
+    struct fileMap* tmp = dst;
+
+    while (src)
+    {
+        memcpy(tmp, src, sizeof(struct fileMap));
+        tmp->filePath = cloneFilePath(src->filePath);
+
+        //step
+        src = src->next;
+        tmp = tmp->next;
+    }
+
+    return dst;
+}
+
+
 //simulates process, advancing by n instructions
 enum returnCodes simProcess(struct process* proc, int iterLimit)
 {

@@ -28,8 +28,8 @@ bool saveFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch
 
 void injectFileMap(struct process* proc, struct fileMap* fmap);
 struct fileMap* createFileMap(char* filePath, S1Int size, S1Int addr, S1Int offset);
-
 void freeFileMaps(struct fileMap* fmaps);
+struct fileMap* cloneFileMap(struct fileMap* src);
 
 enum returnCodes runProcess(struct process* proc, int iterLimit, struct system* ouch);
 

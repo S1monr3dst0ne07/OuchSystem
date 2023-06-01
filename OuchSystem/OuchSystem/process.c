@@ -367,6 +367,8 @@ struct process* cloneProcess(struct process* src)
     dst->heap = cloneHeap(src->heap);
     dst->procNap = cloneProcNap(src->procNap);
 
+    dst->fMaps = cloneFileMap(src->fMaps);
+
     return dst;
 }
 

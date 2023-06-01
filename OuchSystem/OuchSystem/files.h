@@ -46,6 +46,7 @@ struct filePath
 };
 struct filePath* parseFilePath(char* path);
 void freeFilePath(struct filePath* path);
+struct filePath* cloneFilePath(struct filePath* src);
 
 char* readFileContent(struct system* ouch, struct filePath* path);
 bool writeFileContent(struct system* ouch, struct filePath* path, char* content);

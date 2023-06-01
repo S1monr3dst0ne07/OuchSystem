@@ -310,6 +310,26 @@ void freeFilePath(struct filePath* path)
 	free(path);
 }
 
+struct filePath* cloneFilePath(struct filePath* src)
+{
+	struct filePath* dst = malloc(sizeof(struct filePath));
+	if (!dst) return NULL;
+	dst->len = src->len;
+
+	for (int i = 0; i < src->len; i++)
+	{ 
+		char* srcDir = src->dirPath[i];
+		if (!srcDir) continue;
+
+		char* dstDir = malloc(strlen(srcDir));
+		if (!dstDir) return NULL;
+		strcpy(dstDir, srcDir);
+		dst->dirPath[i] = dstDir;
+	}
+
+	return dst;
+}
+
 //-----------------------------
 //io routines
 
