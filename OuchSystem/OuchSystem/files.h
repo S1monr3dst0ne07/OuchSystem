@@ -34,6 +34,8 @@ struct fileNode
 	int contLen;
 	char* contPtr;
 
+	//used to update len of super nodes
+	struct fileNode* superNode;
 
 };
 

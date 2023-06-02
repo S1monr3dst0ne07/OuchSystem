@@ -110,14 +110,19 @@ void updateStreams(struct system* ouch)
     char buffer[networkBufferSize];
 
     //iterate river and count streams
-    for (int i = 0, c = 0; c < river->count; i++)
+    for (int i = 0, c = 0; c < river->count && i < riverListSize; i++)
     {
-        if (!isVaildStream(i2id(i), ouch)) continue;
-        struct stream* stm = river->container[i];
-        if (stm->type != stmTypSocket) continue;
+        //if (!isVaildStream(i2id(i), ouch)) continue;
+        //struct stream* stm = river->container[i];
+        //if (stm->type != stmTypSocket) continue;
+
+        struct stream* stm = getStream(i2id(i), ouch);
+        if (!stm) continue;
 
         //incmentent count of stream if found
         c++;
+
+        if (stm->type != stmTypSocket) continue;
 
         //read socket discriptor
         const int socketFd = *(int*)stm->meta;

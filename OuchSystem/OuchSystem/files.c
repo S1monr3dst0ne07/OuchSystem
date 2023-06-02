@@ -38,6 +38,7 @@ struct fileNode* parseNode(const char* image)
 	memcpy(&node->name, &head->name, nodeNameLimit);
 	node->type = head->type;
 	node->contLen = head->contLen;
+	node->superNode = NULL;
 
 	int subIndex = 0;
 
@@ -48,6 +49,7 @@ struct fileNode* parseNode(const char* image)
 		{
 			//parse subnode
 			struct fileNode* subNode = parseNode(contPtr + subIndex);
+			subNode->superNode = node;
 
 			//move subIndex
 			//subIndex += sizeof(struct fileNodeHeader) + subNode->contLen;
@@ -110,6 +112,7 @@ void freeFileSystem(struct fileNode* root)
 			freeFileSystem(root->subNodes[i]);
 		break;
 	case fileNodeFile:
+		printf("name: %s\n", root->name);
 		free(root->contPtr);
 		break;
 
@@ -137,6 +140,9 @@ char* genNode(struct fileNode* node)
 	memcpy(&head->name, &node->name, nodeNameLimit);
 	head->type    = node->type;
 	head->contLen = node->contLen;
+
+	printf("genNode: name %s, subCount %d\n", node->name, node->subCount);
+	printf("genNode: subLen %ld\n", fileNodeSize(node));
 
 	//content
 	int subIndex = 0;
@@ -185,13 +191,14 @@ void unmountRootImage(char* path, struct fileNode* root)
 
 	//generate image from file system
 	char* image = genNode(root);
+	printf("image: %p\n", image);
 
 	//write image to disk
 	fwrite(image, sizeof(char), fileNodeSize(root), fp);
 	fclose(fp);
 
 	//free raw image
-	free(image);
+	//free(image);
 
 	flog("File system unmounted successfully\n");
 }
@@ -285,6 +292,27 @@ struct filePath* cloneFilePath(struct filePath* src)
 	return dst;
 }
 
+
+//updates lengths of super nodes
+void updateSupernodeLen(struct fileNode* node)
+{
+	guard(node,);
+	guard((node->type == fileNodeDir),);
+
+	//recalc this node
+	int contLen = 0;
+	for (int i = 0; i < node->subCount; i++)
+		if (node->subNodes[i]) contLen +=(sizeof(struct fileNodeHeader) + node->subNodes[i]->contLen);
+
+	node->contLen = contLen;
+
+	//update the super if exists
+	updateSupernodeLen(node->superNode);
+}
+
+
+
+
 //-----------------------------
 //io routines
 
@@ -321,11 +349,15 @@ char* readFileContent(struct system* ouch, struct filePath* path)
 
 bool writeFile(struct system* ouch, struct filePath* path, struct file f)
 {
+	printf("writeFile\n");
+
+
 	struct fileNode* root = ouch->root;
 	guard(root, false);
 
 	struct fileNode* temp = getNodeByPath(root, path);
 	guard(temp, false);
+	guard((temp->type == fileNodeFile), false);
 
 	//free old content
 	free(temp->contPtr);
@@ -333,8 +365,15 @@ bool writeFile(struct system* ouch, struct filePath* path, struct file f)
 	char* contPtr = malloc(f.contLen);
 	fguard(contPtr, msgMallocGuard, false);
 	memcpy(contPtr, f.contPtr, f.contLen);
+
+	printf("contPtr: %s\n", contPtr);
+	printf("contLen: %d\n", f.contLen);
+
 	temp->contLen = f.contLen;
-	temp->contPtr = f.contPtr;
+	temp->contPtr = contPtr;
+
+
+	updateSupernodeLen(temp->superNode);
 
 	return true;
 }
