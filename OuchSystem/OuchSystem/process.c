@@ -186,7 +186,7 @@ bool tokenize(char* source, int instCount, struct rawInst* dst)
         while (charInString(" \r", source[sourceIndex])) sourceIndex++;
         
         //operator without arg
-        //if (delimChar != ' ') continue;
+        if (delimChar != ' ') continue;
 
         //the delim of operator should really not be eof
         if (!delimChar) return false;
@@ -195,8 +195,6 @@ bool tokenize(char* source, int instCount, struct rawInst* dst)
         readStringCustomDelim(target->arg, source, &sourceIndex, " \n\r");
         //while (source[sourceIndex] == ' ') sourceIndex++;
         while (charInString(" \r", source[sourceIndex])) sourceIndex++;
-
-        printf("%s %s\n", target->op, target->arg);
     }
     return true;
 }

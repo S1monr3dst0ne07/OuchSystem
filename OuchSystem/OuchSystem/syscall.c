@@ -47,11 +47,11 @@ bool isVaildStream(S1Int id, struct system* ouch)
 }
 
 //allocates new stream, content must be zero terminated
-struct stream* createStream(char* content)
+struct stream* createStream(char* content, int len)
 {
     struct stream* stm = (struct stream*)malloc(sizeof(struct stream));
     stm->readContent = content;
-    stm->readSize = strlen(content);
+    stm->readSize = len;
 
     stm->readIndex  = 0;
     stm->writeIndex = 0;
@@ -313,11 +313,13 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         char* pathStr = readStringFromProcessMemory(proc, pathPtr);
         struct filePath* path = parseFilePath(pathStr);
-        char* content = readFileContent(ouch, path);
 
-        if (content)
+        //char* content = readFileContent(ouch, path);
+        struct file f = readFile(ouch, path);
+
+        if (f.contPtr)
         {
-            struct stream* stm = createStream(content);
+            struct stream* stm = createStream(f.contPtr, f.contLen);
             stm->type = stmTypFile;
             stm->meta = pathStr;
             id = injectStream(stm, ouch);
@@ -403,7 +405,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             char* content = (char*)malloc(sizeof(char));
             content[0] = '\x0';
 
-            struct stream* stm = createStream(content);
+            struct stream* stm = createStream(content, 1);
             stm->type = stmTypSocket;
             stm->meta = sockPtr;
             id = injectStream(stm, ouch);

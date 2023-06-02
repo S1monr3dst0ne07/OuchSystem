@@ -64,14 +64,14 @@ bool loadFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch
 {
     while (fmap)
     {
-        char* fileBase = getFileContentPtr(ouch, fmap->filePath);
-        if (!fileBase) return false;
+        struct file f = getFileContentPtr(ouch, fmap->filePath);
+        guard(f.contLen, false);
 
         S1Int size = fmap->size;
-        char* file = fileBase + fmap->offset;
+        char* file = f.contPtr + fmap->offset;
 
         //bounds check, sizeLimit needs to be recalculated because the file can change
-        int sizeLimit = min(Bit16IntLimit - fmap->addr, strlen(file));
+        int sizeLimit = min(Bit16IntLimit - fmap->addr, f.contLen);
         if (size > sizeLimit) return false;
 
         S1Int* mem = proc->mem + fmap->addr;
@@ -87,14 +87,14 @@ bool saveFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch
 {
     while (fmap)
     {
-        char* fileBase = getFileContentPtr(ouch, fmap->filePath);
-        if (!fileBase) return false;
+        struct file f = getFileContentPtr(ouch, fmap->filePath);
+        guard(f.contLen, false);
 
         S1Int size = fmap->size;
-        char* file = fileBase + fmap->offset;
+        char* file = f.contPtr + fmap->offset;
 
         //bounds check
-        int sizeLimit = min(Bit16IntLimit - fmap->addr, strlen(file));
+        int sizeLimit = min(Bit16IntLimit - fmap->addr, f.contLen);
         if (size > sizeLimit) return false;
 
         S1Int* mem = proc->mem + fmap->addr;
@@ -400,20 +400,12 @@ enum returnCodes simProcess(struct process* proc, int iterLimit)
 enum returnCodes runProcess(struct process* proc, int iterLimit, struct system* ouch)
 {
     //load data from file map
-    if (!loadFileMap(proc, proc->fMaps, ouch))
-    {
-        flog("LoadFileMap failed, killing process\n");
-        return rtExit;
-    }
+    fguard(loadFileMap(proc, proc->fMaps, ouch), "LoadFileMap failed, killing process\n", rtExit);
 
     enum returnCodes rt = simProcess(proc, iterLimit);
 
     //save data back to file map
-    if (!saveFileMap(proc, proc->fMaps, ouch))
-    {
-        flog("SaveFileMap failed, killing process\n");
-        return rtExit;
-    }
+    fguard(saveFileMap(proc, proc->fMaps, ouch), "SaveFileMap failed, killing process\n", rtExit);
 
     return rt;
 }

@@ -43,6 +43,8 @@ struct file
 	char* contPtr;
 };
 
+#define emptyFile (struct file) { .contLen = 0, .contPtr = NULL }
+
 struct fileNode* mountRootImage(char* path);
 void freeFileSystem(struct fileNode* root);
 void unmountRootImage(char* path, struct fileNode* root);
@@ -65,7 +67,7 @@ char* readFileContent(struct system* ouch, struct filePath* path);
 bool writeFile(struct system* ouch, struct filePath* path, struct file f);
 
 
-char* getFileContentPtr(struct system* ouch, struct filePath* path);
+struct file getFileContentPtr(struct system* ouch, struct filePath* path);
 
 bool isFile(struct system* ouch, struct filePath* path);
 

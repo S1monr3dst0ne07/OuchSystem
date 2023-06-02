@@ -26,7 +26,7 @@ __attribute__((packed))
 
 struct fileNode* parseNode(const char* image)
 {
-	fguard(image, "", NULL);
+	guard(image, NULL);
 
 	struct fileNodeHeader* head = (struct fileNodeHeader*)image;
 	const char* contPtr = sizeof(struct fileNodeHeader) + image;
@@ -292,21 +292,18 @@ struct filePath* cloneFilePath(struct filePath* src)
 //THIS WILL ALLOCATE MEMORY
 struct file readFile(struct system* ouch, struct filePath* path)
 {
-	struct file out = { 0 };
 
 	struct fileNode* root = ouch->root;
-	fguard(root, "", out);
+	guard(root, emptyFile);
 
 	struct fileNode* temp = getNodeByPath(root, path);
-	fguard(temp, "", out);
+	guard(temp, emptyFile);
 
-	out.contLen = temp->contLen;	
-	char* contPtr = malloc(out.contLen);
-	fguard(contPtr, msgMallocGuard, out);
-	memcpy(contPtr, temp->contPtr, out.contLen);
-	out.contPtr = contPtr;
+	char* contPtr = malloc(temp->contLen);
+	fguard(contPtr, msgMallocGuard, emptyFile);
+	memcpy(contPtr, temp->contPtr, temp->contLen);
 
-	return out;
+	return (struct file) { .contLen = temp->contLen, .contPtr = contPtr };
 }
 
 char* readFileContent(struct system* ouch, struct filePath* path)
@@ -325,10 +322,10 @@ char* readFileContent(struct system* ouch, struct filePath* path)
 bool writeFile(struct system* ouch, struct filePath* path, struct file f)
 {
 	struct fileNode* root = ouch->root;
-	fguard(root, "", false);
+	guard(root, false);
 
 	struct fileNode* temp = getNodeByPath(root, path);
-	fguard(temp, "", false);
+	guard(temp, false);
 
 	//free old content
 	free(temp->contPtr);
@@ -343,20 +340,20 @@ bool writeFile(struct system* ouch, struct filePath* path, struct file f)
 }
 
 //BE CAREFUL WITH THIS
-char* getFileContentPtr(struct system* ouch, struct filePath* path)
+struct file getFileContentPtr(struct system* ouch, struct filePath* path)
 {
 	struct fileNode* root = ouch->root;
-	fguard(root, "", NULL);
+	guard(root, emptyFile);
 
 	struct fileNode* temp = getNodeByPath(root, path);
-	fguard(temp, "", NULL);
+	guard(temp, emptyFile);
 
-	return temp->contPtr;
+	return (struct file) { .contPtr = temp->contPtr, .contLen = temp->contLen };
 }
 
 bool isFile(struct system* ouch, struct filePath* path)
 { 
-	return getFileContentPtr(ouch, path) ? true : false; 
+	return (getFileContentPtr(ouch, path).contLen) ? true : false; 
 }
 
 /*
