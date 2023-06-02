@@ -166,30 +166,37 @@ bool tokenize(char* source, int instCount, struct rawInst* dst)
         do
         {
             //strip
-            while (source[sourceIndex] == ' ') sourceIndex++;
+            //while (source[sourceIndex] == ' ') sourceIndex++;
+            while (charInString(" \r", source[sourceIndex])) sourceIndex++;
 
             //comments
             if (source[sourceIndex] == '"')
             {
-                while (source[sourceIndex++] == '\n');
+                while (source[sourceIndex++] != '\n');
                 continue;
             }
 
         }
         while (source[sourceIndex++] == '\n');
-        sourceIndex--; //step back the sourceIndex, because it get's moved by the empty line remover
+        sourceIndex--; //step back the sourceIndex, because it gets moved by the empty line remover
 
         //operator
-        char delimChar = readStringCustomDelim(target->op, source, &sourceIndex, " \n");
-        while (source[sourceIndex] == ' ') sourceIndex++;
+        char delimChar = readStringCustomDelim(target->op, source, &sourceIndex, " \n\r");
+        //while (source[sourceIndex] == ' ') sourceIndex++;
+        while (charInString(" \r", source[sourceIndex])) sourceIndex++;
+        
+        //operator without arg
+        //if (delimChar != ' ') continue;
 
         //the delim of operator should really not be eof
         if (!delimChar) return false;
 
         //argument
-        readStringCustomDelim(target->arg, source, &sourceIndex, " \n");
-        while (source[sourceIndex] == ' ') sourceIndex++;
+        readStringCustomDelim(target->arg, source, &sourceIndex, " \n\r");
+        //while (source[sourceIndex] == ' ') sourceIndex++;
+        while (charInString(" \r", source[sourceIndex])) sourceIndex++;
 
+        printf("%s %s\n", target->op, target->arg);
     }
     return true;
 }
@@ -233,6 +240,7 @@ struct process* parseProcess(char* source)
     bool success = tokenize(source, rawInstCount, rawInstBuffer);
     if (!success)
     {
+        flog("Tokenizing failed\n");
         free(rawInstBuffer);
         return NULL;
     }
