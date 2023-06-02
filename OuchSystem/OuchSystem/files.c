@@ -112,7 +112,6 @@ void freeFileSystem(struct fileNode* root)
 			freeFileSystem(root->subNodes[i]);
 		break;
 	case fileNodeFile:
-		printf("name: %s\n", root->name);
 		free(root->contPtr);
 		break;
 
@@ -140,9 +139,6 @@ char* genNode(struct fileNode* node)
 	memcpy(&head->name, &node->name, nodeNameLimit);
 	head->type    = node->type;
 	head->contLen = node->contLen;
-
-	printf("genNode: name %s, subCount %d\n", node->name, node->subCount);
-	printf("genNode: subLen %ld\n", fileNodeSize(node));
 
 	//content
 	int subIndex = 0;
@@ -191,14 +187,13 @@ void unmountRootImage(char* path, struct fileNode* root)
 
 	//generate image from file system
 	char* image = genNode(root);
-	printf("image: %p\n", image);
 
 	//write image to disk
 	fwrite(image, sizeof(char), fileNodeSize(root), fp);
 	fclose(fp);
 
 	//free raw image
-	//free(image);
+	free(image);
 
 	flog("File system unmounted successfully\n");
 }
@@ -349,8 +344,6 @@ char* readFileContent(struct system* ouch, struct filePath* path)
 
 bool writeFile(struct system* ouch, struct filePath* path, struct file f)
 {
-	printf("writeFile\n");
-
 
 	struct fileNode* root = ouch->root;
 	guard(root, false);
@@ -365,9 +358,6 @@ bool writeFile(struct system* ouch, struct filePath* path, struct file f)
 	char* contPtr = malloc(f.contLen);
 	fguard(contPtr, msgMallocGuard, false);
 	memcpy(contPtr, f.contPtr, f.contLen);
-
-	printf("contPtr: %s\n", contPtr);
-	printf("contLen: %d\n", f.contLen);
 
 	temp->contLen = f.contLen;
 	temp->contPtr = contPtr;
