@@ -226,7 +226,9 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
                 if (doWriteBack)
                 {
                     struct filePath* path = parseFilePath(stm->meta);
-                    success = writeFileContent(ouch, path, stm->writeContent);
+                    //success = writeFileContent(ouch, path, stm->writeContent);
+                    struct file f = { .contLen = stm->writeIndex, .contPtr = stm->writeContent };
+                    success = writeFile(ouch, path, f);
                     freeFilePath(path);
                 }
 

@@ -7,6 +7,7 @@
 #define subNodeCount 128
 #define pathLenLimit 128
 #define defBufferSize 128
+#define nodeNameLimit 256
 
 #include "kernal.h"
 #include "types.h"
@@ -14,23 +15,33 @@
 //i hate microsoft
 #define _CRT_NONSTDC_NO_DEPRECATE
 
+
+enum fileNodeTypes
+{
+	fileNodeInvaild = 0x0,
+	fileNodeDir,
+	fileNodeFile,
+};
+
 struct fileNode
 {
-	char* name;
-	int type; //(1 -> dir, 2 -> file)
-	int prior;
+	char name[nodeNameLimit];
+	enum fileNodeTypes type;
 
-	//only used if type == 1
+	int subCount;
 	struct fileNode* subNodes[subNodeCount];
-	int count; //number of subnodes
 
-	//only used if type == 2
-	char* content;
+	int contLen;
+	char* contPtr;
 
 
 };
 
-struct rawImage;
+struct file
+{
+	int contLen;
+	char* contPtr;
+};
 
 struct fileNode* mountRootImage(char* path);
 void freeFileSystem(struct fileNode* root);
@@ -48,12 +59,16 @@ struct filePath* parseFilePath(char* path);
 void freeFilePath(struct filePath* path);
 struct filePath* cloneFilePath(struct filePath* src);
 
+struct file readFile(struct system* ouch, struct filePath* path);
 char* readFileContent(struct system* ouch, struct filePath* path);
-bool writeFileContent(struct system* ouch, struct filePath* path, char* content);
+
+bool writeFile(struct system* ouch, struct filePath* path, struct file f);
+
+
 char* getFileContentPtr(struct system* ouch, struct filePath* path);
 
 bool isFile(struct system* ouch, struct filePath* path);
 
-void printImage(struct fileNode* ptr, int l);
+//void printImage(struct fileNode* ptr, int l);
 
 #endif

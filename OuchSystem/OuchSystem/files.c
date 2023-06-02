@@ -7,113 +7,70 @@
 #include <stdbool.h>
 #include <string.h>
 
-//temporary buffer for parsing and generating
-struct rawImage
+struct fileNodeHeader
 {
-	char* rawContent;
-	int index;
-
-};
-
-struct fileNode* allocFileNode()
-{
-	return (struct fileNode*)malloc(sizeof(struct fileNode));
+	char type;
+	char name[nodeNameLimit];
+	unsigned int contLen;
 }
+#ifndef _WIN32
+__attribute__((packed))
+#endif
+;
 
 
-struct rawImage* allocRawImage(char* rawContent)
-{
-	struct rawImage* image = malloc(sizeof(struct rawImage));
-	if (!image) return NULL;
-	image->index = 0;
-	image->rawContent = rawContent;
-	return image;
-}
-void freeRawImage(struct rawImage* image)
-{
-	free(image->rawContent);
-	free(image);
-}
-
+#define fileNodeSize(x) (sizeof(struct fileNodeHeader) + x->contLen)
 
 //-------------------
 //system stuff
 
-//consumes character from rawImage
-char consImage(struct rawImage* image)
-{ return image->rawContent[image->index++]; }
-
-void pushImage(struct rawImage* image, char c)
-{ image->rawContent[image->index++] = c; }
-
-//reads 0x01 terminated string
-char* readTermed(struct rawImage* image)
+struct fileNode* parseNode(const char* image)
 {
-	//save string start
-	int stringOrigin = image->index;
+	fguard(image, "", NULL);
 
-	//read length of string
-	int len = 1; //start at one for terminator
-	while (consImage(image) != imageTermi) len++;
+	struct fileNodeHeader* head = (struct fileNodeHeader*)image;
+	const char* contPtr = sizeof(struct fileNodeHeader) + image;
 
-	char* output = (char*)malloc(len * sizeof(char*));
-	if (!output) return NULL;
-	for (int i = 0; i < len; i++)
-		output[i] = image->rawContent[stringOrigin + i];
+	struct fileNode* node = malloc(sizeof(struct fileNode));
+	fguard(node, msgMallocGuard, NULL);
+	memset(node, 0x0, sizeof(struct fileNode));
 
-	//set terminator at end of string
-	output[len - 1] = 0;
+	memcpy(&node->name, &head->name, nodeNameLimit);
+	node->type = head->type;
+	node->contLen = head->contLen;
 
-	return output;
-}
+	int subIndex = 0;
 
-//parses node, without 0x10 header
-struct fileNode* parseNode(struct rawImage* image)
-{
-	char* name = readTermed(image); //<name> 0x01
-	char* prior = readTermed(image); //<prior> 0x01
-
-	struct fileNode* newNode = allocFileNode();
-	newNode->name = name;
-	newNode->prior = (int)(*prior);
-	newNode->content = NULL;
-	newNode->count = 0;
-
-	free(prior);
-
-	//type of node
-	int type = (int)consImage(image);
-	switch (type)
+	switch (node->type)
 	{
-		//directory
-	case 0x11:
-		newNode->type = 1;
-
-		//iterate subnodes, parse recursively
-		//calling a function with a side effect of beheading the subnodes if fine
-		//because parseNode doesn't want the head of a node
-		for (int offset = 0; consImage(image) != imageTermi; offset++)
+	case fileNodeDir:
+		while (subIndex < node->contLen)
 		{
-			newNode->subNodes[offset] = parseNode(image);
-			newNode->count++;
+			//parse subnode
+			struct fileNode* subNode = parseNode(contPtr + subIndex);
+
+			//move subIndex
+			//subIndex += sizeof(struct fileNodeHeader) + subNode->contLen;
+			subIndex += fileNodeSize(subNode);
+
+			//link subnode
+			node->subNodes[node->subCount++] = subNode;
 		}
+		break;
+
+	case fileNodeFile:
+		node->contPtr = malloc(node->contLen);
+		fguard(node->contPtr, msgMallocGuard, NULL);
+		memcpy(node->contPtr, contPtr, node->contLen);
 
 		break;
 
-		//file
-	case 0x12:
-		newNode->type = 2;
-		newNode->content = readTermed(image);
+	case fileNodeInvaild:
+		flog("fileNodeInvaild!\n");
 		break;
 	}
 
-	return newNode;
-}
-
-void writeTermed(struct rawImage* image, char* str)
-{
-	for (int i = 0; str[i]; i++) pushImage(image, str[i]);
-	pushImage(image, imageTermi); //termi
+	return node;
 }
 
 //mounts file system from host system image file
@@ -130,22 +87,17 @@ struct fileNode* mountRootImage(char* path)
 
 	flog("Root image found: %d bytes\n", size);
 
+	//read image
 	char* rawContent = (char*)malloc(sizeof(char) * size);
 	if (!rawContent) return NULL;
 	fread(rawContent, size, sizeof(char), fp);
-	struct rawImage* image = allocRawImage(rawContent);
+	fclose(fp);
 
-
-	//consImageme header and check image contains nodes
-	//parseNode doesn't want the header
-	char c = consImage(image);
-	fguard(c, "Root image empty\n", NULL);
-
-	struct fileNode* root = parseNode(image);
-	freeRawImage(image);
+	//parse
+	struct fileNode* root = parseNode(rawContent);
+	free(rawContent);
 
 	flog("Root image parsed successfully\n");
-	fclose(fp);
 	return root;
 }
 
@@ -153,68 +105,74 @@ void freeFileSystem(struct fileNode* root)
 {
 	switch (root->type)
 	{	
-	case 1:
-		for (int i = 0; i < root->count; i++)
+	case fileNodeDir:
+		for (int i = 0; i < root->subCount; i++)
 			freeFileSystem(root->subNodes[i]);
 		break;
-	case 2:
-		free(root->content);
+	case fileNodeFile:
+		free(root->contPtr);
+		break;
+
+	case fileNodeInvaild:
 		break;
 	}
 
-	free(root->name);
 	free(root);
 }
 
-int calcImageSize(struct fileNode* node)
+
+char* genNode(struct fileNode* node)
 {
-	//0x10 name 0x01 0xff 0x01 0x11 subdata 0x01
-	// 1    X    2    3    4    5      X     6
+	//only vaild nodes can be gen'd
+	fguard((node->type != fileNodeInvaild), "Invaild node, unable to generate image\n", NULL);
 
-	int headerSize = strlen(node->name) + 6;
-	int bodySize = 0;
+	//alloc iamge
+	int imageSize = sizeof(struct fileNodeHeader) + node->contLen;
+	char* image = malloc(imageSize);
+	char* contPtr = sizeof(struct fileNodeHeader) + image;
 
-	//count subdata
-	switch (node->type)
-	{
-	case 1:
-		for (int i = 0; i < node->count; i++)
-			bodySize += calcImageSize(node->subNodes[i]);
-		break;
-	case 2:
-		bodySize = strlen(node->content);
-		break;
-	}
+	//populate metadata
+	struct fileNodeHeader* head = (struct fileNodeHeader*)image;
+	fguard(head, msgMallocGuard, NULL);
+	memcpy(&head->name, &node->name, nodeNameLimit);
+	head->type    = node->type;
+	head->contLen = node->contLen;
 
-	return headerSize + bodySize;
-}
-
-void genNode(struct fileNode* node, struct rawImage* image)
-{
-	pushImage(image, 0x10);
-	writeTermed(image, node->name);
-	pushImage(image, (char)node->prior);
-	pushImage(image, imageTermi);
+	//content
+	int subIndex = 0;
 
 	switch (node->type)
 	{
-	case 1:
-		pushImage(image, 0x11);
-		for (int i = 0; i < node->count; i++)
-			genNode(node->subNodes[i], image);
-		pushImage(image, imageTermi);
+	case fileNodeFile:
+		memcpy(contPtr, node->contPtr, node->contLen);
 		break;
+	case fileNodeDir:
+		for (int subCount = 0; subCount < node->subCount; subCount++)
+		//while (subCount > node->subCount)
+		{
+			//get node and len
+			struct fileNode* subNode = node->subNodes[subCount];
+			int subLen = fileNodeSize(subNode);
 
-	case 2:
-		pushImage(image, 0x12);
-		writeTermed(image, node->content);
+			//gen subnode
+			char* subImage = genNode(subNode);
+
+			//link into supernode
+			memcpy(contPtr + subIndex, subImage, subLen);
+
+			//free copied subImage
+			free(subImage);
+
+			//move subIndex
+			subIndex += subLen;
+		}
 		break;
-	default:
-		pushImage(image, 0x13);
-		pushImage(image, imageTermi);
+	case fileNodeInvaild:
+		flog("fileNodeInvaild!\n");
 		break;
 	}
 
+	return image;
 }
 
 void unmountRootImage(char* path, struct fileNode* root)
@@ -226,34 +184,31 @@ void unmountRootImage(char* path, struct fileNode* root)
 	fguard(fp, "Root image file not found\n", );
 
 	//generate image from file system
-	int size = calcImageSize(root);
-	char* rawContent = malloc(sizeof(char) * size);
-	fguard(rawContent, msgMallocGuard, );
-
-	memset(rawContent, 0x0, size);
-	struct rawImage* image = allocRawImage(rawContent);
-	genNode(root, image);
+	char* image = genNode(root);
 
 	//write image to disk
-	fwrite(rawContent, sizeof(char), size, fp);
+	fwrite(image, sizeof(char), fileNodeSize(root), fp);
+	fclose(fp);
 
 	//free raw image
-	freeRawImage(image);
+	free(image);
 
 	flog("File system unmounted successfully\n");
-	fclose(fp);
 }
 
 
 //----------------
 //getters
-struct fileNode* getSubNodeByName(struct fileNode* top, char* name)
+struct fileNode* getSubNodeByName(struct fileNode* super, char* name)
 {
-	for (int i = 0; i < top->count; i++)
+	fguard((strlen(name) < nodeNameLimit), "getSubNodeByName: name over limit\n", NULL);
+
+	for (int i = 0; i < super->subCount; i++)
 	{
-		struct fileNode* sub = top->subNodes[i];
+		struct fileNode* sub = super->subNodes[i];
 		if (!strcmp(sub->name, name)) return sub;
 	}
+
 	return NULL;
 }
 
@@ -335,29 +290,54 @@ struct filePath* cloneFilePath(struct filePath* src)
 
 
 //THIS WILL ALLOCATE MEMORY
-char* readFileContent(struct system* ouch, struct filePath* path)
+struct file readFile(struct system* ouch, struct filePath* path)
 {
+	struct file out = { 0 };
+
 	struct fileNode* root = ouch->root;
-	if (!root) return NULL; 
+	fguard(root, "", out);
 
 	struct fileNode* temp = getNodeByPath(root, path);
-	if (!temp) return NULL;
-	
-	return strdup(temp->content);
+	fguard(temp, "", out);
+
+	out.contLen = temp->contLen;	
+	char* contPtr = malloc(out.contLen);
+	fguard(contPtr, msgMallocGuard, out);
+	memcpy(contPtr, temp->contPtr, out.contLen);
+	out.contPtr = contPtr;
+
+	return out;
 }
 
-bool writeFileContent(struct system* ouch, struct filePath* path, char* content)
+char* readFileContent(struct system* ouch, struct filePath* path)
+{
+	struct file f = readFile(ouch, path);
+	char* out = malloc(f.contLen + 1);
+	fguard(out, msgMallocGuard, NULL);
+	memcpy(out, f.contPtr, f.contLen);
+	out[f.contLen] = '\0';
+
+	free(f.contPtr);
+	return out;
+}
+
+
+bool writeFile(struct system* ouch, struct filePath* path, struct file f)
 {
 	struct fileNode* root = ouch->root;
-	if (!root) return false; 
+	fguard(root, "", false);
 
 	struct fileNode* temp = getNodeByPath(root, path);
-	if (!temp) return false;
+	fguard(temp, "", false);
 
 	//free old content
-	free(temp->content);
-	//copy new content
-	temp->content = strdup(content);
+	free(temp->contPtr);
+
+	char* contPtr = malloc(f.contLen);
+	fguard(contPtr, msgMallocGuard, false);
+	memcpy(contPtr, f.contPtr, f.contLen);
+	temp->contLen = f.contLen;
+	temp->contPtr = f.contPtr;
 
 	return true;
 }
@@ -366,12 +346,12 @@ bool writeFileContent(struct system* ouch, struct filePath* path, char* content)
 char* getFileContentPtr(struct system* ouch, struct filePath* path)
 {
 	struct fileNode* root = ouch->root;
-	if (!root) return NULL;
+	fguard(root, "", NULL);
 
 	struct fileNode* temp = getNodeByPath(root, path);
-	if (!temp) return NULL;
+	fguard(temp, "", NULL);
 
-	return temp->content;
+	return temp->contPtr;
 }
 
 bool isFile(struct system* ouch, struct filePath* path)
@@ -379,13 +359,15 @@ bool isFile(struct system* ouch, struct filePath* path)
 	return getFileContentPtr(ouch, path) ? true : false; 
 }
 
+/*
 void printImage(struct fileNode* ptr, int l)
 {
 	for (int i = 0; i < l; i++) printf("\t");
-	printf("%s %d\n", ptr->name, ptr->prior);
+	printf("%s %d\n", ptr->name, ptr->contLen);
 
-	if (ptr->type == 2) printf("%s\n", ptr->content);
+	//if (ptr->type == 2) printf("%s\n", ptr->contPtr);
 
-	for (int i = 0; i < ptr->count; i++) printImage(ptr->subNodes[i], l + 1);
+	for (int i = 0; i < ptr->subCount; i++) printImage(ptr->subNodes[i], l + 1);
 	
 }
+*/

@@ -26,8 +26,8 @@ interaction between a process and the operating system itself (file io, networki
 void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 {
 	flog("Launching auto startup processes\n\n");
-	char* autoStartupFile = readFileContent(ouch, autoPath);	
-	fguard(autoStartupFile, "Unable to read auto.och file\n", );
+	char* autoStartupFile = readFileContent(ouch, autoPath);
+	fguard(autoStartupFile, "Unable to read auto file\n", );
 
 	char* splitPtr = strtok(autoStartupFile, "\n");
 
@@ -78,7 +78,7 @@ struct system bootOuch(char* imagePath)
 
 	flog("\n");
 
-	struct filePath* autoPath = parseFilePath("auto.och");
+	struct filePath* autoPath = parseFilePath("auto");
 	launchAutoProcesses(autoPath, &ouch);
 	freeFilePath(autoPath);
 

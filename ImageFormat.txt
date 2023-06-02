@@ -1,19 +1,15 @@
-0x00 -> [empty]
 
-0x01 -> terminator, universal
+<type: byte> <name: byte[256]> <length of content: uint> <content>
 
-
-0x10 -> node, start of node name, precedes priority of node
-0x11 -> isDir , start of recursive
-0x12 -> isFile, start of content
-0x13 -> invaild
-
-
+type:
+	0x0 -> invaild
+	0x1 -> dir
+	0x2 -> file
+	
+	
+	
 node example for directory:
-0x10 "some name" 0x01 0xff 0x01 0x11 ... some more nodes ... 0x01
+0x1 "some name" <0x0 * (256 - len)> 0x?? 0x?? 0x?? 0x?? ...subnodes...
 
 node example for file:
-0x10 "some name" 0x01 0x1f 0x01 0x12 "hello, this is a files" 0x01
-
-    
-
+0x2 "some name" <0x0 * (256 - len)> 0x?? 0x?? 0x?? 0x?? ...file content...
