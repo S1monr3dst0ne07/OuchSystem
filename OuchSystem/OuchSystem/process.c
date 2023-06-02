@@ -10,6 +10,10 @@
 #include <string.h>
 #include <time.h>
 
+
+#define endOfInst '\n'
+
+
 //c is a good language, but some parts are just so fucking dumb
 //like why do have to do this shit when we want to make a mapper from string to enum
 typedef struct
@@ -116,29 +120,31 @@ enum s1Insts str2s1(char* str)
 
 
 
-int getInstCount(char* source)
+int getInstCount(char* s)
 {
     int instCount = 0;
-    char last = '\n';
-    bool isComment = false;
+    char last = endOfInst;
+    bool isVaild = true;
 
     for (int i = 0; last; i++)
     {
-        switch (source[i])
+        switch (s[i])
         {
         case 0:
-        case '\n':
-            if (last != '\n' && !isComment) instCount++;
-            isComment = false;
+        case endOfInst:
+            if (last != endOfInst && isVaild) instCount++;
+            isVaild = true;
 
         default:
-            last = source[i];
+            last = s[i];
             break;
 
         case '"':
-            isComment = true;
+            isVaild = false;
             break;
 
+        case '\r':
+            break;
         }
     }
 
@@ -160,6 +166,8 @@ bool tokenize(char* source, int instCount, struct rawInst* dst)
     int sourceIndex = 0;
     for (int rawInstIndex = 0; rawInstIndex < instCount; rawInstIndex++)
     {
+        //printf("%d\n", rawInstIndex);
+        //printf("%d\n", instCount);
         struct rawInst* target = &dst[rawInstIndex];
 
         //remove empty lines
@@ -180,11 +188,14 @@ bool tokenize(char* source, int instCount, struct rawInst* dst)
         while (source[sourceIndex++] == '\n');
         sourceIndex--; //step back the sourceIndex, because it gets moved by the empty line remover
 
+
         //operator
         char delimChar = readStringCustomDelim(target->op, source, &sourceIndex, " \n\r");
         //while (source[sourceIndex] == ' ') sourceIndex++;
         while (charInString(" \r", source[sourceIndex])) sourceIndex++;
-        
+
+        //printf("%s\n", target->op);
+
         //operator without arg
         if (delimChar != ' ') continue;
 
@@ -195,6 +206,7 @@ bool tokenize(char* source, int instCount, struct rawInst* dst)
         readStringCustomDelim(target->arg, source, &sourceIndex, " \n\r");
         //while (source[sourceIndex] == ' ') sourceIndex++;
         while (charInString(" \r", source[sourceIndex])) sourceIndex++;
+
     }
     return true;
 }
