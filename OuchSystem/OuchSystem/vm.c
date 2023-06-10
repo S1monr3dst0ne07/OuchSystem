@@ -68,7 +68,7 @@ bool loadFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch
         guard(f.contLen, false);
 
         S1Int size = fmap->size;
-        char* file = f.contPtr + fmap->offset;
+        S1Int* file = ((S1Int*)f.contPtr) + fmap->offset;
 
         //bounds check, sizeLimit needs to be recalculated because the file can change
         int sizeLimit = min(Bit16IntLimit - fmap->addr, f.contLen);
@@ -91,7 +91,7 @@ bool saveFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch
         guard(f.contLen, false);
 
         S1Int size = fmap->size;
-        char* file = f.contPtr + fmap->offset;
+        S1Int* file = ((S1Int*)f.contPtr) + fmap->offset;
 
         //bounds check
         int sizeLimit = min(Bit16IntLimit - fmap->addr, f.contLen);
