@@ -7,6 +7,9 @@
 
 #include <stdlib.h>
 
+#define iterLimitMin 1
+
+
 //file mapping to process memory
 //used for shared memory, etc ...
 struct fileMap

@@ -166,6 +166,9 @@ struct fileMap* cloneFileMap(struct fileMap* src)
         memcpy(tmp, src, sizeof(struct fileMap));
         tmp->filePath = cloneFilePath(src->filePath);
 
+        //alloc next fileMap if exist
+        if (src->next) tmp->next = malloc(sizeof(struct fileMap));
+
         //step
         src = src->next;
         tmp = tmp->next;
@@ -189,7 +192,7 @@ enum returnCodes simProcess(struct process* proc, int iterLimit)
 
     bool success; //temp
 
-    for (int iter = 0; iter < iterLimit; iter++)
+    //for (int iter = 0; iter < min(iterLimit, iterLimitMin); iter++)
     {
         //check if ip is out bound
         if (*ip > proc->progSize) return rtExit;
