@@ -153,7 +153,7 @@ file stuff
 	returns  : success (0 -> error, 1 -> success)
 
 !0x0051 -> tsl (test and set lock)
-	copies value and sets, atomically
+	copies value and sets to 0, atomically
 	arguments: ptr (pointer to lock memory)
 	returns  : value (copied value)
 

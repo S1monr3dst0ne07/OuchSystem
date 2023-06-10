@@ -474,6 +474,18 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         break;
 
+    case scTSL:;
+        guardPull(addr);
+        
+        S1Int* ptr = &(proc->mem[addr]);
+        S1Int copy = *ptr;
+        *ptr = 0x0;
+
+        saveFileMap(proc, proc->fMaps, ouch);
+        guardPush(copy);
+
+        break;
+
     default:
         break;
 
