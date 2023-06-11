@@ -192,7 +192,7 @@ enum returnCodes simProcess(struct process* proc, int iterLimit)
 
     bool success; //temp
 
-    //for (int iter = 0; iter < min(iterLimit, iterLimitMin); iter++)
+    for (int iter = 0; iter < min(iterLimit, iterLimitMin); iter++)
     {
         //check if ip is out bound
         if (*ip > proc->progSize) return rtExit;

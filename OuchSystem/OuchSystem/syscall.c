@@ -93,6 +93,7 @@ bool readStream(struct stream* stm, S1Int* data)
     //read only succeeds if there's remainder in readContent
     bool succ = (stm->readIndex < stm->readSize);
     *data = succ ? (S1Int)stm->readContent[stm->readIndex++] : 0;
+
     return succ;
 }
 
@@ -140,6 +141,7 @@ void updateStreams(struct system* ouch)
             //alloc new content
             int readSize = bufferSize + readDelta;
             char* readContentNew = (char*)malloc(sizeof(char) * readSize);
+            memset(readContentNew, 0x0, readSize);
             sprintf(readContentNew, "%s%s", stm->readContent+stm->readIndex, buffer);
 
             //inject
@@ -410,7 +412,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             char* content = (char*)malloc(sizeof(char));
             content[0] = '\x0';
 
-            struct stream* stm = createStream(content, 1);
+            struct stream* stm = createStream(content, 0);
             stm->type = stmTypSocket;
             stm->meta = sockPtr;
             id = injectStream(stm, ouch);
