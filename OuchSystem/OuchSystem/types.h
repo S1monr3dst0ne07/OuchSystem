@@ -6,8 +6,8 @@ typedef unsigned short int S1Int;
 #define COMMA , //meta comma
 #define msgMallocGuard "Unable to malloc, fuck\n"
 
-#define  guard(x, y)    if (!x) return y;
-#define fguard(x, y, z) if (!x) { flog(y); return z; }
+#define  guard(x, y)    if (!(x)) return y;
+#define fguard(x, y, z) if (!(x)) { flog(y); return z; }
 
 
 #define Bit16IntLimit (1 << 16)

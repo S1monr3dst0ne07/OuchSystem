@@ -65,14 +65,15 @@ bool loadFileMap(struct process* proc, struct fileMap* fmap, struct system* ouch
     while (fmap)
     {
         struct file f = getFileContentPtr(ouch, fmap->filePath);
-        guard(f.contLen, false);
+        fguard(f.contLen, "loadFileMap: file not found!\n", false);
 
         S1Int size = fmap->size;
         S1Int* file = ((S1Int*)f.contPtr) + fmap->offset;
 
         //bounds check, sizeLimit needs to be recalculated because the file can change
         int sizeLimit = min(Bit16IntLimit - fmap->addr, f.contLen);
-        if (size > sizeLimit) return false;
+        fguard(size <= sizeLimit, "loadFileMap: size overrun!\n", false);
+        //if (size > sizeLimit) return false;
 
         S1Int* mem = proc->mem + fmap->addr;
         for (int i = 0; i < size; i++) mem[i] = file[i];
@@ -192,7 +193,7 @@ enum returnCodes simProcess(struct process* proc, int iterLimit)
 
     bool success; //temp
 
-    for (int iter = 0; iter < min(iterLimit, iterLimitMin); iter++)
+    for (int iter = 0; iter < max(iterLimit, iterLimitMin); iter++)
     {
         //check if ip is out bound
         if (*ip > proc->progSize) return rtExit;
