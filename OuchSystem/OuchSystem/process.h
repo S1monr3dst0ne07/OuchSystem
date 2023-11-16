@@ -5,6 +5,7 @@
 #include "timing.h"
 #include "vm.h"
 #include "types.h"
+#include "config.h"
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -17,12 +18,6 @@
 #endif
 
 #define rawInstBufferLimit 128
-
-//number of total process iterations in one cycle of task switching
-//therefore number of iters per proc is 
-//iterLimit = procIterCycle / procCount
-#define procIterCycle 65535
-
 #define S1IntBufferSize (Bit16IntLimit * sizeof(S1Int))
 
 enum s1Insts
@@ -154,6 +149,10 @@ struct process
 
     //thread / shared mem hell
     struct fileMap* fMaps;
+
+    //fork tracking (anti-bomb system)
+    int forkDepth;             //how many fork the process is away from autoLaunch
+    struct process* superProc; //process that spawned this one
 };
 
 

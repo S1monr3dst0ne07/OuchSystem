@@ -4,10 +4,9 @@
 #include "utils.h"
 #include "process.h"
 #include "types.h"
+#include "config.h"
 
 #include <stdlib.h>
-
-#define iterLimitMin 1
 
 
 //file mapping to process memory

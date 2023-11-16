@@ -444,6 +444,9 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         struct process* procNew = cloneProcess(proc);
         launchProcess(procNew, ouch);
 
+        //adjust fork depth
+        procNew->forkDepth++;
+
         //sub process pid
         pid = (S1Int)procNew->pid;
         if (!syscallStackPush(procNew, &pid, callType)) break;

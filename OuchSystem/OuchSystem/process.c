@@ -387,6 +387,9 @@ struct process* cloneProcess(struct process* src)
 
     dst->fMaps = cloneFileMap(src->fMaps);
 
+    //adjust super process (this is the only metric, differing between clones)
+    dst->superProc = src;
+
     return dst;
 }
 
@@ -539,6 +542,29 @@ void freeProcPool(struct system* ouch)
     free(pool);
 }
 
+
+
+
+bool forkChecker(struct system* ouch, struct process* proc)
+{
+    bool procThresHold = ouch->pool->procCount    > forkCheckerProcThreshold;
+    bool forkThresHold = proc->forkDepth > forkCheckerDepthThreshold;
+    bool danger        = procThresHold && forkThresHold; //big fucky wucky >w<
+
+    //if dangerous, iterate super processes and kill them
+    if (danger)
+    {
+        
+        //TODO: do this
+
+    }
+
+    return danger;
+}
+
+
+
+//TODO: explain how in the fuck this thing works
 bool runPool(struct system* ouch)
 {
     struct procPool* pool = ouch->pool;
@@ -552,8 +578,12 @@ bool runPool(struct system* ouch)
     if (curList)
     {
         enum returnCodes rt = rtNormal;
-        struct process* curProc = curList->proc;
-        
+        struct process*  curProc  = curList->proc;
+        struct procList* nextList = curList->next;
+
+        //fork checker (skip procress run, if removed)
+        if (forkChecker(ouch, curProc)) goto skipRun;
+
         //check if process is napping and if so update the napMs
         if (curProc->procNap)
         {
@@ -567,8 +597,11 @@ bool runPool(struct system* ouch)
             *napMs = 0; //if not all processes are napping, the switch can nap either
         }
 
+        //*screams of terror* A LABEL !?
+        skipRun:
+
         //advance execPtr
-        pool->execPtr = curList->next;
+        pool->execPtr = nextList;
 
         switch (rt)
         {
