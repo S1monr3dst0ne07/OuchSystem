@@ -137,6 +137,7 @@
     <ClCompile Include="vm.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="config.h" />
     <ClInclude Include="files.h" />
     <ClInclude Include="kernal.h" />
     <ClInclude Include="process.h" />

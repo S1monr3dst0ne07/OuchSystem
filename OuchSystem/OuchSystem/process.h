@@ -120,7 +120,8 @@ struct S1HeapChunk
 
 struct process
 {
-    unsigned int pid;
+    unsigned int pid;   //process id   (reusable)
+    unsigned long uuid; //universal id (session unique)
 
     //internals
 	int ip;
@@ -151,8 +152,8 @@ struct process
     struct fileMap* fMaps;
 
     //fork tracking (anti-bomb system)
-    int forkDepth;             //how many fork the process is away from autoLaunch
-    struct process* superProc; //process that spawned this one
+    int forkDepth; //how many fork the process is away from autoLaunch
+    unsigned long uuidGroup; //all processes forked from one, share this uuid with the original
 };
 
 

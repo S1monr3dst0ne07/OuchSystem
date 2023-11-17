@@ -13,6 +13,9 @@
 
 #define endOfInst '\n'
 
+//counter for uuids, only counts up
+static unsigned long uuidCount = 1;
+
 
 //c is a good language, but some parts are just so fucking dumb
 //like why do have to do this shit when we want to make a mapper from string to enum
@@ -387,8 +390,9 @@ struct process* cloneProcess(struct process* src)
 
     dst->fMaps = cloneFileMap(src->fMaps);
 
-    //adjust super process (this is the only metric, differing between clones)
-    dst->superProc = src;
+    //reset uuid, just in case
+    dst->uuid = 0x0;
+
 
     return dst;
 }
@@ -436,6 +440,9 @@ void launchProcess(struct process* proc, struct system* ouch)
     unsigned int newPid = getSmallPosivNumNotInList(pids, pool->procCount);
     proc->pid = newPid;
     free(pids);
+
+    //assign uuid
+    proc->uuid = uuidCount++;
 
     //new procList
     struct procList* newProcList = (struct procList*)malloc(sizeof(struct procList));
