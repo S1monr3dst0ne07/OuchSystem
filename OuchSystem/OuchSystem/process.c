@@ -650,8 +650,6 @@ bool runPool(struct system* ouch)
         //*screams of terror* A LABEL !?
     restartTaskCycle:
 
-        printf("pool->procCount: %d\n", pool->procCount);
-
         //if execPtr is NULL reset it back to the begining
         pool->execPtr = pool->procs;
 
