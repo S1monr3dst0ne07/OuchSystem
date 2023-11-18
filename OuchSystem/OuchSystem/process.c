@@ -54,6 +54,7 @@ struct process* allocProcess()
     struct process* proc = (struct process*)malloc(sizeof(struct process));
     proc->ip = 0;
     proc->pid = (unsigned int)-1;
+    proc->uuid = 0;
 
     proc->prog = NULL;
     proc->progSize = 0;
@@ -69,6 +70,9 @@ struct process* allocProcess()
     proc->procNap = NULL;
 
     proc->fMaps = NULL;
+
+    proc->forkDepth = 0;
+    proc->uuidGroup = 0;
 
     return proc;
 }
@@ -444,6 +448,11 @@ void launchProcess(struct process* proc, struct system* ouch)
     //assign uuid
     proc->uuid = uuidCount++;
 
+    //check if uuidGroup needs to be assigned
+    //new process has uuidGroup = 0
+    if (!proc->uuidGroup)
+        proc->uuidGroup = proc->uuid;
+
     //new procList
     struct procList* newProcList = (struct procList*)malloc(sizeof(struct procList));
 
@@ -554,17 +563,28 @@ void freeProcPool(struct system* ouch)
 
 bool forkChecker(struct system* ouch, struct process* proc)
 {
+    struct procPool* pool = ouch->pool;
+
     bool procThresHold = ouch->pool->procCount    > forkCheckerProcThreshold;
     bool forkThresHold = proc->forkDepth > forkCheckerDepthThreshold;
     bool danger        = procThresHold && forkThresHold; //big fucky wucky >w<
 
-    //if dangerous, iterate super processes and kill them
+    //if dangerous, find all process in the same uuid group
+    //and kill them
+    int group = proc->uuidGroup; //these will be changed, so make a copy
+    int count = pool->procCount;
+    struct procList* next = pool->procs,
+                   * iter = NULL;
     if (danger)
-    {
-        
-        //TODO: do this
+        for (int i = 0; i < count; i++)
+        {
+            iter = next;
+            next = iter->next;
 
-    }
+            if (iter->proc->uuidGroup == group)
+                removeProcessList(iter, ouch);
+
+        }
 
     return danger;
 }
@@ -589,7 +609,7 @@ bool runPool(struct system* ouch)
         struct procList* nextList = curList->next;
 
         //fork checker (skip procress run, if removed)
-        if (forkChecker(ouch, curProc)) goto skipRun;
+        if (forkChecker(ouch, curProc)) goto restartTaskCycle;
 
         //check if process is napping and if so update the napMs
         if (curProc->procNap)
@@ -603,9 +623,6 @@ bool runPool(struct system* ouch)
             rt = runProcess(curProc, iterLimit, ouch);
             *napMs = 0; //if not all processes are napping, the switch can nap either
         }
-
-        //*screams of terror* A LABEL !?
-        skipRun:
 
         //advance execPtr
         pool->execPtr = nextList;
@@ -630,6 +647,11 @@ bool runPool(struct system* ouch)
     }
     else
     {
+        //*screams of terror* A LABEL !?
+    restartTaskCycle:
+
+        printf("pool->procCount: %d\n", pool->procCount);
+
         //if execPtr is NULL reset it back to the begining
         pool->execPtr = pool->procs;
 
