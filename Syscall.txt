@@ -53,6 +53,8 @@ Then calling a syscall with stream id 0x0, the syscall will just do nothing and 
                 
 0x0005 -> send stream
 	sends multibyte string, given it's size
+	low byte is send first, high byte after
+	
     arguments: id, ptr (base pointer), size
     returns  : success (0 -> error, 1 -> success)	
 
@@ -114,9 +116,13 @@ file stuff
 0x0031 -> accept pending connection
     arguments: 
     returns  : id (stream for sending data over the socket)
-	           ip low  (---.---.???.???) (!!! ip is in reverse: e.g. localhost => 1.0.0.127)
+	           ip low  (---.---.???.???)
 			   ip high (???.???.---.---)
-    
+			   
+0x0032 -> connect to address
+	make new socket and connect to address
+	
+	
 --- process ---
 0x0040 -> get pid
     quarry the pid of the process calling

@@ -448,7 +448,18 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         else
             id = 0x0;
 
-        unsigned int acctIp = netAddr.sin_addr.s_addr;
+
+        //net bit order fucking
+        #if ((__BYTE_ORDER__) == (__ORDER_LITTLE_ENDIAN__))
+            #define conv __bswap_32
+        #else
+            #define conv
+        #endif
+
+        unsigned int acctIp = conv(netAddr.sin_addr.s_addr);
+
+        #undef conv
+
         unsigned short acctIpLow  = acctIp          & 0xFFFF;
         unsigned short acctIpHigh = (acctIp >> 16 ) & 0xFFFF;
 
@@ -461,6 +472,9 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         guardPush(id);
         break;
     
+
+
+    //--- process ---
     case scGetPid:;
         pid = (S1Int)proc->pid;
         //if (!syscallStackPush(proc, &pid, callType)) break;
