@@ -49,6 +49,12 @@ bool isVaildStream(S1Int id, struct system* ouch)
 //allocates new stream, content must be zero terminated
 struct stream* createStream(char* content, int len)
 {
+    if (!content)
+    {
+        content = (char*)malloc(sizeof(char));
+        *content = 0x0;
+    }
+
     struct stream* stm = (struct stream*)malloc(sizeof(struct stream));
     stm->readContent = content;
     stm->readSize = len;
@@ -178,7 +184,6 @@ void updateStreams(struct system* ouch)
             continue;
         }
 
-
         //write
         if (stm->writeIndex > 0 &&
             0 <= send(socketFd, stm->writeContent, stm->writeIndex, 0))
@@ -226,7 +231,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     struct stream* stm;
     S1Int success;
     S1Int data = 0;
-    struct sockaddr_in netAddr;
+    struct sockaddr_in netAddr = { 0 };
 
     switch (callType)
     {
@@ -410,8 +415,9 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
 
         //set sockaddr_in
-        netAddr = proc->netAddr;
         netAddr.sin_port = htons(port);
+        netAddr.sin_family = AF_INET;
+        netAddr.sin_addr.s_addr = INADDR_ANY;
 
         //bind
         if (bind(proc->procSock, (struct sockaddr*)&netAddr, sizeof(netAddr)) < 0)
@@ -426,7 +432,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         break;
 
     case scAcctSock:;
-        struct sockaddr_in netAddr = { .sin_addr.s_addr = 0x0 };
+        netAddr = (struct sockaddr_in){.sin_addr.s_addr = 0x0};
         int addrlen = sizeof(netAddr);
 
         int sock = accept(proc->procSock, (struct sockaddr*)& netAddr, (socklen_t*)&addrlen);
@@ -437,10 +443,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             int* sockPtr = malloc(sizeof(int));
             *sockPtr = sock;
 
-            char* content = (char*)malloc(sizeof(char));
-            content[0] = '\x0';
-
-            struct stream* stm = createStream(content, 0);
+            stm = createStream(NULL, 0);
             stm->type = stmTypSocket;
             stm->meta = sockPtr;
             id = injectStream(stm, ouch);
@@ -449,29 +452,43 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             id = 0x0;
 
 
-        //net bit order fucking
-        #if ((__BYTE_ORDER__) == (__ORDER_LITTLE_ENDIAN__))
-            #define conv __bswap_32
-        #else
-            #define conv
-        #endif
+        unsigned int ip = netBitOrderFix(netAddr.sin_addr.s_addr);
+        unsigned short ipLow  = ip         & 0xFFFF;
+        unsigned short ipHigh = (ip >> 16) & 0xFFFF;
 
-        unsigned int acctIp = conv(netAddr.sin_addr.s_addr);
-
-        #undef conv
-
-        unsigned short acctIpLow  = acctIp          & 0xFFFF;
-        unsigned short acctIpHigh = (acctIp >> 16 ) & 0xFFFF;
-
-        //if (!syscallStackPush(proc, &acctIpHigh, callType)) break; //high
-        //if (!syscallStackPush(proc, &acctIpLow, callType))  break; //low
-        guardPush(acctIpHigh);
-        guardPush(acctIpLow);
-
-        //if (!syscallStackPush(proc, &id, callType)) break;
+        guardPush(ipHigh);
+        guardPush(ipLow);
         guardPush(id);
         break;
     
+    case scConnect:;
+        guardPull(ipHigh);
+        guardPull(ipLow);
+        guardPull(port);
+
+        ip = ipLow | (ipHigh << 16);
+
+        netAddr.sin_port = htons(port);
+        netAddr.sin_family = AF_INET;
+        netAddr.sin_addr.s_addr = netBitOrderFix(ip);
+
+        sock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+
+        if (0 <= sock && 
+            connect(sock, (struct sockaddr*)(&netAddr), sizeof(struct sockaddr_in)) < 0)
+        {
+            stm = createStream(NULL, 0);
+            stm->type = stmTypSocket;
+            stm->meta = malloc(sizeof(int));
+            *(int*)(stm->meta) = sock;
+
+            id = injectStream(stm, ouch);
+        }
+        else
+            id = 0x0;
+
+        guardPush(id);
+        break;
 
 
     //--- process ---

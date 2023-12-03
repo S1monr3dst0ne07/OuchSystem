@@ -26,6 +26,12 @@ typedef unsigned short int S1Int;
     _a < _b ? _a : _b;       \
 })
 
+#if ((__BYTE_ORDER__) == (__ORDER_LITTLE_ENDIAN__))
+    #define netBitOrderFix __bswap_32
+#else
+    #define netBitOrderFix
+#endif
+
 
 
 #endif

@@ -121,6 +121,11 @@ file stuff
 			   
 0x0032 -> connect to address
 	make new socket and connect to address
+	arguments: port
+	           ip low  (---.---.???.???)
+			   ip high (???.???.---.---)
+	returns  : id
+			   
 	
 	
 --- process ---

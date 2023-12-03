@@ -340,11 +340,6 @@ struct process* parseProcess(char* source)
         return NULL;
     }
 
-    struct sockaddr_in* netAddr = &proc->netAddr;
-    netAddr->sin_family = AF_INET;
-    netAddr->sin_addr.s_addr = INADDR_ANY;
-    netAddr->sin_port = 0;
-
     return proc;
 }
 

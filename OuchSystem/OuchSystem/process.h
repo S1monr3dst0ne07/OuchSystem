@@ -75,6 +75,7 @@ enum S1Syscall
     scFLocTime,
     scBindPort = 0x0030,
     scAcctSock,
+    scConnect,
     scGetPid = 0x0040,
     scLaunchProc,
     scKillProc,
@@ -143,7 +144,6 @@ struct process
 
     //network hell
     int procSock;
-    struct sockaddr_in netAddr;
 
     //timing hell
     //if procNap is NULL, the process isn't napping
