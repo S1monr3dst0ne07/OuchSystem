@@ -25,13 +25,13 @@ struct processNap* createProcNap(int durMs)
 
 };
 
-//kinda redundant, ik, but it may be usefull in the future
+//kinda redundant, ik, but it may be useful in the future
 struct processNap* cloneProcNap(struct processNap* src)
 {
 	if (!src) return NULL;
 
 	struct processNap* dst = allocProcNap();
-	dst = src;
+	memcpy(dst, src, sizeof(struct processNap));
 	return dst;
 }
 

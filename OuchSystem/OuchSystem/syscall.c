@@ -105,6 +105,24 @@ bool writeStream(struct stream* stm, S1Int val)
     return succ;
 }
 
+bool sendStream(struct stream* stm, S1Int ptr, int size, struct process* proc)
+{
+
+    bool succ = (ptr + size < Bit16IntLimit) &&             //src bounds
+                (stm->writeIndex + size < streamOutputSize); //dst bounds
+    if (succ)
+    {
+        S1Int* srcPtr = &proc->mem[ptr];
+        int charSize = size * 2;
+
+        memcpy(stm->writeContent + stm->writeIndex, (char*)srcPtr, charSize);
+        stm->writeIndex += charSize;
+    }
+
+    return succ;
+}
+
+
 void updateStreams(struct system* ouch)
 {
     struct streamPool* river = ouch->river;
@@ -163,7 +181,7 @@ void updateStreams(struct system* ouch)
 
         //write
         if (stm->writeIndex > 0 &&
-            0 <= send(socketFd, stm->writeContent, strlen(stm->writeContent), 0))
+            0 <= send(socketFd, stm->writeContent, stm->writeIndex, 0))
         {
             memset(stm->writeContent, 0x0, streamOutputSize);
             stm->writeIndex = 0;
@@ -203,7 +221,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 {
     struct streamPool* river = ouch->river;
 
-    S1Int id, pid = 0;
+    S1Int id, pid, ptr = 0;
+    
     struct stream* stm;
     S1Int success;
     S1Int data = 0;
@@ -267,7 +286,6 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     case scReadStm:;
         updateStreams(ouch);
 
-        //if (!syscallStackPull(proc, &id, callType)) break;
         guardPull(id);
 
         stm = getStream(id, ouch);
@@ -276,23 +294,17 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         else
             success = 0;
 
-        //if (!syscallStackPush(proc, &data, callType)) break;
-        //if (!syscallStackPush(proc, &success, callType)) break;
         guardPush(data);
         guardPush(success);
         break;
 
     case scWriteStm:;
-
-        //if (!syscallStackPull(proc, &data, callType)) break;
-        //if (!syscallStackPull(proc, &id, callType)) break;
         guardPull(data);
         guardPull(id);
 
         stm = getStream(id, ouch);
         success = (bool)stm && writeStream(stm, data);
 
-        //if (!syscallStackPush(proc, &success, callType)) break;
         guardPush(success);
 
         updateStreams(ouch);
@@ -311,6 +323,22 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         guardPush(size);
         guardPush(type);
         break;
+
+    case scStmSend:;
+        guardPull(size);
+        guardPull(ptr);
+        guardPull(id);
+
+        stm = getStream(id, ouch);
+        success = (bool)stm && sendStream(stm, ptr, size, proc);
+
+        guardPush(success);
+
+        updateStreams(ouch);
+        break;
+
+
+
 
     //--- files ---
     case scOpenFileObj:;

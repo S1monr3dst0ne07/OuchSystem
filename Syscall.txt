@@ -48,9 +48,14 @@ Then calling a syscall with stream id 0x0, the syscall will just do nothing and 
 0x0004 -> stream information
     gets type of stream
     arguments: id
-    returns  :  type (0 -> unknown, 1 -> file, 2 -> directory, 3 -> socket),
-                input content size (output is practically infinite)
+    returns  : type (0 -> unknown, 1 -> file, 2 -> directory, 3 -> socket),
+               input content size (output is practically infinite)
                 
+0x0005 -> send stream
+	sends multibyte string, given it's size
+    arguments: id, ptr (base pointer), size
+    returns  : success (0 -> error, 1 -> success)	
+
 
 file stuff
 --- files ---
