@@ -159,12 +159,13 @@ void updateStreams(struct system* ouch)
 
         if (0 < recvByteSize)
         {
-            int bufferSize = strlen(buffer);
             int readDelta = stm->readSize - stm->readIndex;
 
             //alloc new content
-            int readSize = bufferSize + readDelta;
+            int readSize = recvByteSize + readDelta;
             char* readContentNew = (char*)malloc(sizeof(char) * readSize);
+            fguard(readContentNew, msgMallocGuard,);
+
             memset(readContentNew, 0x0, readSize);
             sprintf(readContentNew, "%s%s", stm->readContent+stm->readIndex, buffer);
 
