@@ -32,7 +32,7 @@ struct stream
 {
     //S1Int id;
 
-    char* readContent;
+    unsigned char* readContent;
     int readSize;
     int readIndex;
 

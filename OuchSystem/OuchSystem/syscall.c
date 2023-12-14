@@ -47,11 +47,11 @@ bool isVaildStream(S1Int id, struct system* ouch)
 }
 
 //allocates new stream, content must be zero terminated
-struct stream* createStream(char* content, int len)
+struct stream* createStream(unsigned char* content, int len)
 {
     if (!content)
     {
-        content = (char*)malloc(sizeof(char));
+        content = (unsigned char*)malloc(sizeof(char));
         *content = 0x0;
     }
 
@@ -137,10 +137,6 @@ void updateStreams(struct system* ouch)
     //iterate river and count streams
     for (int i = 0, c = 0; c < river->count && i < riverListSize; i++)
     {
-        //if (!isVaildStream(i2id(i), ouch)) continue;
-        //struct stream* stm = river->container[i];
-        //if (stm->type != stmTypSocket) continue;
-
         struct stream* stm = getStream(i2id(i), ouch);
         if (!stm) continue;
 
@@ -163,12 +159,12 @@ void updateStreams(struct system* ouch)
 
             //alloc new content
             int readSize = recvByteSize + readRemain;
-            char* readContentNew = (char*)malloc(readSize);
+            unsigned char* readContentNew = (unsigned char*)malloc(readSize);
             fguard(readContentNew, msgMallocGuard,);
 
             memset(readContentNew, 0x0, readSize);
 
-            char* p = readContentNew;
+            unsigned char* p = readContentNew;
             memcpy(p, stm->readContent + stm->readIndex, readRemain);
             memcpy(p + readRemain, buffer, recvByteSize);
 
@@ -363,7 +359,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         if (f.contPtr)
         {
-            struct stream* stm = createStream(f.contPtr, f.contLen);
+            struct stream* stm = createStream((unsigned char*)f.contPtr, f.contLen);
             stm->type = stmTypFile;
             stm->meta = pathStr;
             id = injectStream(stm, ouch);
