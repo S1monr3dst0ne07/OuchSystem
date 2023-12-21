@@ -134,10 +134,10 @@ file stuff
     arguments:
     returns  : pid
 
-!0x0041 -> launch process
+0x0041 -> launch process
     launches new process given a source path
     arguments: path pointer
-    returns  : success (0 -> error, 1 -> success)
+    returns  : success (0 -> error, 1 -> success), pid
     
 !0x0042 -> kill process
     sends kill signal to process

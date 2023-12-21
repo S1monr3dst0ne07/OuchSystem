@@ -172,6 +172,7 @@ struct process* cloneProcess(struct process* src);
 
 struct procPool* allocProcPool();
 void launchProcess(struct process* proc, struct system* ouch);
+struct process* launchPath(char* pathStr, struct system* ouch);
 
 bool removeProcess(struct process* proc, struct system* ouch);
 void freeProcPool(struct system* ouch);

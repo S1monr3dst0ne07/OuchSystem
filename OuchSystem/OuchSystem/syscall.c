@@ -218,8 +218,8 @@ bool syscallStackPush(struct process* proc, const S1Int* val, enum S1Syscall cal
 }
 
 
-#define guardPull(x) if (!processStackPull(proc, &x)) { flog("Syscall 0x%x: Stack corrupted\n", callType); break; }
-#define guardPush(x) if (!processStackPush(proc, &x)) { flog("Syscall 0x%x: Stack corrupted\n", callType); break; }
+#define guardPull(x) if (!processStackPull(proc, &x)) { logStackCorrSc(callType); break; }
+#define guardPush(x) if (!processStackPush(proc, &x)) { logStackCorrSc(callType); break; }
 
 
 void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ouch)
@@ -232,6 +232,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     S1Int success;
     S1Int data = 0;
     struct sockaddr_in netAddr = { 0 };
+    struct process* procNew;
 
     switch (callType)
     {
@@ -498,9 +499,23 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         guardPush(pid);
         break;
 
+    case scLaunchProc:;
+        guardPull(pathPtr);
+
+        pathStr = readStringFromProcessMemory(proc, pathPtr);
+        procNew = launchPath(pathStr, ouch);
+
+        success = (bool)(procNew)&1;
+        pid = procNew ? procNew->pid : 0;
+
+        guardPush(pid);
+        guardPush(success);
+
+        free(pathStr);
+        break;
 
     case scForkProc:;
-        struct process* procNew = cloneProcess(proc);
+        procNew = cloneProcess(proc);
         launchProcess(procNew, ouch);
 
         //adjust fork depth

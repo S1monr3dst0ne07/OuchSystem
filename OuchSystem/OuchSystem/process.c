@@ -5,6 +5,7 @@
 #include "syscall.h"
 #include "process.h"
 #include "vm.h"
+#include "files.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -464,6 +465,22 @@ void launchProcess(struct process* proc, struct system* ouch)
     //inc process count
     pool->procCount++;
 
+}
+
+//returns launched process instance
+struct process* launchPath(char* pathStr, struct system* ouch)
+{
+    struct filePath* path = parseFilePath(pathStr);
+    char* source = readFileContent(ouch, path);
+    guard(source, NULL);
+
+    struct process* proc = parseProcess(source);
+    if (proc) launchProcess(proc, ouch);
+
+    freeFilePath(path);
+    free(source);
+
+    return proc;
 }
 
 

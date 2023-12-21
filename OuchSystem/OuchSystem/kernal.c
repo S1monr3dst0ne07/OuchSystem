@@ -35,7 +35,7 @@ void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 	{
 		flog("Launching '%s' ... \n", splitPtr);
 
-		bool success = launchProcessFromPath(splitPtr, ouch);
+		bool success = (bool)launchPath(splitPtr, ouch);
 		if (success) flog("OK\n");
 		else         flog("Failed\n");
 		
@@ -44,22 +44,6 @@ void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 
 	free(autoStartupFile);
 	flog("\nOK\n");
-}
-
-bool launchProcessFromPath(char* pathStr, struct system* ouch)
-{
-	struct filePath* path = parseFilePath(pathStr);
-	char* source = readFileContent(ouch, path);
-	if (!source) return false;
-
-	struct process* proc = parseProcess(source);
-	if (!proc) return false;
-
-	launchProcess(proc, ouch);
-
-	freeFilePath(path);
-	free(source);
-	return true;
 }
 
 //only one instance of struct system can exist

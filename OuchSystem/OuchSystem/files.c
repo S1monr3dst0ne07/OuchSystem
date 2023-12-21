@@ -329,15 +329,26 @@ struct file readFile(struct system* ouch, struct filePath* path)
 	return (struct file) { .contLen = temp->contLen, .contPtr = contPtr };
 }
 
+//BE CAREFUL WITH THIS
+struct file getFileContentPtr(struct system* ouch, struct filePath* path)
+{
+	struct fileNode* root = ouch->root;
+	guard(root, emptyFile);
+
+	struct fileNode* temp = getNodeByPath(root, path);
+	guard(temp, emptyFile);
+
+	return (struct file) { .contPtr = temp->contPtr, .contLen = temp->contLen };
+}
+
 char* readFileContent(struct system* ouch, struct filePath* path)
 {
-	struct file f = readFile(ouch, path);
+	struct file f = getFileContentPtr(ouch, path);
 	char* out = malloc(f.contLen + 1);
 	fguard(out, msgMallocGuard, NULL);
 	memcpy(out, f.contPtr, f.contLen);
 	out[f.contLen] = '\0';
 
-	free(f.contPtr);
 	return out;
 }
 
@@ -366,18 +377,6 @@ bool writeFile(struct system* ouch, struct filePath* path, struct file f)
 	updateSupernodeLen(temp->superNode);
 
 	return true;
-}
-
-//BE CAREFUL WITH THIS
-struct file getFileContentPtr(struct system* ouch, struct filePath* path)
-{
-	struct fileNode* root = ouch->root;
-	guard(root, emptyFile);
-
-	struct fileNode* temp = getNodeByPath(root, path);
-	guard(temp, emptyFile);
-
-	return (struct file) { .contPtr = temp->contPtr, .contLen = temp->contLen };
 }
 
 bool isFile(struct system* ouch, struct filePath* path)
