@@ -141,6 +141,7 @@
     <ClInclude Include="files.h" />
     <ClInclude Include="kernal.h" />
     <ClInclude Include="process.h" />
+    <ClInclude Include="stream.h" />
     <ClInclude Include="syscall.h" />
     <ClInclude Include="timing.h" />
     <ClInclude Include="types.h" />

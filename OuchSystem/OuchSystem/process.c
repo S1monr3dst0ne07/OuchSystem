@@ -50,6 +50,15 @@ struct S1HeapChunk* allocS1HeapChunk()
     return temp;
 }
 
+struct stream* allocStdio()
+{
+    struct stream* stdio = createStream(NULL, 0);
+    stdio->meta = NULL; //mirror is empty by default
+    stdio->type = stmTypPipe;
+    return stdio;
+}
+
+
 struct process* allocProcess()
 {
     struct process* proc = (struct process*)malloc(sizeof(struct process));
@@ -75,10 +84,8 @@ struct process* allocProcess()
     proc->forkDepth = 0;
     proc->uuidGroup = 0;
 
-
-    struct stream* stdio = proc->stdio = createStream(NULL, 0);
-    stdio->meta = NULL; //mirror is empty by default
-    stdio->type = stmTypPipe;
+    proc->stdio = allocStdio();
+    
 
     return proc;
 }
@@ -385,6 +392,9 @@ struct process* cloneProcess(struct process* src)
     //remove socket file descriptor, ik this is buggy, idc
     dst->procSock = 0;
 
+    //alloc new stdio
+    dst->stdio = allocStdio();
+
     //copy dynamics
     int progMemSize = sizeof(struct inst) * src->progSize;
     dst->prog = malloc(progMemSize);
@@ -471,7 +481,8 @@ void launchProcess(struct process* proc, struct system* ouch)
     pool->procCount++;
 
     //inject stdio
-    injectStream(proc->stdio, ouch);
+    S1Int tmp = injectStream(proc->stdio, ouch);
+    if (!tmp) proc->stdio = NULL;
 
 }
 
@@ -543,10 +554,9 @@ void removeProcessList(struct procList* list, struct system* ouch)
 
     struct process* proc = list->proc;
 
-    //deject stdio stream
+    //deject stdio stream    
     struct stream* stdio = proc->stdio;
-    int id = getStreamID(stdio, ouch);
-    if (id > 0) removeStream(stdio, ouch->river, id);
+    removeStream(stdio, ouch->river, stdio->id);
     proc->stdio = NULL;
 
     //clean up

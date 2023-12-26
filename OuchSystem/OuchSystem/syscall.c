@@ -38,7 +38,8 @@ void freeStreamPool(struct system* ouch)
     {        
         struct stream* temp;
         for (int i = 0; i < riverListSize; i++)
-            if ((temp = river->container[i])) freeStream(temp);
+            if ((temp = river->container[i]))
+                freeStream(temp);
     }
 
     free(river);
@@ -86,8 +87,8 @@ S1Int injectStream(struct stream* stm, struct system* ouch)
         {
             river->count++;
             river->container[i] = stm;
-            //return (stm->id = i2id(i)); S1Int id is currently not in use
-            return i2id(i);
+            return (stm->id = i2id(i)); //S1Int id is currently not in use
+            //return i2id(i);
         }
 
     //if no spot was found, deallocate the stream
@@ -99,17 +100,6 @@ struct stream* getStream(S1Int id, struct system* ouch)
 {
     if (!isVaildStream(id, ouch)) return NULL;
     return ouch->river->container[id2i(id)];
-}
-
-int getStreamID(struct stream* stm, struct system* ouch)
-{
-    struct streamPool* river = ouch->river;
-
-    for (int i = 0; i < river->count; i++)
-        if (river->container[i] == stm)
-            return i2id(i);
-
-    return -1;
 }
 
 bool readStream(struct stream* stm, S1Int* data)
