@@ -387,6 +387,7 @@ struct process* cloneProcess(struct process* src)
     //alloc new process and copy static data
     struct process* dst = allocProcess();
     free(dst->heap); //allocProcess generates a base heap chunk that must be free before cloning
+    freeStream(dst->stdio);
     memcpy(dst, src, sizeof(struct process));
 
     //remove socket file descriptor, ik this is buggy, idc
