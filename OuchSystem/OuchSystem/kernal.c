@@ -35,9 +35,11 @@ void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 	{
 		flog("Launching '%s' ... \n", splitPtr);
 
-		bool success = (bool)launchPath(splitPtr, ouch);
-		if (success) flog("OK\n");
-		else         flog("Failed\n");
+		struct process* proc = launchPath(splitPtr, ouch);
+		proc->stdio->type = stmTypRootProc;
+
+		if (proc) flog("OK\n");
+		else      flog("Failed\n");
 		
 		splitPtr = strtok(NULL, "\n");
 	}
@@ -82,8 +84,8 @@ void shutdownOuch(char* imagePath, struct system* ouch)
 	if (root) freeFileSystem(root);
 
 	//dealloc rest of system
-	freeStreamPool(ouch);	
-	freeProcPool(ouch);
+	freeProcPool(ouch); //processes go first, because they need to dealloc their stdio streams
+	freeStreamPool(ouch);
 }
 
 

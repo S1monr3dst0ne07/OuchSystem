@@ -1,6 +1,7 @@
 
 #include "vm.h"
 #include "files.h"
+#include "syscall.h"
 
 #include <string.h>
 
@@ -191,6 +192,8 @@ enum returnCodes simProcess(struct process* proc, int iterLimit)
     S1Int* acc = &proc->acc;
     S1Int* reg = &proc->reg;
 
+    char buffer[2048]; //buffer for string rendering
+
     bool success; //temp
 
     for (int iter = 0; iter < max(iterLimit, iterLimitMin); iter++)
@@ -274,7 +277,11 @@ enum returnCodes simProcess(struct process* proc, int iterLimit)
             break;
 
         case s1Out:
-            flog("%d\n", mem[arg]);
+            sprintf(buffer, "%d\n", mem[arg]);
+
+            for (int i = 0; buffer[i]; i++)
+                writeStream(proc->stdio, buffer[i]);
+                
             break;
 
         case s1Got:
@@ -334,7 +341,8 @@ enum returnCodes simProcess(struct process* proc, int iterLimit)
             break;
 
         case s1Putstr:
-            printf("%c", (char)*acc);
+            //printf("%c", (char)*acc);
+            writeStream(proc->stdio, (S1Int)(*acc));
             break;
 
         case s1Ahm:;

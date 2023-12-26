@@ -75,6 +75,11 @@ struct process* allocProcess()
     proc->forkDepth = 0;
     proc->uuidGroup = 0;
 
+
+    struct stream* stdio = proc->stdio = createStream(NULL, 0);
+    stdio->meta = NULL; //mirror is empty by default
+    stdio->type = stmTypPipe;
+
     return proc;
 }
 
@@ -465,6 +470,9 @@ void launchProcess(struct process* proc, struct system* ouch)
     //inc process count
     pool->procCount++;
 
+    //inject stdio
+    injectStream(proc->stdio, ouch);
+
 }
 
 //returns launched process instance
@@ -509,6 +517,9 @@ void freeProcess(struct process* proc)
     //free fileMaps
     freeFileMaps(proc->fMaps);
 
+    //check if redundant stdio stream exists
+    if (proc->stdio) freeStream(proc->stdio);
+
     free(proc->prog);
     free(proc);
 
@@ -530,6 +541,14 @@ void removeProcessList(struct procList* list, struct system* ouch)
     if (list->next)
         list->next->prev = list->prev;
 
+    struct process* proc = list->proc;
+
+    //deject stdio stream
+    struct stream* stdio = proc->stdio;
+    int id = getStreamID(stdio, ouch);
+    if (id > 0) removeStream(stdio, ouch->river, id);
+    proc->stdio = NULL;
+
     //clean up
     pool->procCount--;
     freeProcess(list->proc);
@@ -543,6 +562,7 @@ bool removeProcess(struct process* proc, struct system* ouch)
     struct procList* procs = pool->procs;
     
     struct procList* iter = procs;
+
 
     //find process in pool list
     for (int i = 0; i < pool->procCount; i++)

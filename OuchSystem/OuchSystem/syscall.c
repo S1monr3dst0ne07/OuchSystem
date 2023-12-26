@@ -23,6 +23,13 @@ void freeStream(struct stream* stm)
     free(stm);
 }
 
+void removeStream(struct stream* stm, struct streamPool* river, int id)
+{
+    river->count--;
+    freeStream(stm);
+    river->container[id2i(id)] = NULL;
+}
+
 void freeStreamPool(struct system* ouch)
 {
     struct streamPool* river = ouch->river;
@@ -94,12 +101,22 @@ struct stream* getStream(S1Int id, struct system* ouch)
     return ouch->river->container[id2i(id)];
 }
 
+int getStreamID(struct stream* stm, struct system* ouch)
+{
+    struct streamPool* river = ouch->river;
+
+    for (int i = 0; i < river->count; i++)
+        if (river->container[i] == stm)
+            return i2id(i);
+
+    return -1;
+}
+
 bool readStream(struct stream* stm, S1Int* data)
 {
     //read only succeeds if there's remainder in readContent
     bool succ = (stm->readIndex < stm->readSize);
     *data = succ ? (S1Int)stm->readContent[stm->readIndex++] : 0;
-
     return succ;
 }
 
@@ -129,10 +146,66 @@ bool sendStream(struct stream* stm, S1Int ptr, int size, struct process* proc)
 }
 
 
+
+void updateNetwork(struct stream* stm, int index, struct streamPool* river)
+{
+    char buffer[networkBufferSize];
+
+    //read socket discriptor
+    const int socketFd = *(int*)stm->meta;
+
+    //read
+    memset(buffer, 0x0, networkBufferSize);
+    int recvByteSize = recv(socketFd, buffer, networkBufferSize, MSG_DONTWAIT);
+    int recvErrno = errno;
+
+    if (0 < recvByteSize)
+    {
+        int readRemain = stm->readSize - stm->readIndex;
+
+        //alloc new content
+        int readSize = recvByteSize + readRemain;
+        unsigned char* readContentNew = (unsigned char*)malloc(readSize);
+        fguard(readContentNew, msgMallocGuard, );
+
+        memset(readContentNew, 0x0, readSize);
+
+        unsigned char* p = readContentNew;
+        memcpy(p, stm->readContent + stm->readIndex, readRemain);
+        memcpy(p + readRemain, buffer, recvByteSize);
+
+        //inject
+        free(stm->readContent);
+        stm->readSize = readSize;
+        stm->readContent = readContentNew;
+        stm->readIndex = 0;
+    }
+    else if (recvErrno != EAGAIN || recvByteSize == 0)//kill stream if socket error
+    {
+        free((int*)stm->meta); //important: free socket fd
+        close(socketFd);
+        
+        removeStream(stm, river, i2id(index));
+
+        //river->count--;
+        //freeStream(stm);
+        //river->container[index] = NULL;
+        return;
+    }
+
+    //write
+    if (stm->writeIndex > 0 &&
+        0 <= send(socketFd, stm->writeContent, stm->writeIndex, 0))
+    {
+        memset(stm->writeContent, 0x0, streamOutputSize);
+        stm->writeIndex = 0;
+    }
+
+}
+
 void updateStreams(struct system* ouch)
 {
     struct streamPool* river = ouch->river;
-    char buffer[networkBufferSize];
 
     //iterate river and count streams
     for (int i = 0, c = 0; c < river->count && i < riverListSize; i++)
@@ -143,53 +216,25 @@ void updateStreams(struct system* ouch)
         //incmentent count of stream if found
         c++;
 
-        if (stm->type != stmTypSocket) continue;
-
-        //read socket discriptor
-        const int socketFd = *(int*)stm->meta;
-
-        //read
-        memset(buffer, 0x0, networkBufferSize);
-        int recvByteSize = recv(socketFd, buffer, networkBufferSize, MSG_DONTWAIT);
-        int recvErrno = errno;
-
-        if (0 < recvByteSize)
+        switch (stm->type)
         {
-            int readRemain = stm->readSize - stm->readIndex;
+        case stmTypSocket:
+            updateNetwork(stm, i, river);
+            break;
 
-            //alloc new content
-            int readSize = recvByteSize + readRemain;
-            unsigned char* readContentNew = (unsigned char*)malloc(readSize);
-            fguard(readContentNew, msgMallocGuard,);
+        case stmTypPipe:
+            printf("stmTypPipe UNIMPL!!!!\n");
+            break;
 
-            memset(readContentNew, 0x0, readSize);
-
-            unsigned char* p = readContentNew;
-            memcpy(p, stm->readContent + stm->readIndex, readRemain);
-            memcpy(p + readRemain, buffer, recvByteSize);
-
-            //inject
-            free(stm->readContent);
-            stm->readSize  = readSize;
-            stm->readContent = readContentNew;
-            stm->readIndex = 0;
-        }
-        else if (recvErrno != EAGAIN || recvByteSize == 0)//kill stream if socket error
-        {
-            river->count--;
-            free((int*)stm->meta); //important: free socket fd
-            freeStream(stm);
-            river->container[i] = NULL;
-            close(socketFd);
-            continue;
-        }
-
-        //write
-        if (stm->writeIndex > 0 &&
-            0 <= send(socketFd, stm->writeContent, stm->writeIndex, 0))
-        {
-            memset(stm->writeContent, 0x0, streamOutputSize);
+        case stmTypRootProc:
+            for (int i = 0; i < stm->writeIndex; i++)
+                flog("%c", stm->writeContent[i]);
             stm->writeIndex = 0;
+            break;
+
+        default:
+            break;
+
         }
 
 
@@ -278,9 +323,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             }
 
             //free and reset container
-            river->count--;
-            freeStream(stm);
-            river->container[id2i(id)] = NULL;
+            removeStream(stm, river, id);
 
         }
         else success = false;        

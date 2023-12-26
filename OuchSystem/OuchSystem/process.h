@@ -6,6 +6,7 @@
 #include "vm.h"
 #include "types.h"
 #include "config.h"
+#include "stream.h"
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -141,6 +142,9 @@ struct process
 
     //syscall
     enum S1Syscall lastSyscall;
+
+    //stdio 
+    struct stream* stdio;
 
     //network hell
     int procSock;
