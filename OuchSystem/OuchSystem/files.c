@@ -203,12 +203,13 @@ void unmountRootImage(char* path, struct fileNode* root)
 //getters
 struct fileNode* getSubNodeByName(struct fileNode* super, char* name)
 {
+	guard(name, NULL);
 	fguard((strlen(name) < nodeNameLimit), "getSubNodeByName: name over limit\n", NULL);
 
 	for (int i = 0; i < super->subCount; i++)
 	{
 		struct fileNode* sub = super->subNodes[i];
-		if (!strcmp(sub->name, name)) return sub;
+		if (!strncmp(sub->name, name, nodeNameLimit)) return sub;
 	}
 
 	return NULL;
@@ -278,7 +279,7 @@ struct filePath* cloneFilePath(struct filePath* src)
 		char* srcDir = src->dirPath[i];
 		if (!srcDir) continue;
 
-		char* dstDir = malloc(strlen(srcDir));
+		char* dstDir = malloc(strlen(srcDir) + 1);
 		if (!dstDir) return NULL;
 		strcpy(dstDir, srcDir);
 		dst->dirPath[i] = dstDir;

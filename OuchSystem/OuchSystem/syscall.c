@@ -19,6 +19,15 @@ struct streamPool* allocStreamPool()
 
 void freeStream(struct stream* stm)
 {
+    //meta
+    switch (stm->type)
+    {
+    case stmTypSocket:
+        free(stm->meta);
+        break;
+    default:
+    }
+
     free(stm->readContent);
     free(stm);
 }
@@ -172,10 +181,10 @@ void updateNetwork(struct stream* stm, int index, struct streamPool* river)
     }
     else if (recvErrno != EAGAIN || recvByteSize == 0)//kill stream if socket error
     {
-        free((int*)stm->meta); //important: free socket fd
-        close(socketFd);
+        //free((int*)stm->meta); //important: free socket fd
         
         removeStream(stm, river, i2id(index));
+        close(socketFd);
 
         //river->count--;
         //freeStream(stm);
@@ -213,7 +222,7 @@ void updateStreams(struct system* ouch)
             break;
 
         case stmTypPipe:
-            printf("stmTypPipe UNIMPL!!!!\n");
+            //printf("stmTypPipe UNIMPL!!!!\n");
             break;
 
         case stmTypRootProc:
@@ -305,7 +314,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
                 //close socket
                 int* sockPtr = (int*)stm->meta;
                 success = (0 <= close(*sockPtr));
-                free(sockPtr);
+                //free(sockPtr);
                 break;
             default:
                 success = true;
