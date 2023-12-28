@@ -17,6 +17,13 @@ struct streamPool* allocStreamPool()
     return stmPool;
 }
 
+struct stream* allocStream()
+{
+    return (struct stream*)malloc(sizeof(struct stream));
+}
+
+
+
 void freeStream(struct stream* stm)
 {
     //meta
@@ -25,6 +32,16 @@ void freeStream(struct stream* stm)
     case stmTypSocket:
         free(stm->meta);
         break;
+
+    case stmTypPipe:;
+        struct stream* mrr = stm->meta;
+        if (!mrr || mrr->type != stmTypPipe) break;
+
+        free(mrr->readContent);
+        free(mrr);
+
+        break;
+
     default:
     }
 
@@ -32,11 +49,19 @@ void freeStream(struct stream* stm)
     free(stm);
 }
 
-void removeStream(struct stream* stm, struct streamPool* river, int id)
+void removeRiverEntry(struct streamPool* river, int id)
 {
     river->count--;
-    freeStream(stm);
     river->container[id2i(id)] = NULL;
+}
+
+void removeStream(struct stream* stm, struct streamPool* river)
+{
+    if (stm->type == stmTypPipe && stm->meta)
+        removeRiverEntry(river, ((struct stream*)stm->meta)->id);
+
+    removeRiverEntry(river, stm->id);
+    freeStream(stm);
 }
 
 void freeStreamPool(struct system* ouch)
@@ -48,7 +73,14 @@ void freeStreamPool(struct system* ouch)
         struct stream* temp;
         for (int i = 0; i < riverListSize; i++)
             if ((temp = river->container[i]))
-                freeStream(temp);
+            {
+                //if (temp->type == stmTypPipe && temp->meta)
+                //    removeRiverEntry(river,
+                //        ((struct stream*)temp->meta)->id);
+
+                //freeStream(temp);
+                removeStream(temp, ouch->river);
+            }
     }
 
     free(river);
@@ -72,7 +104,7 @@ struct stream* createStream(unsigned char* content, int len)
         *content = 0x0;
     }
 
-    struct stream* stm = (struct stream*)malloc(sizeof(struct stream));
+    struct stream* stm = allocStream();
     stm->readContent = content;
     stm->readSize = len;
 
@@ -81,28 +113,55 @@ struct stream* createStream(unsigned char* content, int len)
 
     stm->type = stmInvailed;
 
-    memset(stm->writeContent, 0x0, streamOutputSize * sizeof(char));
+    memset(stm->writeContent, 0x0, streamBufferSize * sizeof(char));
 
     return stm;
 }
 
+//allocates two new streams and links them using stmTypPipe
+struct stream* createPipe()
+{
+    struct stream* stm = allocStream();
+    struct stream* mrr = allocStream(); //mirror
+    stm->type = stmTypPipe;
+    mrr->type = stmTypPipe;
+
+    stm->readContent = (unsigned char*)malloc(pipeBufferSize);
+    mrr->readContent = (unsigned char*)malloc(pipeBufferSize);
+
+    //link 'em up
+    stm->meta = (void*)mrr;
+    mrr->meta = (void*)stm;
+
+    //mrr can be accessed through the link
+    return stm;
+}
+
+
+
 S1Int injectStream(struct stream* stm, struct system* ouch)
 {
     struct streamPool* river = ouch->river;
+    struct stream** conts = river->container;
 
     //search for free spot
     for (S1Int i = 0; i < riverListSize; i++)
-        if (!river->container[i])
+        if (conts[i] == stm) return 0; //stream already injected
+        else if (!conts[i])
         {
             river->count++;
             river->container[i] = stm;
-            return (stm->id = i2id(i)); //S1Int id is currently not in use
-            //return i2id(i);
+
+            //inject mirror if 
+            if (stm->type == stmTypPipe)
+                injectStream((struct stream*)stm->meta, ouch);
+
+            return (stm->id = i2id(i));
         }
 
     //if no spot was found, deallocate the stream
     freeStream(stm);
-    return 0x0;
+    return 0;
 }
 
 struct stream* getStream(S1Int id, struct system* ouch)
@@ -122,7 +181,7 @@ bool readStream(struct stream* stm, S1Int* data)
 bool writeStream(struct stream* stm, S1Int val)
 {
     //write only succeeds if there's space in the writeContent
-    bool succ = (stm->writeIndex < streamOutputSize);
+    bool succ = (stm->writeIndex < streamBufferSize);
     if (succ) stm->writeContent[stm->writeIndex++] = (char)val;
     return succ;
 }
@@ -130,8 +189,8 @@ bool writeStream(struct stream* stm, S1Int val)
 bool sendStream(struct stream* stm, S1Int ptr, int size, struct process* proc)
 {
 
-    bool succ = (ptr + size < Bit16IntLimit) &&             //src bounds
-                (stm->writeIndex + size < streamOutputSize); //dst bounds
+    bool succ = (ptr + size < Bit16IntLimit) &&              //src bounds
+                (stm->writeIndex + size < streamBufferSize); //dst bounds
     if (succ)
     {
         S1Int* srcPtr = &proc->mem[ptr];
@@ -183,7 +242,7 @@ void updateNetwork(struct stream* stm, int index, struct streamPool* river)
     {
         //free((int*)stm->meta); //important: free socket fd
         
-        removeStream(stm, river, i2id(index));
+        removeStream(stm, river);
         close(socketFd);
 
         //river->count--;
@@ -196,7 +255,7 @@ void updateNetwork(struct stream* stm, int index, struct streamPool* river)
     if (stm->writeIndex > 0 &&
         0 <= send(socketFd, stm->writeContent, stm->writeIndex, 0))
     {
-        memset(stm->writeContent, 0x0, streamOutputSize);
+        memset(stm->writeContent, 0x0, streamBufferSize);
         stm->writeIndex = 0;
     }
 
@@ -221,14 +280,28 @@ void updateStreams(struct system* ouch)
             updateNetwork(stm, i, river);
             break;
 
-        case stmTypPipe:
-            //printf("stmTypPipe UNIMPL!!!!\n");
-            break;
-
         case stmTypRootProc:
             for (int i = 0; i < stm->writeIndex; i++)
                 flog("%c", stm->writeContent[i]);
             stm->writeIndex = 0;
+            break;
+
+        case stmTypPipe:;
+            struct stream* mirror = (struct stream*)stm->meta;
+            if (!mirror) break;
+
+            int remSize = stm->readSize - stm->readIndex; //size of old remaining content
+            int newSize = remSize + mirror->writeIndex;
+
+            if (pipeBufferSize < newSize) break; //bounds
+
+            memcpy(stm->readContent, stm->readContent + stm->readIndex, remSize);           //discard already read content
+            memcpy(stm->readContent + remSize, mirror->writeContent, mirror->writeIndex);   //add new content from mirror
+
+            stm->readIndex = 0;
+            stm->readSize = newSize;
+            mirror->writeIndex = 0;
+
             break;
 
         default:
@@ -322,7 +395,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             }
 
             //free and reset container
-            removeStream(stm, river, id);
+            removeStream(stm, river);
 
         }
         else success = false;        

@@ -30,10 +30,9 @@ struct streamPool
 
 
 struct stream* createStream(unsigned char* content, int len);
+struct stream* createPipe();
 void freeStream(struct stream* stm);
-void removeStream(struct stream* stm, struct streamPool* river, int id);
-
-int getStreamID(struct stream* stm, struct system* ouch);
+void removeStream(struct stream* stm, struct streamPool* river);
 
 bool readStream(struct stream* stm, S1Int* data);
 bool writeStream(struct stream* stm, S1Int val);

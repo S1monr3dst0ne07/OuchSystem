@@ -50,14 +50,6 @@ struct S1HeapChunk* allocS1HeapChunk()
     return temp;
 }
 
-struct stream* allocStdio()
-{
-    struct stream* stdio = createStream(NULL, 0);
-    stdio->meta = NULL; //mirror is empty by default
-    stdio->type = stmTypPipe;
-    return stdio;
-}
-
 
 struct process* allocProcess()
 {
@@ -84,7 +76,7 @@ struct process* allocProcess()
     proc->forkDepth = 0;
     proc->uuidGroup = 0;
 
-    proc->stdio = allocStdio();
+    proc->stdio = createPipe();
     
 
     return proc;
@@ -394,7 +386,7 @@ struct process* cloneProcess(struct process* src)
     dst->procSock = 0;
 
     //alloc new stdio
-    dst->stdio = allocStdio();
+    dst->stdio = createPipe();
 
     //copy dynamics
     int progMemSize = sizeof(struct inst) * src->progSize;
@@ -555,9 +547,8 @@ void removeProcessList(struct procList* list, struct system* ouch)
 
     struct process* proc = list->proc;
 
-    //deject stdio stream    
-    struct stream* stdio = proc->stdio;
-    removeStream(stdio, ouch->river, stdio->id);
+    //deject stdio stream
+    removeStream(proc->stdio, ouch->river);
     proc->stdio = NULL;
 
     //clean up

@@ -1,7 +1,8 @@
 #ifndef HSTREAM
 #define HSTREAM
 
-#define streamOutputSize (1 << 16)
+#define streamBufferSize (1 << 16)
+#define pipeBufferSize 2048
 
 enum streamType
 {
@@ -21,7 +22,7 @@ struct stream
     int readSize;
     int readIndex;
 
-    char writeContent[streamOutputSize];
+    char writeContent[streamBufferSize];
     int writeIndex;
 
     enum streamType type;
