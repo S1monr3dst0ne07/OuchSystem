@@ -67,6 +67,7 @@ enum S1Syscall
     scWriteStm,
     scStmInfo,
     scStmSend,
+    scStmProcStd,
     scOpenFileObj = 0x0010,
     scCreateObj,
     scDelObj,
@@ -123,7 +124,7 @@ struct S1HeapChunk
 
 struct process
 {
-    unsigned int pid;   //process id   (reusable)
+    S1Int         pid;  //process id   (reusable)
     unsigned long uuid; //universal id (session unique)
 
     //internals
@@ -177,6 +178,7 @@ struct process* cloneProcess(struct process* src);
 struct procPool* allocProcPool();
 void launchProcess(struct process* proc, struct system* ouch);
 struct process* launchPath(char* pathStr, struct system* ouch);
+struct process* getProcByPID(S1Int pid, struct procPool* pool);
 
 bool removeProcess(struct process* proc, struct system* ouch);
 void freeProcPool(struct system* ouch);

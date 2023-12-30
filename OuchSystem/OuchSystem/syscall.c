@@ -73,14 +73,7 @@ void freeStreamPool(struct system* ouch)
         struct stream* temp;
         for (int i = 0; i < riverListSize; i++)
             if ((temp = river->container[i]))
-            {
-                //if (temp->type == stmTypPipe && temp->meta)
-                //    removeRiverEntry(river,
-                //        ((struct stream*)temp->meta)->id);
-
-                //freeStream(temp);
                 removeStream(temp, ouch->river);
-            }
     }
 
     free(river);
@@ -459,6 +452,17 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         break;
 
 
+    case scStmProcStd:;
+        guardPull(pid);
+
+        procNew = getProcByPID(pid, ouch->pool);
+        success = (bool)procNew;
+        id = success ? ((struct stream*)procNew->stdio->meta)->id : 0x0;
+
+        guardPush(id);
+        guardPush(success);
+        
+        break;
 
 
     //--- files ---
@@ -609,7 +613,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
     //--- process ---
     case scGetPid:;
-        pid = (S1Int)proc->pid;
+        pid = proc->pid;
         //if (!syscallStackPush(proc, &pid, callType)) break;
         guardPush(pid);
         break;
@@ -637,11 +641,11 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         procNew->forkDepth++;
 
         //sub process pid
-        pid = (S1Int)procNew->pid;
+        pid = procNew->pid;
         if (!syscallStackPush(procNew, &pid, callType)) break;
 
         //super process pid
-        pid = (S1Int)proc->pid;
+        pid = proc->pid;
         if (!syscallStackPush(proc, &pid, callType)) break;
 
         break;

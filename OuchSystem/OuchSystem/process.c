@@ -55,7 +55,7 @@ struct process* allocProcess()
 {
     struct process* proc = (struct process*)malloc(sizeof(struct process));
     proc->ip = 0;
-    proc->pid = (unsigned int)-1;
+    proc->pid = (S1Int)-1;
     proc->uuid = 0;
 
     proc->prog = NULL;
@@ -493,6 +493,20 @@ struct process* launchPath(char* pathStr, struct system* ouch)
     free(source);
 
     return proc;
+}
+
+
+struct process* getProcByPID(S1Int pid, struct procPool* pool)
+{
+    struct procList* iter;
+    for (iter = pool->procs; iter; iter = iter->next)
+    {
+        struct process* proc = iter->proc;
+        if (proc->pid == pid)
+            return proc;
+    }
+
+    return NULL;
 }
 
 

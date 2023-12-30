@@ -58,7 +58,7 @@ Then calling a syscall with stream id 0x0, the syscall will just do nothing and 
     arguments: id, ptr (base pointer), size
     returns  : success (0 -> error, 1 -> success)	
 
-!0x0006 -> process stdio
+0x0006 -> process stdio
 	connects to process stdio
 	arguments: pid
 	returns  : success (0 -> error, 1 -> success), id
