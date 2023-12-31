@@ -119,6 +119,12 @@ struct stream* createPipe()
     stm->type = stmTypPipe;
     mrr->type = stmTypPipe;
 
+    stm->readIndex = 0;
+    stm->writeIndex = 0;
+    mrr->readIndex = 0;
+    mrr->writeIndex = 0;
+
+
     stm->readContent = (unsigned char*)malloc(pipeBufferSize);
     mrr->readContent = (unsigned char*)malloc(pipeBufferSize);
 
