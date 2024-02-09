@@ -71,6 +71,7 @@ bool writeFile(struct system* ouch, struct filePath* path, struct file f);
 
 struct file getFileContentPtr(struct system* ouch, struct filePath* path);
 
+enum fileNodeTypes getNodeTypeByPath(struct system* ouch, struct filePath* path);
 bool isFile(struct system* ouch, struct filePath* path);
 
 //void printImage(struct fileNode* ptr, int l);

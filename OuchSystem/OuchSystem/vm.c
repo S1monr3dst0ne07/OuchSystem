@@ -281,7 +281,7 @@ enum returnCodes simProcess(struct process* proc, int iterLimit)
 
             for (int i = 0; buffer[i]; i++)
                 writeStream(proc->stdio, buffer[i]);
-                
+
             break;
 
         case s1Got:
@@ -342,7 +342,7 @@ enum returnCodes simProcess(struct process* proc, int iterLimit)
 
         case s1Putstr:
             //printf("%c", (char)*acc);
-            writeStream(proc->stdio, (S1Int)(*acc));
+            writeStream(proc->stdio, (char)(*acc));
             break;
 
         case s1Ahm:;

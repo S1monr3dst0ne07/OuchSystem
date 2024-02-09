@@ -353,6 +353,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     switch (callType)
     {
     case scNoop:
+        updateStreams(ouch);
         break;
 
     //--- streams ---
@@ -399,7 +400,6 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         }
         else success = false;        
 
-        //if (!syscallStackPush(proc, &success, callType)) break;
         guardPush(success);
         break;
 
@@ -409,10 +409,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         guardPull(id);
 
         stm = getStream(id, ouch);
-        if (stm)
-            success = readStream(stm, &data) ? 1 : 2;
-        else
-            success = 0;
+        if (stm) success = readStream(stm, &data) ? 1 : 2;
+        else     success = 0;
 
         guardPush(data);
         guardPush(success);
@@ -431,15 +429,12 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         break;
     
     case scStmInfo:;
-        //if (!syscallStackPull(proc, &id, callType)) break;
         guardPull(id);
         stm = getStream(id, ouch);
 
         S1Int type = (S1Int)(stm ? stm->type : stmInvailed);
         S1Int size = (S1Int)(stm ? stm->readSize : 0);
 
-        //if (!syscallStackPush(proc, &size, callType)) break;
-        //if (!syscallStackPush(proc, &type, callType)) break;
         guardPush(size);
         guardPush(type);
         break;
@@ -474,26 +469,43 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     //--- files ---
     case scOpenFileObj:;
         S1Int pathPtr = 0;
-        //if (!syscallStackPull(proc, &pathPtr, callType)) break;
         guardPull(pathPtr);
 
         char* pathStr = readStringFromProcessMemory(proc, pathPtr);
         struct filePath* path = parseFilePath(pathStr);
 
-        //char* content = readFileContent(ouch, path);
-        struct file f = readFile(ouch, path);
-
-        if (f.contPtr)
+        switch (getNodeTypeByPath(ouch, path))
         {
-            struct stream* stm = createStream((unsigned char*)f.contPtr, f.contLen);
-            stm->type = stmTypFile;
-            stm->meta = pathStr;
-            id = injectStream(stm, ouch);
-        }
-        else
-            id = 0x0;
+        case fileNodeFile:;
+            //char* content = readFileContent(ouch, path);
+            struct file f = readFile(ouch, path);
 
-        //if (!syscallStackPush(proc, &id, callType)) break;
+            if (f.contPtr)
+            {
+                struct stream* stm = createStream((unsigned char*)f.contPtr, f.contLen);
+                stm->type = stmTypFile;
+                stm->meta = pathStr;
+                id = injectStream(stm, ouch);
+            }
+            else
+                id = 0x0;
+
+            break;
+
+        case fileNodeDir:;
+            struct stream* stm = createStream(NULL, 0);
+            stm->type = stmTypDir;
+            stm->meta = NULL;
+            id = injectStream(stm, ouch);
+            break;
+
+        case fileNodeInvaild:
+            id = 0x0;
+            break;
+
+        }
+
+
         guardPush(id);
 
         freeFilePath(path);
@@ -625,10 +637,13 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         break;
 
     case scLaunchProc:;
+        S1Int workPtr;
+        guardPull(workPtr);
         guardPull(pathPtr);
 
-        pathStr = readStringFromProcessMemory(proc, pathPtr);
-        procNew = launchPath(pathStr, ouch);
+        pathStr       = readStringFromProcessMemory(proc, pathPtr);
+        char* workStr = readStringFromProcessMemory(proc, workPtr);
+        procNew = launchPath(pathStr, ouch, workStr);
 
         success = (bool)(procNew)&1;
         pid = procNew ? procNew->pid : 0;
@@ -637,6 +652,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         guardPush(success);
 
         free(pathStr);
+        free(workStr);
         break;
 
     case scForkProc:;

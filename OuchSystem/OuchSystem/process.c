@@ -78,6 +78,7 @@ struct process* allocProcess()
 
     proc->stdio = createPipe();
     
+    proc->workPath = NULL;
 
     return proc;
 }
@@ -401,6 +402,7 @@ struct process* cloneProcess(struct process* src)
     //reset uuid, just in case
     dst->uuid = 0x0;
 
+    dst->workPath = cloneFilePath(src->workPath);
 
     return dst;
 }
@@ -480,14 +482,18 @@ void launchProcess(struct process* proc, struct system* ouch)
 }
 
 //returns launched process instance
-struct process* launchPath(char* pathStr, struct system* ouch)
+struct process* launchPath(char* pathStr, struct system* ouch, char* workPath)
 {
     struct filePath* path = parseFilePath(pathStr);
     char* source = readFileContent(ouch, path);
     guard(source, NULL);
 
     struct process* proc = parseProcess(source);
-    if (proc) launchProcess(proc, ouch);
+    if (proc)
+    {
+        proc->workPath = parseFilePath(workPath);
+        launchProcess(proc, ouch);
+    }
 
     freeFilePath(path);
     free(source);
@@ -537,6 +543,8 @@ void freeProcess(struct process* proc)
 
     //check if redundant stdio stream exists
     if (proc->stdio) freeStream(proc->stdio);
+
+    if (proc->workPath) freeFilePath(proc->workPath);
 
     free(proc->prog);
     free(proc);

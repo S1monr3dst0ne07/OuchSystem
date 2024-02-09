@@ -29,13 +29,16 @@ void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 	char* autoStartupFile = readFileContent(ouch, autoPath);
 	fguard(autoStartupFile, "Unable to read auto file\n", );
 
+
+	flog("'%s'\n", autoStartupFile);
+
 	char* splitPtr = strtok(autoStartupFile, "\n");
 
 	while (splitPtr != NULL)
 	{
 		flog("Launching '%s' ... \n", splitPtr);
 
-		struct process* proc = launchPath(splitPtr, ouch);
+		struct process* proc = launchPath(splitPtr, ouch, "");
 		if (proc) proc->stdio->type = stmTypRootProc;
 
 		if (proc) flog("OK\n");

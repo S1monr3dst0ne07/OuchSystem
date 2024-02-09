@@ -157,6 +157,9 @@ struct process
     //thread / shared mem hell
     struct fileMap* fMaps;
 
+    //basically the wd
+    struct filePath* workPath;
+
     //fork tracking (anti-bomb system)
     int forkDepth; //how many fork the process is away from autoLaunch
     unsigned long uuidGroup; //all processes forked from one, share this uuid with the original
@@ -177,7 +180,7 @@ struct process* cloneProcess(struct process* src);
 
 struct procPool* allocProcPool();
 void launchProcess(struct process* proc, struct system* ouch);
-struct process* launchPath(char* pathStr, struct system* ouch);
+struct process* launchPath(char* pathStr, struct system* ouch, char* workPath);
 struct process* getProcByPID(S1Int pid, struct procPool* pool);
 
 bool removeProcess(struct process* proc, struct system* ouch);

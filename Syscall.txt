@@ -140,8 +140,8 @@ file stuff
     returns  : pid
 
 0x0041 -> launch process
-    launches new process given a source path
-    arguments: path pointer
+    launches new process given a source path, and working path
+    arguments: path pointer, work pointer
     returns  : success (0 -> error, 1 -> success), pid
     
 !0x0042 -> kill process

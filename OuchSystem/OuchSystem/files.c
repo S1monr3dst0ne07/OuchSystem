@@ -203,6 +203,7 @@ void unmountRootImage(char* path, struct fileNode* root)
 //getters
 struct fileNode* getSubNodeByName(struct fileNode* super, char* name)
 {
+	guard(super, NULL);
 	guard(name, NULL);
 	fguard((strlen(name) < nodeNameLimit), "getSubNodeByName: name over limit\n", NULL);
 
@@ -219,7 +220,12 @@ struct fileNode* getNodeByPath(struct fileNode* root, struct filePath* path)
 {
 	struct fileNode* temp = root;
 	for (int i = 0; i < path->len; i++)
-		temp = getSubNodeByName(temp, path->dirPath[i]);
+	{
+		char* name = path->dirPath[i];
+		if (*name == '\0') continue;
+
+		temp = getSubNodeByName(temp, name);
+	}
 	
 	return temp;
 }
@@ -241,14 +247,12 @@ struct filePath* parseFilePath(char* path)
 			//if a subterminator is found, relocate the buffer
 			char* temp = (char*)malloc(bufferIndex + 1);
 			fguard(temp, msgMallocGuard, NULL);
-			memset(temp, 0x0, bufferIndex + 1);
 
-			strncat(temp, buffer, bufferIndex);
+			memcpy(temp, buffer, bufferIndex);
+			temp[bufferIndex] = '\0';
 			bufferIndex = 0;
 
-			output->dirPath[pathIndex] = temp;
-			pathIndex++;
-
+			output->dirPath[pathIndex++] = temp;
 			if (!path[i]) break;
 		}
 		else 
@@ -380,9 +384,16 @@ bool writeFile(struct system* ouch, struct filePath* path, struct file f)
 	return true;
 }
 
+enum fileNodeTypes getNodeTypeByPath(struct system* ouch, struct filePath* path)
+{
+	struct fileNode* node = getNodeByPath(ouch->root, path);
+	return node ? node->type : fileNodeInvaild;
+}
+
+
 bool isFile(struct system* ouch, struct filePath* path)
 { 
-	return (getFileContentPtr(ouch, path).contLen) ? true : false; 
+	return getNodeTypeByPath(ouch, path) == fileNodeFile;
 }
 
 /*
