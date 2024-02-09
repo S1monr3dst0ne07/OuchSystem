@@ -29,7 +29,7 @@ struct streamPool
 };
 
 
-struct stream* createStream(unsigned char* content, int len);
+struct stream* createStream(char* content, int len);
 struct stream* createPipe();
 void freeStream(struct stream* stm);
 void removeStream(struct stream* stm, struct streamPool* river);

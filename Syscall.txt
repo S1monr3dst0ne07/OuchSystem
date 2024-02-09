@@ -63,6 +63,11 @@ Then calling a syscall with stream id 0x0, the syscall will just do nothing and 
 	arguments: pid
 	returns  : success (0 -> error, 1 -> success), id
 
+0x0007 -> get args
+	get invocation arguments of the process calling
+	arguments:
+	returns  : id (stream containing args)
+
 
 file stuff
 --- files ---
@@ -140,8 +145,8 @@ file stuff
     returns  : pid
 
 0x0041 -> launch process
-    launches new process given a source path, and working path
-    arguments: path pointer, work pointer
+    launches new process given a source path, working path and arguments
+    arguments: path pointer, work pointer, args
     returns  : success (0 -> error, 1 -> success), pid
     
 !0x0042 -> kill process

@@ -482,7 +482,7 @@ void launchProcess(struct process* proc, struct system* ouch)
 }
 
 //returns launched process instance
-struct process* launchPath(char* pathStr, struct system* ouch, char* workPath)
+struct process* launchPath(char* pathStr, struct system* ouch, char* workPath, char* args)
 {
     struct filePath* path = parseFilePath(pathStr);
     char* source = readFileContent(ouch, path);
@@ -492,6 +492,7 @@ struct process* launchPath(char* pathStr, struct system* ouch, char* workPath)
     if (proc)
     {
         proc->workPath = parseFilePath(workPath);
+        proc->args = args;
         launchProcess(proc, ouch);
     }
 

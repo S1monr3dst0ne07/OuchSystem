@@ -38,7 +38,7 @@ void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 	{
 		flog("Launching '%s' ... \n", splitPtr);
 
-		struct process* proc = launchPath(splitPtr, ouch, "");
+		struct process* proc = launchPath(splitPtr, ouch, "", "");
 		if (proc) proc->stdio->type = stmTypRootProc;
 
 		if (proc) flog("OK\n");

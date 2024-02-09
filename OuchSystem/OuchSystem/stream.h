@@ -12,13 +12,14 @@ enum streamType
     stmTypSocket,
     stmTypPipe,
     stmTypRootProc, //process, stdio attached to host stdio
+    stmTypArgs,
 };
 
 struct stream
 {
     S1Int id;
 
-    unsigned char* readContent;
+    char* readContent;
     int readSize;
     int readIndex;
 

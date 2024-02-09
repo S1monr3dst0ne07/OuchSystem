@@ -89,11 +89,11 @@ bool isVaildStream(S1Int id, struct system* ouch)
 }
 
 //allocates new stream, content must be zero terminated
-struct stream* createStream(unsigned char* content, int len)
+struct stream* createStream(char* content, int len)
 {
     if (!content)
     {
-        content = (unsigned char*)malloc(sizeof(char));
+        content = (char*)malloc(sizeof(char));
         *content = 0x0;
     }
 
@@ -125,8 +125,8 @@ struct stream* createPipe()
     mrr->writeIndex = 0;
 
 
-    stm->readContent = (unsigned char*)malloc(pipeBufferSize);
-    mrr->readContent = (unsigned char*)malloc(pipeBufferSize);
+    stm->readContent = (char*)malloc(pipeBufferSize);
+    mrr->readContent = (char*)malloc(pipeBufferSize);
 
     //link 'em up
     stm->meta = (void*)mrr;
@@ -222,12 +222,12 @@ void updateNetwork(struct stream* stm, int index, struct streamPool* river)
 
         //alloc new content
         int readSize = recvByteSize + readRemain;
-        unsigned char* readContentNew = (unsigned char*)malloc(readSize);
+        char* readContentNew = (char*)malloc(readSize);
         fguard(readContentNew, msgMallocGuard, );
 
         memset(readContentNew, 0x0, readSize);
 
-        unsigned char* p = readContentNew;
+        char* p = readContentNew;
         memcpy(p, stm->readContent + stm->readIndex, readRemain);
         memcpy(p + readRemain, buffer, recvByteSize);
 
@@ -465,6 +465,14 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         
         break;
 
+    case scStmGetArgs:;
+        struct stream* stm = createStream(proc->args, strlen(proc->args));
+        stm->type = stmTypArgs;
+        stm->meta = NULL;
+        id = injectStream(stm, ouch);
+
+        guardPush(id);
+        break;
 
     //--- files ---
     case scOpenFileObj:;
@@ -482,7 +490,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
             if (f.contPtr)
             {
-                struct stream* stm = createStream((unsigned char*)f.contPtr, f.contLen);
+                struct stream* stm = createStream((char*)f.contPtr, f.contLen);
                 stm->type = stmTypFile;
                 stm->meta = pathStr;
                 id = injectStream(stm, ouch);
@@ -638,12 +646,15 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
     case scLaunchProc:;
         S1Int workPtr;
+        S1Int argsPtr;
+        guardPull(argsPtr);
         guardPull(workPtr);
         guardPull(pathPtr);
 
         pathStr       = readStringFromProcessMemory(proc, pathPtr);
         char* workStr = readStringFromProcessMemory(proc, workPtr);
-        procNew = launchPath(pathStr, ouch, workStr);
+        char* argsStr = readStringFromProcessMemory(proc, argsPtr);
+        procNew = launchPath(pathStr, ouch, workStr, argsStr);
 
         success = (bool)(procNew)&1;
         pid = procNew ? procNew->pid : 0;
