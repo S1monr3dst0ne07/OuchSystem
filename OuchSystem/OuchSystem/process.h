@@ -69,6 +69,7 @@ enum S1Syscall
     scStmSend,
     scStmProcStd,
     scStmGetArgs,
+    scStmGetWork,
     scOpenFileObj = 0x0010,
     scCreateObj,
     scDelObj,

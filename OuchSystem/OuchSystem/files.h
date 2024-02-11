@@ -51,14 +51,14 @@ struct fileNode* mountRootImage(char* path);
 void freeFileSystem(struct fileNode* root);
 void unmountRootImage(char* path, struct fileNode* root);
 
-//struct fileNode* getSubNodeByName(struct fileNode* top, char* name);
-//struct fileNode* getNodeByPath(struct fileNode* root, struct filePath* path);
-
 struct filePath
 {
 	int len;
 	char* dirPath[pathLenLimit];
 };
+
+struct fileNode* getNodeByPath(struct fileNode* root, struct filePath* path);
+
 struct filePath* parseFilePath(char* path);
 void freeFilePath(struct filePath* path);
 struct filePath* cloneFilePath(struct filePath* src);
@@ -73,6 +73,8 @@ struct file getFileContentPtr(struct system* ouch, struct filePath* path);
 
 enum fileNodeTypes getNodeTypeByPath(struct system* ouch, struct filePath* path);
 bool isFile(struct system* ouch, struct filePath* path);
+char* listFileNode(struct system* ouch, struct filePath* path);
+char* renderFilePath(struct filePath* path);
 
 //void printImage(struct fileNode* ptr, int l);
 

@@ -430,6 +430,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     
     case scStmInfo:;
         guardPull(id);
+
         stm = getStream(id, ouch);
 
         S1Int type = (S1Int)(stm ? stm->type : stmInvailed);
@@ -474,12 +475,22 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         guardPush(id);
         break;
 
+    case scStmGetWork:;
+        char* pathStr = renderFilePath(proc->workPath);
+        stm = createStream(pathStr, strlen(pathStr));
+        stm->type = stmTypWork;
+        stm->meta = NULL;
+        id = injectStream(stm, ouch);
+
+        guardPush(id);
+        break;
+
     //--- files ---
     case scOpenFileObj:;
         S1Int pathPtr = 0;
         guardPull(pathPtr);
 
-        char* pathStr = readStringFromProcessMemory(proc, pathPtr);
+        pathStr = readStringFromProcessMemory(proc, pathPtr);
         struct filePath* path = parseFilePath(pathStr);
 
         switch (getNodeTypeByPath(ouch, path))
@@ -501,7 +512,8 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
             break;
 
         case fileNodeDir:;
-            struct stream* stm = createStream(NULL, 0);
+            char* list = listFileNode(ouch, path);
+            struct stream* stm = createStream(list, strlen(list));
             stm->type = stmTypDir;
             stm->meta = NULL;
             id = injectStream(stm, ouch);

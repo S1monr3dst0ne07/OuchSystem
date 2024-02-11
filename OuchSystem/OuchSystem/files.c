@@ -396,6 +396,38 @@ bool isFile(struct system* ouch, struct filePath* path)
 	return getNodeTypeByPath(ouch, path) == fileNodeFile;
 }
 
+
+
+
+
+
+//helper
+char* getSubNodeByIndex(void* node, int i)
+{
+	return ((struct fileNode*)node)->subNodes[i]->name;
+}
+
+char* listFileNode(struct system* ouch, struct filePath* path)
+{
+	struct fileNode* node = getNodeByPath(ouch->root, path);
+	return renderObjectByFuncWithSeps(node, &getSubNodeByIndex, node->subCount, ' ');
+}
+
+
+
+
+char* getPathDirStepByIndex(void* path, int i)
+{
+	return ((struct filePath*)path)->dirPath[i];
+}
+
+//basically the opposite of parseFilePath
+char* renderFilePath(struct filePath* path)
+{
+	return renderObjectByFuncWithSeps(path, &getPathDirStepByIndex, path->len, '/');
+}
+
+
 /*
 void printImage(struct fileNode* ptr, int l)
 {

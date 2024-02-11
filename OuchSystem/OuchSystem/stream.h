@@ -13,6 +13,7 @@ enum streamType
     stmTypPipe,
     stmTypRootProc, //process, stdio attached to host stdio
     stmTypArgs,
+    stmTypWork,
 };
 
 struct stream

@@ -68,6 +68,10 @@ Then calling a syscall with stream id 0x0, the syscall will just do nothing and 
 	arguments:
 	returns  : id (stream containing args)
 
+0x0008 -> get work path
+	get invocation work path of the process calling
+	arguments:
+	returns  : id (stream)
 
 file stuff
 --- files ---

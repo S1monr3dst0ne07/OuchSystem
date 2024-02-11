@@ -479,6 +479,12 @@ void launchProcess(struct process* proc, struct system* ouch)
     S1Int tmp = injectStream(proc->stdio, ouch);
     if (!tmp) proc->stdio = NULL;
 
+
+    flog("Process launched\n");
+    flog("\tpid  : %d\n", proc->pid);
+    flog("\tuuid : %d\n", proc->uuid);
+    flog("\targs : '%s'\n", proc->args);
+
 }
 
 //returns launched process instance
@@ -570,6 +576,12 @@ void removeProcessList(struct procList* list, struct system* ouch)
 
     struct process* proc = list->proc;
 
+    flog("Process removing\n");
+    flog("\tpid  : %d\n", proc->pid);
+    flog("\tuuid : %d\n", proc->uuid);
+    flog("\targs : '%s'\n", proc->args);
+
+
     //deject stdio stream
     removeStream(proc->stdio, ouch->river);
     proc->stdio = NULL;
@@ -578,6 +590,9 @@ void removeProcessList(struct procList* list, struct system* ouch)
     pool->procCount--;
     freeProcess(list->proc);
     free(list);
+
+    flog("\tproCount: %d\n", pool->procCount);
+
 }
 
 //removes process from pool
@@ -649,7 +664,7 @@ bool forkChecker(struct system* ouch, struct process* proc)
 
 
 //TODO: explain how in the fuck this thing works
-bool runPool(struct system* ouch)
+inline bool runPool(struct system* ouch)
 {
     struct procPool* pool = ouch->pool;
     struct procList* curList = pool->execPtr;

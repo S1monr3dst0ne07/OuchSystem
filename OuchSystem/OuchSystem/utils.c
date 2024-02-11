@@ -95,3 +95,28 @@ unsigned int getSmallPosivNumNotInList(unsigned int* list, unsigned int len)
     free(freeRecord);
     return res;
 }
+
+
+//render object by function pointers with seperators
+char* renderObjectByFuncWithSeps(void* object, char* get(void*, int), int len, char sep)
+{
+
+    //find size of object
+    int size = 1; //+1 for termi
+    for (int i = 0; i < len; i++)
+        size += strlen(get(object, i)) + 1;
+
+
+    char* out = malloc(size);
+    guard(out, NULL);
+    memset(out, '\0', size);
+    int p = 0;
+    for (int i = 0; i < len; i++)
+    {
+        char* name = get(object, i);
+        sprintf(out + p, "%s%c", name, sep);
+        p += strlen(name) + 1;
+    }
+
+    return out;
+}

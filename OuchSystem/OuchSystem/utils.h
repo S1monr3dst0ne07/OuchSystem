@@ -15,6 +15,7 @@ bool charInString(char* str, char c);
 char readStringCustomDelim(char* dst, char* src, int* index, char* delim);
 bool isOnlyDigits(const char* s);
 unsigned int getSmallPosivNumNotInList(unsigned int* list, unsigned int len);
+char* renderObjectByFuncWithSeps(void* object, char* get(void*, int), int len, char sep);
 
 
 #ifdef _WIN32
