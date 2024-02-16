@@ -72,6 +72,13 @@ Then calling a syscall with stream id 0x0, the syscall will just do nothing and 
 	get invocation work path of the process calling
 	arguments:
 	returns  : id (stream)
+	
+0x0009 -> peek stream
+	nondestructive (doesn't remove what is being read) read from stream
+    arguments: id
+    returns  : success (0 -> error, 1 -> success, 2 -> stream empty), data
+	
+
 
 file stuff
 --- files ---

@@ -177,6 +177,16 @@ bool readStream(struct stream* stm, S1Int* data)
     return succ;
 }
 
+//like read, but non-destructive
+bool peekStream(struct stream* stm, S1Int* data)
+{
+    //read only succeeds if there's remainder in readContent
+    bool succ = (stm->readIndex < stm->readSize);
+    *data = succ ? (S1Int)stm->readContent[stm->readIndex] : 0;
+    return succ;
+}
+
+
 bool writeStream(struct stream* stm, S1Int val)
 {
     //write only succeeds if there's space in the writeContent
@@ -484,6 +494,20 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
 
         guardPush(id);
         break;
+
+    case scPeekStm:;
+        updateStreams(ouch);
+
+        guardPull(id);
+
+        stm = getStream(id, ouch);
+        if (stm) success = peekStream(stm, &data) ? 1 : 2;
+        else     success = 0;
+
+        guardPush(data);
+        guardPush(success);
+        break;
+
 
     //--- files ---
     case scOpenFileObj:;
