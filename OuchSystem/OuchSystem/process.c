@@ -13,13 +13,14 @@
 
 
 #define endOfInst '\n'
+#define labIdent "lab"
 
 //counter for uuids, only counts up
 static unsigned long uuidCount = 1;
 
 
 //c is a good language, but some parts are just so fucking dumb
-//like why do have to do this shit when we want to make a mapper from string to enum
+//like why do i have to do this shit when i want to make a mapper from string to enum
 typedef struct
 {
     enum s1Insts inst;
@@ -169,7 +170,7 @@ int getLabelCount(struct rawInst* rawInstBuffer, int instCount)
     int labelCount = 0;
 
     for (int i = 0; i < instCount; i++)
-        if (strcmp(rawInstBuffer[i].op, "lab") == 0) labelCount++;
+        if (strcmp(rawInstBuffer[i].op, labIdent) == 0) labelCount++;
 
     return labelCount;
 }
@@ -179,15 +180,12 @@ bool tokenize(char* source, int instCount, struct rawInst* dst)
     int sourceIndex = 0;
     for (int rawInstIndex = 0; rawInstIndex < instCount; rawInstIndex++)
     {
-        //printf("%d\n", rawInstIndex);
-        //printf("%d\n", instCount);
         struct rawInst* target = &dst[rawInstIndex];
 
         //remove empty lines
         do
         {
             //strip
-            //while (source[sourceIndex] == ' ') sourceIndex++;
             while (charInString(" \r", source[sourceIndex])) sourceIndex++;
 
             //comments
@@ -204,10 +202,7 @@ bool tokenize(char* source, int instCount, struct rawInst* dst)
 
         //operator
         char delimChar = readStringCustomDelim(target->op, source, &sourceIndex, " \n\r");
-        //while (source[sourceIndex] == ' ') sourceIndex++;
         while (charInString(" \r", source[sourceIndex])) sourceIndex++;
-
-        //printf("%s\n", target->op);
 
         //operator without arg
         if (delimChar != ' ') continue;
@@ -217,7 +212,6 @@ bool tokenize(char* source, int instCount, struct rawInst* dst)
 
         //argument
         readStringCustomDelim(target->arg, source, &sourceIndex, " \n\r");
-        //while (source[sourceIndex] == ' ') sourceIndex++;
         while (charInString(" \r", source[sourceIndex])) sourceIndex++;
 
     }
@@ -230,7 +224,7 @@ void readLabels(struct rawInst* rawInstBuffer, int instCount, struct labelMap* l
     int labelIndex = 0;
     for (int i = 0; i < instCount; i++)
     {
-        if (strcmp(rawInstBuffer[i].op, "lab") == 0)
+        if (strcmp(rawInstBuffer[i].op, labIdent) == 0)
         {
             labelMapper[labelIndex].label = rawInstBuffer[i].arg;
             labelMapper[labelIndex].address = trueIndex;
@@ -257,7 +251,9 @@ struct process* parseProcess(char* source)
     flog("Parsing process, %d insts found\n", rawInstCount);
 
     //alloc
-    struct rawInst* rawInstBuffer = (struct rawInst*)malloc(sizeof(struct rawInst) * rawInstCount);
+    int rawInstBufferSize = sizeof(struct rawInst) * rawInstCount;
+    struct rawInst* rawInstBuffer = (struct rawInst*)malloc(rawInstBufferSize);
+    memset(rawInstBuffer, 0x0, rawInstBufferSize);
 
     //tokenize to rawInst
     bool success = tokenize(source, rawInstCount, rawInstBuffer);
@@ -287,7 +283,7 @@ struct process* parseProcess(char* source)
         char* argStr = rawInstBuffer[i].arg;
 
         //skip labels
-        if (strcmp(opStr, "lab") == 0)
+        if (strcmp(opStr, labIdent) == 0)
             continue;
 
         //convert
@@ -549,7 +545,7 @@ void freeProcess(struct process* proc)
     freeFileMaps(proc->fMaps);
 
     //check if redundant stdio stream exists
-    if (proc->stdio) freeStream(proc->stdio);
+    if (proc->stdio) flog("freeProcess: STDIO IS NOT DEJECTED!!!!!!");
 
     if (proc->workPath) freeFilePath(proc->workPath);
 

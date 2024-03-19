@@ -181,7 +181,7 @@ struct fileMap* cloneFileMap(struct fileMap* src)
 
 
 //simulates process, advancing by n instructions
-enum returnCodes simProcess(struct process* proc, int iterLimit)
+enum returnCodes simProcess(struct process* proc, int iterLimit, struct system* ouch)
 {
     int* ip = &proc->ip;
 
@@ -280,7 +280,7 @@ enum returnCodes simProcess(struct process* proc, int iterLimit)
             sprintf(buffer, "%d\n", mem[arg]);
 
             for (int i = 0; buffer[i]; i++)
-                writeStream(proc->stdio, buffer[i]);
+                writeStream(proc->stdio, buffer[i], ouch);
 
             break;
 
@@ -342,7 +342,7 @@ enum returnCodes simProcess(struct process* proc, int iterLimit)
 
         case s1Putstr:
             //printf("%c", (char)*acc);
-            writeStream(proc->stdio, (char)(*acc));
+            writeStream(proc->stdio, (char)(*acc), ouch);
             break;
 
         case s1Ahm:;
@@ -414,7 +414,7 @@ enum returnCodes runProcess(struct process* proc, int iterLimit, struct system* 
     //load data from file map
     fguard(loadFileMap(proc, proc->fMaps, ouch), "LoadFileMap failed, killing process\n", rtExit);
 
-    enum returnCodes rt = simProcess(proc, iterLimit);
+    enum returnCodes rt = simProcess(proc, iterLimit, ouch);
 
     //save data back to file map
     fguard(saveFileMap(proc, proc->fMaps, ouch), "SaveFileMap failed, killing process\n", rtExit);

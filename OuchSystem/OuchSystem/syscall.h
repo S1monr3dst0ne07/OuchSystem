@@ -17,8 +17,8 @@
 #define riverListSize 65535
 #define networkBufferSize 1024
 
-#define i2id(x) x + 1
-#define id2i(x) x - 1
+#define i2id(x) (x + 1)
+#define id2i(x) (x - 1)
 
 //contains stream, id given by the position in container
 //id and array index are synonymus (index 0 -> id 1)
@@ -34,8 +34,8 @@ struct stream* createPipe();
 void freeStream(struct stream* stm);
 void removeStream(struct stream* stm, struct streamPool* river);
 
-bool readStream(struct stream* stm, S1Int* data);
-bool writeStream(struct stream* stm, S1Int val);
+bool readStream(struct stream* stm, S1Int* data, struct system* ouch);
+bool writeStream(struct stream* stm, S1Int val, struct system* ouch);
 
 struct streamPool* allocStreamPool();
 void freeStreamPool(struct system* ouch);

@@ -57,6 +57,8 @@ void removeRiverEntry(struct streamPool* river, int id)
 
 void removeStream(struct stream* stm, struct streamPool* river)
 {
+    flog("removeStream: id=%d\n", stm->id);
+
     if (stm->type == stmTypPipe && stm->meta)
         removeRiverEntry(river, ((struct stream*)stm->meta)->id);
 
@@ -155,8 +157,11 @@ S1Int injectStream(struct stream* stm, struct system* ouch)
             if (stm->type == stmTypPipe)
                 injectStream((struct stream*)stm->meta, ouch);
 
+            flog("injectStream: id=%d\n", i2id(i));
             return (stm->id = i2id(i));
         }
+
+    flog("injectStream: no free spot found!!!!\n");
 
     //if no spot was found, deallocate the stream
     freeStream(stm);
@@ -169,28 +174,28 @@ struct stream* getStream(S1Int id, struct system* ouch)
     return ouch->river->container[id2i(id)];
 }
 
-bool readStream(struct stream* stm, S1Int* data)
+bool readStream(struct stream* stm, S1Int* data, struct system* ouch)
 {
     //read only succeeds if there's remainder in readContent
-    bool succ = (stm->readIndex < stm->readSize);
+    bool succ = isVaildStream(stm->id, ouch) && (stm->readIndex < stm->readSize);
     *data = succ ? (S1Int)stm->readContent[stm->readIndex++] : 0;
     return succ;
 }
 
 //like read, but non-destructive
-bool peekStream(struct stream* stm, S1Int* data)
+bool peekStream(struct stream* stm, S1Int* data, struct system* ouch)
 {
     //read only succeeds if there's remainder in readContent
-    bool succ = (stm->readIndex < stm->readSize);
+    bool succ = isVaildStream(stm->id, ouch) && (stm->readIndex < stm->readSize);
     *data = succ ? (S1Int)stm->readContent[stm->readIndex] : 0;
     return succ;
 }
 
 
-bool writeStream(struct stream* stm, S1Int val)
+bool writeStream(struct stream* stm, S1Int val, struct system* ouch)
 {
     //write only succeeds if there's space in the writeContent
-    bool succ = (stm->writeIndex < streamBufferSize);
+    bool succ = isVaildStream(stm->id, ouch) && (stm->writeIndex < streamBufferSize);
     if (succ) stm->writeContent[stm->writeIndex++] = (char)val;
     return succ;
 }
@@ -254,9 +259,6 @@ void updateNetwork(struct stream* stm, int index, struct streamPool* river)
         removeStream(stm, river);
         close(socketFd);
 
-        //river->count--;
-        //freeStream(stm);
-        //river->container[index] = NULL;
         return;
     }
 
@@ -269,6 +271,9 @@ void updateNetwork(struct stream* stm, int index, struct streamPool* river)
     }
 
 }
+
+
+int riverCount = 0;
 
 void updateStreams(struct system* ouch)
 {
@@ -419,7 +424,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         guardPull(id);
 
         stm = getStream(id, ouch);
-        if (stm) success = readStream(stm, &data) ? 1 : 2;
+        if (stm) success = readStream(stm, &data, ouch) ? 1 : 2;
         else     success = 0;
 
         guardPush(data);
@@ -431,7 +436,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         guardPull(id);
 
         stm = getStream(id, ouch);
-        success = (bool)stm && writeStream(stm, data);
+        success = (bool)stm && writeStream(stm, data, ouch);
 
         guardPush(success);
 
@@ -501,7 +506,7 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         guardPull(id);
 
         stm = getStream(id, ouch);
-        if (stm) success = peekStream(stm, &data) ? 1 : 2;
+        if (stm) success = peekStream(stm, &data, ouch) ? 1 : 2;
         else     success = 0;
 
         guardPush(data);

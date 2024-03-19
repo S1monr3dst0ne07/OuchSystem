@@ -41,7 +41,7 @@ bool charInString(char* str, char c)
 }
 
 //no, no, my function names aren't too long
-//index perfers to index into the source
+//index refers to index into the source
 //returns delim that was hit
 char readStringCustomDelim(char* dst, char* src, int* index, char* delim)
 {
