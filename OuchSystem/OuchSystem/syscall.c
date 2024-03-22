@@ -273,8 +273,6 @@ void updateNetwork(struct stream* stm, int index, struct streamPool* river)
 }
 
 
-int riverCount = 0;
-
 void updateStreams(struct system* ouch)
 {
     struct streamPool* river = ouch->river;

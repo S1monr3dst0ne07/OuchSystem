@@ -318,7 +318,7 @@ enum returnCodes simProcess(struct process* proc, int iterLimit, struct system* 
             success = stackPush(stack, stackPtr, acc);
             if (!success)
             {
-                flog("Stackoverflow, killing process\n");
+                flog("simProcess: stack overflow, pid=%d\n", proc->pid);
                 return rtExit;
             }
             break;
@@ -327,7 +327,7 @@ enum returnCodes simProcess(struct process* proc, int iterLimit, struct system* 
             success = stackPull(stack, stackPtr, acc);
             if (!success)
             {
-                flog("Stackunderflow, killing process\n");
+                flog("simProcess: stack underflow, pid=%d\n", proc->pid);
                 return rtExit;
             }
             break;

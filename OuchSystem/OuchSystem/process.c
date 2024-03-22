@@ -423,6 +423,7 @@ unsigned int* getAllPids(struct system* ouch)
     
     //create list
     unsigned int* pidList = (unsigned int*)malloc(sizeof(unsigned int) * pool->procCount);
+    fguard(pidList, msgMallocGuard, NULL);
 
     //scan procList
     int i = 0;
@@ -702,7 +703,7 @@ inline bool runPool(struct system* ouch)
 
         case rtExit:
             //remove 
-            flog("Process finished, removing\n");
+            flog("runPool: process exit, pid=%d\n", curProc->pid);
             removeProcessList(curList, ouch);
             break;
 
