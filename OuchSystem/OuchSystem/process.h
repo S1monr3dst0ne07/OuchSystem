@@ -89,6 +89,8 @@ enum S1Syscall
     scAllPids,
     scMMap = 0x0050,
     scTSL,
+
+    scSOS = 0xffff,
 };
 
 enum returnCodes
@@ -167,6 +169,8 @@ struct process
     //fork tracking (anti-bomb system)
     int forkDepth; //how many fork the process is away from autoLaunch
     unsigned long uuidGroup; //all processes forked from one, share this uuid with the original
+
+    char* debug;
 };
 
 

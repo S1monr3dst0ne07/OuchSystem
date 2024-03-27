@@ -19,7 +19,9 @@ struct streamPool* allocStreamPool()
 
 struct stream* allocStream()
 {
-    return (struct stream*)malloc(sizeof(struct stream));
+    struct stream* stm = malloc(sizeof(struct stream));
+    memset(stm, 0x0, sizeof(struct stream));
+    return stm;
 }
 
 
@@ -754,6 +756,11 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
         saveFileMap(proc, proc->fMaps, ouch);
         guardPush(copy);
 
+        break;
+
+
+    case scSOS:;
+        flog("simProcess: SOS!! pid=%d, uuid=%d\n", proc->pid, proc->uuid);
         break;
 
     default:

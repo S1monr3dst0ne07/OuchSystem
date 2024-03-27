@@ -394,6 +394,7 @@ enum returnCodes simProcess(struct process* proc, int iterLimit, struct system* 
             proc->lastSyscall = (enum S1Syscall)arg;
             return rtSyscall;
 
+
         default:
             break;
         }
