@@ -221,7 +221,7 @@ struct fileNode* getNodeByPath(struct fileNode* root, struct filePath* path)
 	struct fileNode* temp = root;
 	for (int i = 0; i < path->len; i++)
 	{
-		char* name = path->dirPath[i];
+		char* name = path->steps[i];
 		if (*name == '\0') continue;
 
 		temp = getSubNodeByName(temp, name);
@@ -230,44 +230,56 @@ struct fileNode* getNodeByPath(struct fileNode* root, struct filePath* path)
 	return temp;
 }
 
-struct filePath* parseFilePath(char* path)
+struct filePath* parseFilePath(char* pathStr)
 {
-	char buffer[defBufferSize];
-	memset(buffer, 0, sizeof(buffer));
 
-	struct filePath* output = (struct filePath*)malloc(sizeof(struct filePath));
-	fguard(output, msgMallocGuard, NULL);
+	flog("parseFilePath: %s\n", pathStr);
 
-	int pathIndex = 0;
-	int bufferIndex = 0;
-	for (int i = 0; ; i++)
+	struct filePath* pathObj = malloc(sizeof(struct filePath));
+	fguard(pathObj, msgMallocGuard, NULL);
+	memset(pathObj, 0x0, sizeof(struct filePath));
+
+	char* stepBase = pathStr;
+	bool run = true;
+	for (char* iter = pathStr; run; iter++)
 	{
-		if (path[i] == '/' || path[i] == 0)
+		switch (*iter)
 		{
-			//if a subterminator is found, relocate the buffer
-			char* temp = (char*)malloc(bufferIndex + 1);
-			fguard(temp, msgMallocGuard, NULL);
 
-			memcpy(temp, buffer, bufferIndex);
-			temp[bufferIndex] = '\0';
-			bufferIndex = 0;
+		case '\0':;
+			run = false;
 
-			output->dirPath[pathIndex++] = temp;
-			if (!path[i]) break;
+			if (stepBase == iter) break;
+
+		case '/':;
+			int stepSize = iter - stepBase;
+
+			char* step = malloc(stepSize);
+			fguard(step, msgMallocGuard, NULL);
+
+			memcpy(step, stepBase, stepSize);
+			step[stepSize] = '\0';
+
+			stepBase = iter + 1;
+
+			pathObj->steps[pathObj->len++] = step;
+			break;
+
+		default:
+			break;
+
 		}
-		else 
-			buffer[bufferIndex++] = path[i];
+
 	}
 
-	output->len = pathIndex;
-	return output;
+	return pathObj;
 }
 
 
 void freeFilePath(struct filePath* path)
 {
 	for (int i = 0; i < path->len; i++)
-		free(path->dirPath[i]);
+		free(path->steps[i]);
 
 	free(path);
 }
@@ -280,13 +292,13 @@ struct filePath* cloneFilePath(struct filePath* src)
 
 	for (int i = 0; i < src->len; i++)
 	{ 
-		char* srcDir = src->dirPath[i];
+		char* srcDir = src->steps[i];
 		if (!srcDir) continue;
 
 		char* dstDir = malloc(strlen(srcDir) + 1);
 		if (!dstDir) return NULL;
 		strcpy(dstDir, srcDir);
-		dst->dirPath[i] = dstDir;
+		dst->steps[i] = dstDir;
 	}
 
 	return dst;
@@ -349,8 +361,11 @@ struct file getFileContentPtr(struct system* ouch, struct filePath* path)
 char* readFileContent(struct system* ouch, struct filePath* path)
 {
 	struct file f = getFileContentPtr(ouch, path);
+	guard(f.contPtr != NULL, NULL);
+
 	char* out = malloc(f.contLen + 1);
 	fguard(out, msgMallocGuard, NULL);
+
 	memcpy(out, f.contPtr, f.contLen);
 	out[f.contLen] = '\0';
 
@@ -418,7 +433,7 @@ char* listFileNode(struct system* ouch, struct filePath* path)
 
 char* getPathDirStepByIndex(void* path, int i)
 {
-	return ((struct filePath*)path)->dirPath[i];
+	return ((struct filePath*)path)->steps[i];
 }
 
 //basically the opposite of parseFilePath

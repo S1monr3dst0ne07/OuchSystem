@@ -170,7 +170,6 @@ struct process
     int forkDepth; //how many fork the process is away from autoLaunch
     unsigned long uuidGroup; //all processes forked from one, share this uuid with the original
 
-    char* debug;
 };
 
 

@@ -6,7 +6,6 @@
 
 #define subNodeCount 128
 #define pathLenLimit 128
-#define defBufferSize 128
 #define nodeNameLimit 256
 
 #include "kernal.h"
@@ -54,7 +53,7 @@ void unmountRootImage(char* path, struct fileNode* root);
 struct filePath
 {
 	int len;
-	char* dirPath[pathLenLimit];
+	char* steps[pathLenLimit];
 };
 
 struct fileNode* getNodeByPath(struct fileNode* root, struct filePath* path);

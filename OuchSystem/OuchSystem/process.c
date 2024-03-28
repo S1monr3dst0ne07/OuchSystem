@@ -482,6 +482,10 @@ void launchProcess(struct process* proc, struct system* ouch)
     flog("\tuuid : %d\n", proc->uuid);
     flog("\targs : '%s'\n", proc->args);
 
+    char* work = renderFilePath(proc->workPath);
+    flog("\twork : '%s'\n", work);
+    free(work);
+
 }
 
 //returns launched process instance

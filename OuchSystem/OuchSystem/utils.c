@@ -110,6 +110,7 @@ char* renderObjectByFuncWithSeps(void* object, char* get(void*, int), int len, c
     char* out = malloc(size);
     guard(out, NULL);
     memset(out, '\0', size);
+
     int p = 0;
     for (int i = 0; i < len; i++)
     {

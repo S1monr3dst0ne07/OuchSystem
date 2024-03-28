@@ -67,7 +67,7 @@ struct system bootOuch(char* imagePath)
 
 	flog("\n");
 
-	struct filePath* autoPath = parseFilePath("auto");
+	struct filePath* autoPath = parseFilePath("auto/");
 	launchAutoProcesses(autoPath, &ouch);
 	freeFilePath(autoPath);
 
