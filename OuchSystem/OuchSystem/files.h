@@ -8,7 +8,7 @@
 #define pathLenLimit 128
 #define nodeNameLimit 256
 
-#include "kernal.h"
+#include "kernel.h"
 #include "types.h"
 
 //i hate microsoft

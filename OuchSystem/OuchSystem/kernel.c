@@ -3,7 +3,7 @@
 #include "files.h"
 #include "process.h"
 #include "syscall.h"
-#include "kernal.h"
+#include "kernel.h"
 
 #include <signal.h>
 #include <string.h>
@@ -29,8 +29,6 @@ void launchAutoProcesses(struct filePath* autoPath, struct system* ouch)
 	char* autoStartupFile = readFileContent(ouch, autoPath);
 	fguard(autoStartupFile, "Unable to read auto file\n", );
 
-
-	flog("'%s'\n", autoStartupFile);
 
 	char* splitPtr = strtok(autoStartupFile, "\n");
 

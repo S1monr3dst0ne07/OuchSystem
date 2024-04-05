@@ -1,7 +1,7 @@
 
 
 #include "files.h"
-#include "kernal.h"
+#include "kernel.h"
 #include "syscall.h"
 #include "vm.h"
 
@@ -563,7 +563,6 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     //--- time ---
     case scNapMs:;
         S1Int durMs = 0;
-        //if (!syscallStackPull(proc, &durMs, callType)) break;
         guardPull(durMs);
         procNap(durMs, proc);
         break;
@@ -681,7 +680,6 @@ void runSyscall(enum S1Syscall callType, struct process* proc, struct system* ou
     //--- process ---
     case scGetPid:;
         pid = proc->pid;
-        //if (!syscallStackPush(proc, &pid, callType)) break;
         guardPush(pid);
         break;
 

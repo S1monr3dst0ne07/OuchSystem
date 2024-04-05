@@ -343,6 +343,7 @@ enum returnCodes simProcess(struct process* proc, int iterLimit, struct system* 
         case s1Putstr:
             //printf("%c", (char)*acc);
             writeStream(proc->stdio, (char)(*acc), ouch);
+
             break;
 
         case s1Ahm:;

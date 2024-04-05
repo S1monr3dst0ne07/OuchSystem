@@ -1,7 +1,7 @@
 #ifndef HPROCESS
 #define HPROCESS
 
-#include "kernal.h"
+#include "kernel.h"
 #include "timing.h"
 #include "vm.h"
 #include "types.h"

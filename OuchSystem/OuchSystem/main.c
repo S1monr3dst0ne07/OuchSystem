@@ -1,5 +1,5 @@
 
-#include "kernal.h"
+#include "kernel.h"
 #include "process.h"
 #include "files.h"
 #include "utils.h"

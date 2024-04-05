@@ -1,6 +1,6 @@
 
 #include "timing.h"
-#include "kernal.h"
+#include "kernel.h"
 #include "utils.h"
 #include "syscall.h"
 #include "process.h"
@@ -526,6 +526,7 @@ struct process* getProcByPID(S1Int pid, struct procPool* pool)
 
 void freeS1Heap(struct S1HeapChunk* ptr)
 {
+    flog("freeS1Heap: %x\n", ptr);
     while (ptr != NULL)
     {
         struct S1HeapChunk* next = ptr->next;
